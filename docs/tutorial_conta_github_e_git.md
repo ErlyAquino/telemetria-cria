@@ -8,6 +8,9 @@ para receber código.
 Tempo estimado: 30 minutos. Cada comando deve ser digitado no terminal e confirmado
 com Enter. Linhas que começam com `#` são comentários, não precisam ser digitadas.
 
+As seções 1 a 8 são para os alunos. A seção 9 é só para o professor, que libera o
+acesso ao repositório.
+
 ## 1. Criar a conta no GitHub
 
 1. Abra https://github.com/signup no navegador.
@@ -200,3 +203,83 @@ normal e se resolve em dupla.
 
 **Commitei uma senha por engano.** Avise o professor imediatamente e troque a senha.
 Apagar o arquivo em um commit novo não remove o histórico.
+
+## 9. Para o professor: liberar o acesso dos alunos
+
+Esta seção é só para quem administra o repositório. Os alunos não precisam fazer nada
+aqui. Sem este passo, o `git push` do aluno falha com `Permission denied` mesmo com
+a chave SSH correta.
+
+### 9.1 Adicionar um aluno como colaborador pelo site
+
+1. Abra https://github.com/ErlyAquino/telemetria-cria/settings/access.
+2. Clique em **Add people**.
+3. Digite o nome de usuário que o aluno enviou e selecione o perfil correto na lista.
+4. Deixe a permissão como **Write**. Ela permite criar branches, enviar commits e abrir
+   pull requests, mas não apagar o repositório nem mudar as configurações.
+5. Clique em **Add ... to this repository**. O aluno recebe um convite por e-mail
+   e precisa aceitá-lo. O convite expira em 7 dias.
+
+Para conferir quem já aceitou, volte à mesma página. Convites pendentes aparecem em
+uma lista separada, acima dos colaboradores ativos.
+
+### 9.2 Adicionar vários alunos pelo terminal
+
+Com o GitHub CLI (`gh`) instalado e autenticado, um comando por aluno:
+
+```bash
+gh api -X PUT repos/ErlyAquino/telemetria-cria/collaborators/NOME-DO-ALUNO -f permission=push
+```
+
+Para uma turma inteira, coloque os nomes em um arquivo `alunos.txt`, um por linha, e
+rode:
+
+```bash
+while read aluno; do
+  gh api -X PUT "repos/ErlyAquino/telemetria-cria/collaborators/$aluno" -f permission=push
+done < alunos.txt
+```
+
+Para listar quem tem acesso:
+
+```bash
+gh api repos/ErlyAquino/telemetria-cria/collaborators --jq '.[].login'
+```
+
+Para remover alguém, ao final do projeto ou se um aluno sair:
+
+```bash
+gh api -X DELETE repos/ErlyAquino/telemetria-cria/collaborators/NOME-DO-ALUNO
+```
+
+Se o `gh` não estiver instalado: `sudo apt install gh` e depois `gh auth login`,
+escolhendo GitHub.com, HTTPS e login pelo navegador.
+
+### 9.3 Proteger o branch main
+
+Para garantir que o código só entre no `main` por pull request revisado, mesmo por
+descuido de quem tem permissão de escrita:
+
+1. Abra https://github.com/ErlyAquino/telemetria-cria/settings/branches.
+2. Clique em **Add branch ruleset** (ou **Add classic branch protection rule**).
+3. Em *Ruleset name*, escreva `protege-main`. Em *Enforcement status*, marque **Active**.
+4. Em *Target branches*, adicione o `main`.
+5. Marque **Require a pull request before merging** e, dentro dela,
+   **Required approvals: 1**.
+6. Marque **Block force pushes**.
+7. Salve.
+
+A partir daí, um `git push` direto no `main` é recusado, e todo pull request precisa
+de uma aprovação antes do merge. O próprio professor também passa a seguir o fluxo,
+o que serve de exemplo para a turma.
+
+### 9.4 Checklist de início de turma
+
+- [ ] Todos os alunos enviaram o nome de usuário do GitHub.
+- [ ] Todos foram adicionados como colaboradores e aceitaram o convite.
+- [ ] Cada aluno rodou `ssh -T git@github.com` com sucesso no seu computador.
+- [ ] Cada aluno clonou o repositório e abriu o README.
+- [ ] O branch `main` está protegido.
+- [ ] Primeira tarefa de teste: cada aluno cria um branch, adiciona o próprio nome
+      em um arquivo `docs/equipe.md` e abre um pull request. Serve para treinar o
+      fluxo completo antes de mexer em código.
