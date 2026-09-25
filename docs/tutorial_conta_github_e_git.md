@@ -183,14 +183,14 @@ git branch -d leitura-dht22-arduino
 
 ## 8. Problemas comuns
 
-**`Permission denied (publickey)` ao clonar ou dar push.** A chave SSH não foi
+**Erro "Permission denied (publickey)" ao clonar ou dar push.** A chave SSH não foi
 cadastrada ou o clone foi feito pelo endereço `https://`. Refaça a seção 4 e confira
 com `git remote -v` se o endereço começa com `git@github.com:`.
 
-**`Please tell me who you are` ao commitar.** A seção 3 não foi feita. Rode os dois
+**Erro "Please tell me who you are" ao commitar.** A seção 3 não foi feita. Rode os dois
 comandos `git config --global` de novo.
 
-**`Updates were rejected` ao dar push.** Alguém enviou commits ao mesmo branch antes
+**Erro "Updates were rejected" ao dar push.** Alguém enviou commits ao mesmo branch antes
 de você. Rode `git pull`, resolva conflitos se houver, e tente o push de novo.
 
 **Conflito de merge.** O Git marca no arquivo os trechos em conflito entre `<<<<<<<`
