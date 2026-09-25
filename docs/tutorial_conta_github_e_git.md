@@ -53,43 +53,61 @@ Confira o resultado:
 git config --global --list
 ```
 
-## 4. Criar uma chave SSH e cadastrá-la no GitHub
+## 4. Conectar o terminal à sua conta do GitHub
 
-O GitHub não aceita senha para enviar código pelo terminal. Usamos uma chave SSH:
-um par de arquivos em que a parte privada fica só no seu computador e a parte pública
-vai para o GitHub.
+O GitHub não aceita a senha da conta para enviar código pelo terminal. A forma mais
+simples de autorizar o seu computador é pelo **GitHub CLI** (`gh`): ele mostra um
+código no terminal, abre o navegador e você só digita esse código.
 
-Gere a chave, trocando o e-mail pelo seu:
+Primeiro, entre na sua conta do GitHub no navegador (https://github.com/login). Deixe
+o navegador aberto.
 
-```bash
-ssh-keygen -t ed25519 -C "seu-email@exemplo.com"
-```
-
-Pressione Enter três vezes para aceitar o local padrão e deixar a senha da chave
-vazia. Depois mostre a parte pública:
+Instale o `gh`:
 
 ```bash
-cat ~/.ssh/id_ed25519.pub
+sudo apt install gh
+gh --version
 ```
 
-Copie a linha inteira que aparece (começa com `ssh-ed25519` e termina com o seu
-e-mail). Agora cadastre no GitHub:
-
-1. Abra https://github.com/settings/keys.
-2. Clique em **New SSH key**.
-3. Em *Title*, escreva o nome do computador, por exemplo `notebook-escola`.
-4. Em *Key*, cole a linha copiada.
-5. Clique em **Add SSH key**.
-
-Teste a conexão:
+Se o `apt` não encontrar o pacote, instale pelo repositório oficial do GitHub:
 
 ```bash
-ssh -T git@github.com
+sudo mkdir -p -m 755 /etc/apt/keyrings
+wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
 ```
 
-Na primeira vez ele pergunta se confia no servidor. Digite `yes`. A resposta esperada
-termina com `You've successfully authenticated`. A frase `does not provide shell
-access` é normal e não é erro.
+Agora faça o login:
+
+```bash
+gh auth login
+```
+
+O `gh` faz algumas perguntas. Use as setas do teclado para escolher e Enter para
+confirmar:
+
+1. *Where do you use GitHub?* Escolha **GitHub.com**.
+2. *What is your preferred protocol for Git operations?* Escolha **HTTPS**.
+3. *Authenticate Git with your GitHub credentials?* Responda **Yes**. Isso faz o
+   `git push` usar o login automaticamente.
+4. *How would you like to authenticate?* Escolha **Login with a web browser**.
+
+O terminal mostra então um código de oito caracteres, parecido com `A1B2-C3D4`, e a
+mensagem *Press Enter to open github.com in your browser*. Anote o código e pressione
+Enter. O navegador abre a página https://github.com/login/device. Digite o código,
+clique em **Continue** e depois em **Authorize GitHub**. Volte ao terminal: ele deve
+mostrar *Logged in as* seguido do seu nome de usuário.
+
+Se o navegador não abrir sozinho, abra você mesmo o endereço
+https://github.com/login/device e digite o código.
+
+Confira quando quiser:
+
+```bash
+gh auth status
+```
 
 ## 5. Baixar o repositório
 
@@ -98,7 +116,7 @@ Escolha uma pasta para os seus projetos e clone o repositório:
 ```bash
 mkdir -p ~/Projetos
 cd ~/Projetos
-git clone git@github.com:ErlyAquino/telemetria-cria.git
+git clone https://github.com/ErlyAquino/telemetria-cria.git
 cd telemetria-cria
 ls
 ```
@@ -186,9 +204,10 @@ git branch -d leitura-dht22-arduino
 
 ## 8. Problemas comuns
 
-**Erro "Permission denied (publickey)" ao clonar ou dar push.** A chave SSH não foi
-cadastrada ou o clone foi feito pelo endereço `https://`. Refaça a seção 4 e confira
-com `git remote -v` se o endereço começa com `git@github.com:`.
+**Pede usuário e senha ao dar push, ou dá `Permission denied`.** O login da seção 4
+não foi feito, ou foi feito em outro computador. Rode `gh auth status`. Se aparecer
+*not logged in*, rode `gh auth login` de novo. Se você ainda não foi adicionado como
+colaborador, o push também é recusado: confira com o professor.
 
 **Erro "Please tell me who you are" ao commitar.** A seção 3 não foi feita. Rode os dois
 comandos `git config --global` de novo.
@@ -208,7 +227,7 @@ Apagar o arquivo em um commit novo não remove o histórico.
 
 Esta seção é só para quem administra o repositório. Os alunos não precisam fazer nada
 aqui. Sem este passo, o `git push` do aluno falha com `Permission denied` mesmo com
-a chave SSH correta.
+o login feito.
 
 ### 9.1 Adicionar um aluno como colaborador pelo site
 
@@ -252,8 +271,7 @@ Para remover alguém, ao final do projeto ou se um aluno sair:
 gh api -X DELETE repos/ErlyAquino/telemetria-cria/collaborators/NOME-DO-ALUNO
 ```
 
-Se o `gh` não estiver instalado: `sudo apt install gh` e depois `gh auth login`,
-escolhendo GitHub.com, HTTPS e login pelo navegador.
+Se o `gh` não estiver instalado, siga a seção 4 deste tutorial.
 
 ### 9.3 Proteger o branch main
 
@@ -277,7 +295,7 @@ o que serve de exemplo para a turma.
 
 - [ ] Todos os alunos enviaram o nome de usuário do GitHub.
 - [ ] Todos foram adicionados como colaboradores e aceitaram o convite.
-- [ ] Cada aluno rodou `ssh -T git@github.com` com sucesso no seu computador.
+- [ ] Cada aluno rodou `gh auth status` e viu *Logged in* no seu computador.
 - [ ] Cada aluno clonou o repositório e abriu o README.
 - [ ] O branch `main` está protegido.
 - [ ] Primeira tarefa de teste: cada aluno cria um branch, adiciona o próprio nome
