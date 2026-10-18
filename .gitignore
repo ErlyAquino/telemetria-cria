@@ -1,6 +1,9 @@
 # Credenciais: nunca versionar
 .env
 *.local
+credenciais.h
+mqtt/mosquitto.conf
+mqtt/senhas
 
 # Python
 __pycache__/

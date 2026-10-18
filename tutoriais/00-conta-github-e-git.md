@@ -298,6 +298,5 @@ o que serve de exemplo para a turma.
 - [ ] Cada aluno rodou `gh auth status` e viu *Logged in* no seu computador.
 - [ ] Cada aluno clonou o repositório e abriu o README.
 - [ ] O branch `main` está protegido.
-- [ ] Primeira tarefa de teste: cada aluno cria um branch, adiciona o próprio nome
-      em um arquivo `docs/equipe.md` e abre um pull request. Serve para treinar o
-      fluxo completo antes de mexer em código.
+- [ ] Primeira tarefa de teste: cada aluno cria um branch, adiciona o próprio nome em
+      `caderno/equipe.md` e abre um pull request, para treinar o fluxo completo.
