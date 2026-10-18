@@ -63,10 +63,10 @@ O nó simulado faz o papel de um ESP32 enquanto as placas não chegam. Ele fica 
 Num terminal, acompanhe tudo o que chega ao broker, com o usuário do servidor:
 
 ```bash
-mosquitto_sub -h localhost -u servidor -P 'SENHA_DO_SERVIDOR' -t 'cria/#' -v -q 1 -c -i observador
+mosquitto_sub -h localhost -u servidor -P 'SENHA_DO_SERVIDOR' -t 'cria/#' -v -c -i observador
 ```
 
-O `-c -i observador` abre uma sessão persistente: se este terminal ou o broker cair, o broker guarda as leituras que chegarem nesse meio-tempo e as entrega quando o observador voltar. É assim que o servidor da Etapa 2 também vai assinar.
+O `-c -i observador` abre uma sessão persistente: se este terminal ou o broker cair, o broker guarda as leituras que chegarem nesse meio-tempo e as entrega quando o observador voltar. O servidor da telemetria assina do mesmo jeito, com QoS 0 (veja `decisoes/2026-10-18-servidor-assina-com-qos-0.md`). Quando terminar os testes, apague essa sessão para o broker não seguir guardando mensagens para ela: rode o mesmo comando sem o `-c` e feche com Ctrl+C.
 
 Em outro terminal, dentro da pasta `servidor/`:
 

@@ -45,7 +45,7 @@ O servidor base (Mosquitto, chrony e InfluxDB) é instalado por um script, num c
 sudo bash servidor/base/instalar.sh
 ```
 
-O passo a passo, o autoteste e o uso do nó simulado estão em [`servidor/base/README.md`](servidor/base/README.md).
+O passo a passo, o autoteste e o uso do nó simulado estão em [`servidor/base/README.md`](servidor/base/README.md). Depois, o servidor da telemetria e o painel sobem com `npm install` e `npm start` na pasta `servidor/`, como explica o [`servidor/README.md`](servidor/README.md).
 
 ## Tópicos e mensagens
 
@@ -83,11 +83,12 @@ telemetria-cria/
 │   ├── biblioteca-cria/       a biblioteca-padrão reutilizável
 │   └── credenciais.exemplo.h  modelo sem senha, para copiar
 ├── gateway/                   ponte USB -> HTTP das placas Arduino legadas (Python)
-├── servidor/                  Node.js + Fastify + Socket.IO
+├── servidor/                  Node.js + Fastify + Socket.IO (veja servidor/README.md)
 │   ├── base/                  instalador do Mosquitto, do chrony e do InfluxDB
 │   ├── ferramentas/           nó simulado e, depois, os scripts de validação
-│   ├── src/
-│   └── painel/                a interface web
+│   ├── src/                   o servidor: assinatura MQTT, banco, rotas, CSV
+│   ├── painel/                a interface web
+│   └── test/                  testes automáticos (npm test)
 ├── mqtt/
 │   ├── catalogo-topicos.md    endereços e formato das mensagens
 │   ├── mosquitto.exemplo.conf configuração do broker, sem senhas

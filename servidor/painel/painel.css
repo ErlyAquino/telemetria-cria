@@ -1,0 +1,183 @@
+/* Painel da telemetria. As cores ficam em variáveis, com versão clara e escura. */
+
+:root {
+  --fundo: #f4f6f8;
+  --cartao: #ffffff;
+  --texto: #1d2733;
+  --texto-suave: #5b6b7c;
+  --borda: #d8dee5;
+  --linha: #1f6fb2;
+  --online: #1a7f37;
+  --offline: #b42318;
+  --neutro: #6b7785;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #12171d;
+    --cartao: #1b232c;
+    --texto: #e6ebf0;
+    --texto-suave: #9aa8b6;
+    --borda: #2c3743;
+    --linha: #5aa9e6;
+    --online: #3fb950;
+    --offline: #f47067;
+    --neutro: #8b98a5;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+h1 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.conexao {
+  margin: 0;
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--borda);
+}
+.conexao[data-estado='conectado'] {
+  color: var(--online);
+}
+.conexao[data-estado='desconectado'] {
+  color: var(--offline);
+}
+
+.exportar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+.exportar label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--texto-suave);
+}
+select,
+.botao {
+  font: inherit;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--borda);
+  background: var(--cartao);
+  color: var(--texto);
+}
+.botao {
+  text-decoration: none;
+}
+
+.vazio {
+  color: var(--texto-suave);
+}
+
+.no {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.no-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+.no-nome {
+  font-size: 1.05rem;
+  margin: 0;
+  font-family: ui-monospace, Consolas, monospace;
+}
+.ultima,
+.perda {
+  color: var(--texto-suave);
+}
+.baixar {
+  margin-left: auto;
+  color: var(--linha);
+}
+
+.status {
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  color: var(--neutro);
+}
+.status[data-status='online'] {
+  color: var(--online);
+}
+.status[data-status='offline'] {
+  color: var(--offline);
+}
+
+.grandezas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.grandeza {
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-width: 0;
+}
+.grandeza-nome {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+.valor {
+  margin: 2px 0 6px;
+}
+.numero {
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.unidade {
+  color: var(--texto-suave);
+}
+.grafico {
+  position: relative;
+  height: 90px;
+}
