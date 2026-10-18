@@ -1,0 +1,35 @@
+Creative Commons Atribuição 4.0 Internacional (CC BY 4.0)
+
+Copyright (c) 2026 Erly José da Costa Aquino e estudantes da ETE Epitácio Pessoa
+
+Os textos, tutoriais, imagens, vídeos, dados e modelos 3D deste repositório estão
+licenciados sob a Creative Commons Atribuição 4.0 Internacional (CC BY 4.0).
+
+Esta licença vale para:
+
+- tutoriais/
+- caderno/
+- calibracao/ e validacao/ (relatórios e dados)
+- decisoes/
+- modelos-3d/
+- mqtt/catalogo-topicos.md
+- os demais documentos em Markdown, ODT ou PDF, inclusive o README.md
+
+O código (firmware/, servidor/, gateway/ e os scripts) segue a licença MIT,
+descrita no arquivo LICENSE.
+
+Os vídeos do projeto ficam no YouTube, sob a mesma licença CC BY 4.0. Ela deve
+ser escolhida também na própria plataforma, na opção de licença de cada vídeo.
+
+Você pode copiar, redistribuir e adaptar este material para qualquer fim,
+inclusive comercial, desde que dê o crédito adequado, indique o link da licença
+e informe se fez alterações. Sugestão de crédito:
+
+    "Rede de Telemetria do Espaço CRIA", ETE Epitácio Pessoa (Cabo de Santo
+    Agostinho, PE), CC BY 4.0, https://github.com/ErlyAquino/telemetria-cria
+
+Resumo da licença em português:
+https://creativecommons.org/licenses/by/4.0/deed.pt-br
+
+Texto legal completo:
+https://creativecommons.org/licenses/by/4.0/legalcode
