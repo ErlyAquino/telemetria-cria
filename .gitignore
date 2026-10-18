@@ -27,6 +27,9 @@ dados/*.csv
 dados/*.log
 *.db
 
+# Estado local do nó simulado (contador de boot)
+servidor/ferramentas/.estado/
+
 # Editores e sistema
 .vscode/
 .idea/
