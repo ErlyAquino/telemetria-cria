@@ -1,0 +1,11 @@
+# Controle de acesso (ACL) do broker da telemetria.
+# O instalador copia este arquivo para /etc/mosquitto/acl.
+# Explicação completa: mqtt/catalogo-topicos.md, seção 6.
+
+# Cada projeto lê e escreve só dentro do próprio projeto. O %u é trocado pelo
+# nome do usuário que se conectou, que é o nome do projeto.
+pattern readwrite cria/%u/#
+
+# O servidor lê a rede inteira.
+user servidor
+topic read cria/#

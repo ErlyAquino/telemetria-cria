@@ -1,0 +1,17 @@
+{
+  "name": "telemetria-cria-servidor",
+  "version": "0.1.0",
+  "description": "Servidor e ferramentas da Rede de Telemetria do Espaço CRIA",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "simulador": "node ferramentas/no-simulado.js"
+  },
+  "dependencies": {
+    "mqtt": "^5.16.1"
+  }
+}

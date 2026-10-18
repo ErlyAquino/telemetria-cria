@@ -31,10 +31,21 @@ Dois projetos-teste validam a plataforma:
 | Nós de medição | ESP32 (C++/Arduino), ADS1115 de 16 bits para pH e condutividade | `firmware/` |
 | Placas Arduino legadas | Arduino Uno pela USB; gateway em Python que envia as leituras ao servidor por HTTP, com a senha do projeto | `gateway/` |
 | Transporte | MQTT com Eclipse Mosquitto, senha e ACL por projeto | `mqtt/` |
-| Servidor e banco | Node.js (Fastify + Socket.IO) e InfluxDB | `servidor/src/` |
+| Servidor e banco | Node.js (Fastify + Socket.IO) e InfluxDB 2 | `servidor/src/` |
 | Painel web | HTML, CSS e JavaScript | `servidor/painel/` |
+| Hora certa | chrony como servidor NTP da rede local | `servidor/base/` |
 
 Toda a plataforma roda na rede local da escola, sem internet e sem serviço pago. Por isso o servidor também fornece a hora certa aos nós (NTP local).
+
+## Instalar o servidor
+
+O servidor base (Mosquitto, chrony e InfluxDB) é instalado por um script, num computador com Ubuntu ou Debian:
+
+```bash
+sudo bash servidor/base/instalar.sh
+```
+
+O passo a passo, o autoteste e o uso do nó simulado estão em [`servidor/base/README.md`](servidor/base/README.md).
 
 ## Tópicos e mensagens
 
@@ -73,12 +84,14 @@ telemetria-cria/
 │   └── credenciais.exemplo.h  modelo sem senha, para copiar
 ├── gateway/                   ponte USB -> HTTP das placas Arduino legadas (Python)
 ├── servidor/                  Node.js + Fastify + Socket.IO
+│   ├── base/                  instalador do Mosquitto, do chrony e do InfluxDB
+│   ├── ferramentas/           nó simulado e, depois, os scripts de validação
 │   ├── src/
 │   └── painel/                a interface web
 ├── mqtt/
 │   ├── catalogo-topicos.md    endereços e formato das mensagens
-│   ├── mosquitto.exemplo.conf configuração do broker sem senhas (Etapa 1)
-│   └── acl                    quem pode publicar onde (Etapa 1)
+│   ├── mosquitto.exemplo.conf configuração do broker, sem senhas
+│   └── acl                    quem pode publicar onde
 ├── modelos-3d/                arquivos STL dos abrigos e suportes
 ├── calibracao/                pontos brutos e relatório de calibração
 ├── validacao/                 relatório dos seis critérios de aceitação
@@ -109,7 +122,7 @@ As etapas reorganizam o cronograma do estudante (versão de 31/08/2026) a partir
 Nunca versione senha, chave de Wi-Fi ou token. O repositório será público, e senha enviada ao GitHub deve ser considerada comprometida no mesmo instante.
 
 - **Firmware:** copie `firmware/credenciais.exemplo.h` para a pasta do seu sketch com o nome `credenciais.h` e preencha. O `credenciais.h` está no `.gitignore`.
-- **Servidor e gateway:** copie `.env.example` para `.env` e preencha. O `.env` também está no `.gitignore`.
+- **Servidor, nó simulado e gateway:** usam o `.env` da raiz, criado a partir do `.env.example`. No servidor, o instalador cria o `.env` e grava nele as senhas e o token. O `.env` também está no `.gitignore`.
 
 ## Como contribuir
 

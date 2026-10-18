@@ -143,6 +143,8 @@ As oito grandezas do plano de trabalho são as seis do `no1` mais a umidade e a 
 
 Livre para as oficinas e para o teste de reuso: qualquer nó e qualquer grandeza, desde que sigam as regras da seção 1. É o projeto usado na Oficina 4 (`cria/teste/noX/temperatura`). Os dados de `teste` podem ser apagados pelo coordenador a qualquer momento.
 
+O nó `no99` é reservado ao autoteste do instalador do servidor (`servidor/base/instalar.sh`), que publica uma leitura em `cria/teste/no99/temperatura` e tenta, sem sucesso, publicar em `cria/horta/no99/temperatura`.
+
 ## 5. Como acrescentar uma grandeza ou um projeto
 
 - **Grandeza ou nó novo num projeto que já existe.** Abra um pull request que acrescenta a linha na tabela do projeto. O servidor não muda: ele assina `cria/#` e passa a gravar e a mostrar sozinho qualquer grandeza que siga este catálogo.
@@ -156,7 +158,7 @@ O broker recusa conexões sem usuário e senha. Cada projeto tem um usuário com
 pattern readwrite cria/%u/#
 ```
 
-O `%u` é trocado pelo nome do usuário que se conectou. Assim, um nó da `horta` não consegue escrever em `cria/ar/...`, e ninguém de fora da rede publica dados falsos. O servidor tem um usuário próprio, que lê `cria/#` inteiro.
+O `%u` é trocado pelo nome do usuário que se conectou. Assim, um nó da `horta` não consegue escrever em `cria/ar/...`, e ninguém de fora da rede publica dados falsos. O servidor tem um usuário próprio, chamado `servidor`, que lê `cria/#` inteiro; por isso, `servidor` não pode ser nome de projeto. A ACL pronta está em `mqtt/acl`.
 
 A rota HTTP do servidor, usada pelo gateway das placas Arduino, exige o mesmo usuário e a mesma senha do projeto e aceita leituras apenas desse projeto. Sem isso, ela seria uma porta lateral à ACL.
 

@@ -1,0 +1,6 @@
+# Scripts e configurações do servidor sempre com quebra de linha do Linux (LF),
+# mesmo quando o repositório é clonado no Windows. Um \r no fim da linha quebra
+# o bash e faz o Mosquitto não achar os arquivos.
+*.sh    text eol=lf
+*.conf  text eol=lf
+mqtt/acl text eol=lf
