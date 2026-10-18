@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telemetria do Espaço CRIA</title>
+    <link rel="stylesheet" href="painel.css" />
+  </head>
+  <body>
+    <header class="topo">
+      <div>
+        <h1>Rede de Telemetria do Espaço CRIA</h1>
+        <p class="subtitulo">ETE Epitácio Pessoa · leituras ao vivo da última hora</p>
+      </div>
+      <p id="conexao" class="conexao" data-estado="conectando">Conectando ao servidor...</p>
+    </header>
+
+    <section class="exportar" aria-label="Exportar dados em CSV">
+      <label>
+        Período
+        <select id="periodo">
+          <option value="1">última hora</option>
+          <option value="24" selected>últimas 24 horas</option>
+          <option value="168">últimos 7 dias</option>
+          <option value="744">últimos 31 dias</option>
+        </select>
+      </label>
+      <label>
+        Formato
+        <select id="formato">
+          <option value="br" selected>planilha em português (;)</option>
+          <option value="internacional">internacional (,)</option>
+        </select>
+      </label>
+      <a id="exportar-tudo" class="botao" href="/api/exportar.csv" download>Baixar tudo em CSV</a>
+    </section>
+
+    <main id="nos">
+      <p id="vazio" class="vazio">Nenhum nó publicou ainda.</p>
+    </main>
+
+    <template id="modelo-no">
+      <article class="no">
+        <header class="no-topo">
+          <h2 class="no-nome"></h2>
+          <span class="status"></span>
+          <span class="ultima"></span>
+          <span class="perda"></span>
+          <a class="baixar" download>CSV deste nó</a>
+        </header>
+        <div class="grandezas"></div>
+      </article>
+    </template>
+
+    <template id="modelo-grandeza">
+      <section class="grandeza">
+        <h3 class="grandeza-nome"></h3>
+        <p class="valor"><span class="numero">--</span> <span class="unidade"></span></p>
+        <div class="grafico"><canvas></canvas></div>
+      </section>
+    </template>
+
+    <!-- Tudo é servido pelo próprio servidor: a rede da telemetria não tem internet. -->
+    <script src="/vendor/chart.js/chart.umd.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="painel.js"></script>
+  </body>
+</html>

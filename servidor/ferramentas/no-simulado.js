@@ -145,7 +145,7 @@ function parar(mensagem) {
   process.exit(1);
 }
 
-if (!/^[a-z0-9-]+$/.test(projeto)) parar(`Projeto "${projeto}" fora das regras do catálogo: só a-z, 0-9 e hífen.`);
+if (!/^[a-z0-9][a-z0-9-]{0,31}$/.test(projeto) || projeto === 'servidor') parar(`Projeto "${projeto}" fora das regras do catálogo (seção 1).`);
 if (!/^no[1-9][0-9]*$/.test(no)) parar(`Nó "${no}" fora das regras do catálogo: use no1, no2, ...`);
 if (!PERFIS[nomePerfil]) parar(`Perfil "${nomePerfil}" não existe. Perfis: ${Object.keys(PERFIS).join(', ')}.`);
 if (!(intervaloEmSegundos > 0)) parar('O --intervalo precisa ser um número de segundos maior que zero.');

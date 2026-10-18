@@ -20,9 +20,9 @@ Exemplo: `cria/horta/no1/ph` — rede CRIA, projeto horta, nó 1, pH.
 
 ### Regras de nome
 
-- Só letras minúsculas sem acento, algarismos e hífen. Nada de espaço, `ç`, acento ou barra dentro de um nível.
-- `projeto` precisa estar registrado na seção 4 antes do primeiro uso.
-- `no` é a palavra `no` seguida do número, sem zero à esquerda: `no1`, `no2`, ..., `no10`.
+- `projeto` e `grandeza` começam com letra minúscula ou algarismo e seguem só com letras minúsculas sem acento, algarismos e hífen, até 32 caracteres. Nada de espaço, `ç`, acento ou barra. Um nome não pode começar com hífen porque a planilha leria a célula do CSV como fórmula.
+- `projeto` precisa estar registrado na seção 4 antes do primeiro uso. `servidor` não pode ser projeto (seção 6).
+- `no` é a palavra `no` seguida do número, de 1 a 9999, sem zero à esquerda: `no1`, `no2`, ..., `no10`.
 - `grandeza` é o nome da grandeza física, não o do sensor: `temperatura`, e não `ds18b20`. A única exceção são os sensores MQ (seção 4.1), cuja leitura é relativa e não corresponde a uma grandeza física definida.
 - A mesma grandeza tem o mesmo nome em qualquer nó. A temperatura da solução e a do ar da horta são ambas `temperatura`; o nó é que as diferencia.
 - Dois nomes são reservados e não podem ser usados como grandeza: `status` (seção 3) e `cmd`, guardado para os comandos de calibração que serão definidos na Etapa 5.
@@ -39,8 +39,8 @@ Cada leitura é uma mensagem, em JSON, numa linha só:
 | --- | --- | --- |
 | `valor` | número | O valor medido, já calibrado |
 | `unidade` | texto | A unidade que este catálogo fixa para a grandeza (seção 4) |
-| `seq` | inteiro | O número da leitura no nó. É dado no momento da leitura e cresce 1 a cada leitura, de qualquer grandeza, inclusive as que esperam na fila. Volta a 1 quando o nó liga |
-| `boot` | inteiro | Quantas vezes o nó já ligou. Fica guardado na memória não volátil do ESP32 (a que não se apaga ao desligar, acessada pela biblioteca Preferences) |
+| `seq` | inteiro | O número da leitura no nó, de 1 a 2147483647. É dado no momento da leitura e cresce 1 a cada leitura, de qualquer grandeza, inclusive as que esperam na fila. Volta a 1 quando o nó liga |
+| `boot` | inteiro | Quantas vezes o nó já ligou, de 1 a 2147483647. Fica guardado na memória não volátil do ESP32 (a que não se apaga ao desligar, acessada pela biblioteca Preferences) |
 | `t` | inteiro | O instante da leitura, em milissegundos desde 01/01/1970, no fuso UTC (o horário universal; o de Brasília está 3 h atrás) |
 | `fila` | inteiro | Opcional. Vale `1` quando a leitura esperou na fila e está sendo reenviada depois de uma queda da rede ou do servidor |
 
@@ -53,7 +53,7 @@ Cada campo existe por causa de um critério de aceitação:
 Regras da mensagem:
 
 - O número usa ponto decimal (`6.12`), nunca vírgula. É exigência do JSON.
-- As unidades são escritas só com caracteres ASCII (o conjunto básico, sem acentos nem símbolos especiais): `uS/cm` em vez de `µS/cm`, `C` em vez de `°C`. Isso evita erro de codificação no Arduino e no CSV exportado.
+- As unidades são escritas só com caracteres ASCII (o conjunto básico, sem acentos nem símbolos especiais): `uS/cm` em vez de `µS/cm`, `C` em vez de `°C`. Isso evita erro de codificação no Arduino e no CSV exportado. A unidade começa com letra ou `%` e usa só letras, algarismos e os sinais `% / . _ -`, até 20 caracteres.
 - **Leitura com falha não é publicada e não recebe `seq`.** Contam como falha o `NaN` que o DHT22 devolve quando não responde, os −127 °C do DS18B20 desconectado e qualquer valor fora da faixa de medição do sensor.
 - O intervalo padrão de publicação é de **10 s**, o mesmo usado para medir a latência no teste de aceitação.
 - As leituras são publicadas com QoS 0 (o nível de entrega sem confirmação, o único que a PubSubClient usa para publicar) e sem *retain*. A perda que esse modo pode causar é exatamente o que o `seq` detecta.
