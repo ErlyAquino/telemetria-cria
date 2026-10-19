@@ -35,3 +35,6 @@ servidor/ferramentas/.estado/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Estado local do gateway (último boot de cada nó)
+gateway/.estado/

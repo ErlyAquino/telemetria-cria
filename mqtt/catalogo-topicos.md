@@ -80,7 +80,7 @@ As placas Arduino Uno não têm rede. Elas escrevem na porta USB uma linha JSON 
 {"no": "no1", "grandeza": "temperatura", "valor": 27.4, "unidade": "C", "seq": 12}
 ```
 
-O gateway, no computador ao lado, acrescenta o projeto e a hora (`t`) e envia as leituras ao servidor pelo caminho HTTP, com o usuário e a senha do projeto (seção 6). Ele também cria o `boot`, somando 1 cada vez que o `seq` volta a 1: o Uno reinicia sempre que o gateway abre a porta serial. Como essas placas não usam MQTT, não há LWT: o servidor considera off-line o nó Arduino que passar 30 s sem enviar leitura.
+O gateway, no computador ao lado, acrescenta o projeto e a hora (`t`) e envia as leituras ao servidor pelo caminho HTTP, com o usuário e a senha do projeto (seção 6). Ele também cria o `boot`, somando 1 cada vez que o `seq` volta, isto é, fica menor ou igual ao último recebido do nó: a placa recomeça o `seq` em 1 ao reiniciar, e o Uno reinicia sempre que o gateway abre a porta serial. Como essas placas não usam MQTT, não há LWT: o servidor considera off-line o nó Arduino que passar 30 s sem enviar leitura.
 
 ## 3. Estado do nó: o tópico `status`
 
