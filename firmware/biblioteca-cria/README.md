@@ -34,7 +34,7 @@ void loop() {
 }
 ```
 
-O exemplo completo, com um DHT22, está em `examples/PrimeiroNo`. O nó do monitor de ar, em `firmware/no-ar`.
+Os exemplos completos estão em `examples/PrimeiroNo` (DHT22) e `examples/NoDS18B20` (DS18B20, com a calibração pela USB). O nó do monitor de ar fica em `firmware/no-ar`, e os da horta em `firmware/horta-no1`, `horta-no2` e `horta-no3-camera`.
 
 O `credenciais.h` é uma cópia de `firmware/credenciais.exemplo.h` na pasta do sketch, preenchida com a rede e a senha do projeto. Ele está no `.gitignore` e nunca vai para o GitHub. O `MQTT_USUARIO` precisa ser igual ao projeto, o primeiro argumento de `CriaNo`: se não for, o nó avisa e não publica.
 

@@ -47,6 +47,8 @@ sudo bash servidor/base/instalar.sh
 
 O passo a passo, o autoteste e o uso do nó simulado estão em [`servidor/base/README.md`](servidor/base/README.md). Depois, o servidor da telemetria e o painel sobem com `npm install` e `npm start` na pasta `servidor/`, como explica o [`servidor/README.md`](servidor/README.md).
 
+Para quem está começando, o [guia completo](tutoriais/02-guia-completo.md) (também em [HTML](tutoriais/02-guia-completo.html) e [PDF](tutoriais/02-guia-completo.pdf)) vai da instalação, no Windows e no Linux, até um nó com DS18B20 publicando pelo Wi-Fi, passando pelos primeiros testes com o notebook pela USB.
+
 ## Tópicos e mensagens
 
 O endereço de cada medição segue o padrão `cria/{projeto}/{no}/{grandeza}`, por exemplo `cria/horta/no1/ph`. Cada leitura é uma linha em JSON:
@@ -102,7 +104,7 @@ telemetria-cria/
 ├── calibracao/                ferramenta de calibração pela USB, pontos e relatório de calibração
 ├── validacao/                 roteiro do teste de aceitação, evidências e relatório dos seis critérios
 ├── decisoes/                  uma decisão técnica por arquivo: data, o quê, por quê, o que se perde
-├── tutoriais/                 passo a passo para quem vai usar ou replicar
+├── tutoriais/                 passo a passo para quem vai usar ou replicar; o 02 é o guia completo (md, html e pdf)
 └── caderno/                   o caderno digital do dia a dia
     └── fotos/
 ```

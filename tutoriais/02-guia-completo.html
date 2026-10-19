@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="ETE Epitácio Pessoa · projeto FACEPE ARC-0645" />
+  <title>Rede de Telemetria do Espaço CRIA</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">
+:root {
+--texto: #1d2733;
+--texto-suave: #5b6b7c;
+--borda: #d8dee5;
+--fundo-codigo: #f4f6f8;
+--destaque: #1f6fb2;
+--aviso: #fff7e0;
+--aviso-borda: #e0a800;
+}
+html {
+font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+font-size: 15px;
+line-height: 1.55;
+color: var(--texto);
+}
+body {
+max-width: 860px;
+margin: 0 auto;
+padding: 24px 20px 60px;
+}
+header#title-block-header {
+border-bottom: 2px solid var(--destaque);
+margin-bottom: 28px;
+padding-bottom: 12px;
+}
+h1.title {
+font-size: 2rem;
+margin: 0 0 4px;
+}
+p.subtitle {
+color: var(--texto-suave);
+font-size: 1.1rem;
+margin: 0 0 6px;
+}
+p.author,
+p.date {
+color: var(--texto-suave);
+margin: 0;
+font-size: 0.95rem;
+}
+nav#TOC {
+background: var(--fundo-codigo);
+border: 1px solid var(--borda);
+border-radius: 8px;
+padding: 12px 20px;
+margin-bottom: 28px;
+}
+nav#TOC ul {
+list-style: none;
+padding-left: 0;
+margin: 4px 0;
+}
+nav#TOC ul ul {
+padding-left: 18px;
+}
+nav#TOC a {
+text-decoration: none;
+color: var(--texto);
+}
+h1,
+h2,
+h3 {
+line-height: 1.25;
+margin-top: 2em;
+}
+h2 {
+border-bottom: 1px solid var(--borda);
+padding-bottom: 4px;
+}
+a {
+color: var(--destaque);
+}
+code {
+font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace;
+font-size: 0.92em;
+background: var(--fundo-codigo);
+padding: 1px 4px;
+border-radius: 3px;
+}
+pre {
+background: var(--fundo-codigo);
+border: 1px solid var(--borda);
+border-radius: 8px;
+padding: 12px 14px;
+overflow-x: auto;
+line-height: 1.45;
+}
+pre code {
+background: none;
+padding: 0;
+font-size: 0.88em;
+}
+table {
+border-collapse: collapse;
+width: 100%;
+margin: 1em 0;
+font-size: 0.95em;
+}
+th,
+td {
+border: 1px solid var(--borda);
+padding: 6px 10px;
+vertical-align: top;
+text-align: left;
+}
+th {
+background: var(--fundo-codigo);
+}
+img,
+svg {
+max-width: 100%;
+height: auto;
+}
+figure {
+margin: 1.2em 0;
+text-align: center;
+}
+figcaption {
+color: var(--texto-suave);
+font-size: 0.9em;
+margin-top: 6px;
+}
+blockquote {
+margin: 1em 0;
+padding: 10px 16px;
+background: var(--aviso);
+border-left: 4px solid var(--aviso-borda);
+border-radius: 0 8px 8px 0;
+}
+blockquote p {
+margin: 0.3em 0;
+}
+hr {
+border: 0;
+border-top: 1px solid var(--borda);
+margin: 2em 0;
+}
+@media print {
+html {
+font-size: 11.5pt;
+}
+body {
+max-width: none;
+padding: 0;
+}
+a {
+color: var(--texto);
+text-decoration: none;
+}
+h1,
+h2,
+h3 {
+page-break-after: avoid;
+}
+
+h1 {
+page-break-before: always;
+}
+pre,
+table,
+figure,
+blockquote {
+page-break-inside: avoid;
+}
+pre {
+white-space: pre-wrap;
+word-break: break-word;
+}
+}
+@page {
+size: A4;
+margin: 18mm 16mm 20mm;
+}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Rede de Telemetria do Espaço CRIA</h1>
+<p class="subtitle">Guia completo: instalação, primeiros testes pela USB
+e nós pelo Wi-Fi</p>
+<p class="author">ETE Epitácio Pessoa · projeto FACEPE ARC-0645</p>
+<p class="date">Versão de 19/10/2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#como-a-plataforma-funciona" id="toc-como-a-plataforma-funciona">Como a plataforma funciona</a></li>
+<li><a href="#o-que-você-precisa" id="toc-o-que-você-precisa">O que você
+precisa</a></li>
+<li><a href="#parte-i-instalar" id="toc-parte-i-instalar">Parte I:
+instalar</a>
+<ul>
+<li><a href="#1-baixar-o-repositório" id="toc-1-baixar-o-repositório">1.
+Baixar o repositório</a></li>
+<li><a href="#2-o-servidor-linux" id="toc-2-o-servidor-linux">2. O
+servidor (Linux)</a>
+<ul>
+<li><a href="#21-o-servidor-base-broker-hora-e-banco" id="toc-21-o-servidor-base-broker-hora-e-banco">2.1 O servidor base:
+broker, hora e banco</a></li>
+<li><a href="#22-o-servidor-da-telemetria-e-o-painel" id="toc-22-o-servidor-da-telemetria-e-o-painel">2.2 O servidor da
+telemetria e o painel</a></li>
+<li><a href="#23-backup-do-banco" id="toc-23-backup-do-banco">2.3 Backup
+do banco</a></li>
+<li><a href="#24-um-servidor-de-teste-no-windows-pelo-wsl" id="toc-24-um-servidor-de-teste-no-windows-pelo-wsl">2.4 Um servidor de
+teste no Windows, pelo WSL</a></li>
+</ul></li>
+<li><a href="#3-o-computador-de-desenvolvimento" id="toc-3-o-computador-de-desenvolvimento">3. O computador de
+desenvolvimento</a>
+<ul>
+<li><a href="#31-arduino-ide-2" id="toc-31-arduino-ide-2">3.1 Arduino
+IDE 2</a></li>
+<li><a href="#32-python-e-pyserial" id="toc-32-python-e-pyserial">3.2
+Python e pyserial</a></li>
+<li><a href="#33-a-porta-serial" id="toc-33-a-porta-serial">3.3 A porta
+serial</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#parte-ii-os-primeiros-testes-com-o-notebook-pela-usb" id="toc-parte-ii-os-primeiros-testes-com-o-notebook-pela-usb">Parte II:
+os primeiros testes com o notebook pela USB</a>
+<ul>
+<li><a href="#4-montar-o-ds18b20" id="toc-4-montar-o-ds18b20">4. Montar
+o DS18B20</a></li>
+<li><a href="#5-teste-1-a-placa-escrevendo-as-leituras" id="toc-5-teste-1-a-placa-escrevendo-as-leituras">5. Teste 1: a placa
+escrevendo as leituras</a></li>
+<li><a href="#6-teste-2-o-gateway-enviando-ao-servidor" id="toc-6-teste-2-o-gateway-enviando-ao-servidor">6. Teste 2: o gateway
+enviando ao servidor</a>
+<ul>
+<li><a href="#61-configurar" id="toc-61-configurar">6.1
+Configurar</a></li>
+<li><a href="#62-rodar" id="toc-62-rodar">6.2 Rodar</a></li>
+<li><a href="#63-ver-no-painel" id="toc-63-ver-no-painel">6.3 Ver no
+painel</a></li>
+<li><a href="#64-o-que-acontece-quando-algo-falha" id="toc-64-o-que-acontece-quando-algo-falha">6.4 O que acontece quando
+algo falha</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#parte-iii-o-nó-pelo-wi-fi" id="toc-parte-iii-o-nó-pelo-wi-fi">Parte III: o nó pelo Wi-Fi</a>
+<ul>
+<li><a href="#7-a-biblioteca-padrão-criatelemetria" id="toc-7-a-biblioteca-padrão-criatelemetria">7. A biblioteca-padrão
+CriaTelemetria</a></li>
+<li><a href="#8-teste-3-o-nó-com-ds18b20-publicando-pelo-wi-fi" id="toc-8-teste-3-o-nó-com-ds18b20-publicando-pelo-wi-fi">8. Teste 3: o
+nó com DS18B20 publicando pelo Wi-Fi</a>
+<ul>
+<li><a href="#81-abrir-o-exemplo-e-salvar-uma-cópia" id="toc-81-abrir-o-exemplo-e-salvar-uma-cópia">8.1 Abrir o exemplo e
+salvar uma cópia</a></li>
+<li><a href="#82-as-credenciais" id="toc-82-as-credenciais">8.2 As
+credenciais</a></li>
+<li><a href="#83-nó-livre-gravação-e-conferência" id="toc-83-nó-livre-gravação-e-conferência">8.3 Nó livre, gravação e
+conferência</a></li>
+<li><a href="#84-quedas-de-rede-e-do-servidor" id="toc-84-quedas-de-rede-e-do-servidor">8.4 Quedas de rede e do
+servidor</a></li>
+</ul></li>
+<li><a href="#9-calibrar-o-ds18b20-pela-usb" id="toc-9-calibrar-o-ds18b20-pela-usb">9. Calibrar o DS18B20 pela
+USB</a></li>
+<li><a href="#10-ver-e-usar-os-dados" id="toc-10-ver-e-usar-os-dados">10. Ver e usar os dados</a></li>
+<li><a href="#11-problemas-comuns" id="toc-11-problemas-comuns">11.
+Problemas comuns</a></li>
+<li><a href="#12-próximos-passos" id="toc-12-próximos-passos">12.
+Próximos passos</a></li>
+<li><a href="#anexo-referência-rápida" id="toc-anexo-referência-rápida">Anexo: referência rápida</a></li>
+</ul></li>
+</ul>
+</nav>
+<p>Este guia reúne, num documento só, tudo o que é preciso para instalar
+a plataforma e colocar um sensor publicando no painel. Ele vai do zero
+até um nó ESP32 ligado pelo Wi-Fi, passando pelo caminho mais simples, o
+do notebook ligado à placa pela porta USB. Todos os exemplos usam o
+sensor de temperatura <strong>DS18B20</strong>, o mais barato e o mais
+fácil de ligar de todos os sensores do projeto.</p>
+<p>Os terminais e as telas mostrados aqui foram capturados em
+19/10/2026, com uma ESP32 DevKit ligada na porta COM5 de um notebook com
+Windows 11 e com o servidor de teste rodando num Ubuntu 26.04 (dentro do
+WSL do mesmo notebook).</p>
+<p>O guia tem três partes:</p>
+<ul>
+<li><strong>Parte I, instalar:</strong> o servidor da escola (Linux) e o
+computador de quem programa as placas (Windows ou Linux).</li>
+<li><strong>Parte II, os primeiros testes com o notebook pela
+USB:</strong> a placa escrevendo as leituras na serial, depois o gateway
+enviando ao servidor e o painel mostrando.</li>
+<li><strong>Parte III, o nó pelo Wi-Fi:</strong> a biblioteca-padrão, o
+nó publicando por MQTT, a calibração pela USB e o que fazer quando algo
+falha.</li>
+</ul>
+<p>Os detalhes de cada peça estão nos READMEs do repositório, citados ao
+longo do texto.</p>
+<h2 id="como-a-plataforma-funciona">Como a plataforma funciona</h2>
+<p><img role="img" aria-label="Arquitetura da plataforma" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAwIDQzMCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBSb2JvdG8sIEFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0Ij4KICA8dGl0bGU+QXJxdWl0ZXR1cmEgZGEgUmVkZSBkZSBUZWxlbWV0cmlhIGRvIEVzcGHDp28gQ1JJQTwvdGl0bGU+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJzZXRhIiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjkiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI3IiBtYXJrZXJIZWlnaHQ9IjciIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTAsMCBMMTAsNSBMMCwxMCB6IiBmaWxsPSIjM2I0YTVhIi8+CiAgICA8L21hcmtlcj4KICAgIDxzdHlsZT4KICAgICAgLmNhaXhhIHsgc3Ryb2tlOiAjM2I0YTVhOyBzdHJva2Utd2lkdGg6IDEuNTsgfQogICAgICAubm8geyBmaWxsOiAjZWFmM2ZiOyB9CiAgICAgIC5zZXJ2aWRvciB7IGZpbGw6ICNlZWY3ZWU7IH0KICAgICAgLnVzYiB7IGZpbGw6ICNmZGYzZTY7IH0KICAgICAgLnBhaW5lbCB7IGZpbGw6ICNmZmZmZmY7IH0KICAgICAgLnRpdHVsbyB7IGZvbnQtd2VpZ2h0OiA2MDA7IGZpbGw6ICMxZDI3MzM7IH0KICAgICAgLmRldGFsaGUgeyBmaWxsOiAjNWI2YjdjOyBmb250LXNpemU6IDEycHg7IH0KICAgICAgLmxpbmhhIHsgc3Ryb2tlOiAjM2I0YTVhOyBzdHJva2Utd2lkdGg6IDEuNjsgZmlsbDogbm9uZTsgbWFya2VyLWVuZDogdXJsKCNzZXRhKTsgfQogICAgICAucm90dWxvIHsgZmlsbDogIzFmNmZiMjsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogNjAwOyB9CiAgICAgIC5ncnVwbyB7IGZpbGw6IG5vbmU7IHN0cm9rZTogIzlhYThiNjsgc3Ryb2tlLXdpZHRoOiAxLjI7IHN0cm9rZS1kYXNoYXJyYXk6IDYgNDsgfQogICAgICAuZ3J1cG8tbm9tZSB7IGZpbGw6ICM1YjZiN2M7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IDYwMDsgbGV0dGVyLXNwYWNpbmc6IDAuMDRlbTsgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CgogIDwhLS0gU2Vydmlkb3IgZGEgZXNjb2xhIC0tPgogIDxyZWN0IGNsYXNzPSJncnVwbyIgeD0iMzAwIiB5PSIyMCIgd2lkdGg9IjQ5MCIgaGVpZ2h0PSIzOTUiIHJ4PSIxMiIvPgogIDx0ZXh0IGNsYXNzPSJncnVwby1ub21lIiB4PSIzMTYiIHk9IjQyIj5TRVJWSURPUiBEQSBFU0NPTEEgKExpbnV4LCBuby1icmVhaywgSVAgZml4byk8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJjYWl4YSBzZXJ2aWRvciIgeD0iMzE1IiB5PSI2MCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2NSIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0idGl0dWxvIiB4PSIzODUiIHk9Ijg3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Nb3NxdWl0dG88L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjM4NSIgeT0iMTA2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5icm9rZXIgTVFUVCwgMTg4MzwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImNhaXhhIHNlcnZpZG9yIiB4PSI1MDUiIHk9IjYwIiB3aWR0aD0iMjcwIiBoZWlnaHQ9IjY1IiByeD0iOCIvPgogIDx0ZXh0IGNsYXNzPSJ0aXR1bG8iIHg9IjY0MCIgeT0iODciIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNlcnZpZG9yIGRhIHRlbGVtZXRyaWE8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjY0MCIgeT0iMTA2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Ob2RlLmpzLCBGYXN0aWZ5IGUgU29ja2V0LklPLCBwb3J0YSAzMDAwPC90ZXh0PgoKICA8cmVjdCBjbGFzcz0iY2FpeGEgc2Vydmlkb3IiIHg9IjMxNSIgeT0iMTcwIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjY1IiByeD0iOCIvPgogIDx0ZXh0IGNsYXNzPSJ0aXR1bG8iIHg9IjM4NSIgeT0iMTk3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5jaHJvbnk8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjM4NSIgeT0iMjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ob3JhIGRvcyBuw7NzIChOVFApLCAxMjM8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJjYWl4YSBzZXJ2aWRvciIgeD0iNTA1IiB5PSIxNzAiIHdpZHRoPSIxMjUiIGhlaWdodD0iNjUiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9InRpdHVsbyIgeD0iNTY3IiB5PSIxOTciIHRleHQtYW5jaG9yPSJtaWRkbGUiPkluZmx1eERCIDI8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjU2NyIgeT0iMjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5hcyBsZWl0dXJhcywgODA4NjwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImNhaXhhIHNlcnZpZG9yIiB4PSI2NTAiIHk9IjE3MCIgd2lkdGg9IjEyNSIgaGVpZ2h0PSI2NSIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0idGl0dWxvIiB4PSI3MTIiIHk9IjE5NyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Rm90b3M8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjcxMiIgeT0iMjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5wYXN0YXMgcG9yIGRpYTwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImNhaXhhIHNlcnZpZG9yIiB4PSIzMTUiIHk9IjM1MCIgd2lkdGg9IjQ2MCIgaGVpZ2h0PSI0NSIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0iZGV0YWxoZSIgeD0iNTQ1IiB5PSIzNzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhY2t1cCBkacOhcmlvIGRvIGJhbmNvIG5vIGNhcnTDo28gbWljcm9TRCAoc3lzdGVtZCk8L3RleHQ+CgogIDwhLS0gUGFpbmVsIC0tPgogIDxyZWN0IGNsYXNzPSJjYWl4YSBwYWluZWwiIHg9Ijg0MCIgeT0iNjAiIHdpZHRoPSIxNDAiIGhlaWdodD0iNjUiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9InRpdHVsbyIgeD0iOTEwIiB5PSI4NyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UGFpbmVsIHdlYjwvdGV4dD4KICA8dGV4dCBjbGFzcz0iZGV0YWxoZSIgeD0iOTEwIiB5PSIxMDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPm5hdmVnYWRvciwgQ1NWPC90ZXh0PgoKICA8IS0tIE7Ds3MgZSBwbGFjYXMgLS0+CiAgPHJlY3QgY2xhc3M9ImNhaXhhIG5vIiB4PSIyMCIgeT0iNjAiIHdpZHRoPSIyMTAiIGhlaWdodD0iNjUiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9InRpdHVsbyIgeD0iMTI1IiB5PSI4NyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TsOzIEVTUDMyPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJkZXRhbGhlIiB4PSIxMjUiIHk9IjEwNiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Q3JpYVRlbGVtZXRyaWE6IERTMThCMjAsIHBILi4uPC90ZXh0PgoKICA8cmVjdCBjbGFzcz0iY2FpeGEgbm8iIHg9IjIwIiB5PSIxNzAiIHdpZHRoPSIyMTAiIGhlaWdodD0iNjUiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9InRpdHVsbyIgeD0iMTI1IiB5PSIxOTciIHRleHQtYW5jaG9yPSJtaWRkbGUiPkPDom1lcmEgRVNQMzItQ0FNPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJkZXRhbGhlIiB4PSIxMjUiIHk9IjIxNiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+aG9ydGEvbm8zLCBmb3RvIGEgY2FkYSAxMCBtaW48L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJjYWl4YSB1c2IiIHg9IjIwIiB5PSIyOTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSI2NSIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0idGl0dWxvIiB4PSI2NyIgeT0iMzE3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QbGFjYSBVU0I8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjY3IiB5PSIzMzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlVubyBvdSBFU1AzMjwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImNhaXhhIHVzYiIgeD0iMTM1IiB5PSIyOTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSI2NSIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0idGl0dWxvIiB4PSIxODIiIHk9IjMxNyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Tm90ZWJvb2s8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjE4MiIgeT0iMzM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5nYXRld2F5LnB5PC90ZXh0PgoKICA8IS0tIExpZ2HDp8O1ZXMgLS0+CiAgPHBhdGggY2xhc3M9ImxpbmhhIiBkPSJNMjMwLDkyIEwzMTMsOTIiLz4KICA8dGV4dCBjbGFzcz0icm90dWxvIiB4PSIyNzEiIHk9Ijg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NUVRUPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJyb3R1bG8iIHg9IjI3MSIgeT0iMTEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5XaS1GaTwvdGV4dD4KCiAgPHBhdGggY2xhc3M9ImxpbmhhIiBkPSJNNDU1LDkyIEw1MDMsOTIiLz4KICA8cGF0aCBjbGFzcz0ibGluaGEiIGQ9Ik01NjcsMTI1IEw1NjcsMTY4Ii8+CiAgPHBhdGggY2xhc3M9ImxpbmhhIiBkPSJNNzEyLDEyNSBMNzEyLDE2OCIvPgoKICA8cGF0aCBjbGFzcz0ibGluaGEiIGQ9Ik0yMzAsMTg1IEwyNjIsMTg1IEwyNjIsMTQ4IEw0ODAsMTQ4IEw0ODAsMTEwIEw1MDMsMTEwIi8+CiAgPHRleHQgY2xhc3M9InJvdHVsbyIgeD0iMzcyIiB5PSIxNDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkhUVFA6IGZvdG9zPC90ZXh0PgoKICA8cGF0aCBjbGFzcz0ibGluaGEiIGQ9Ik0xMTUsMzIyIEwxMzMsMzIyIi8+CiAgPHRleHQgY2xhc3M9InJvdHVsbyIgeD0iMTI1IiB5PSIyODIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlVTQjwvdGV4dD4KCiAgPHBhdGggY2xhc3M9ImxpbmhhIiBkPSJNMjMwLDMyMiBMNDkwLDMyMiBMNDkwLDExNyBMNTAzLDExNyIvPgogIDx0ZXh0IGNsYXNzPSJyb3R1bG8iIHg9IjM3MCIgeT0iMzE1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5IVFRQOiBsZWl0dXJhcywgY29tIGEgc2VuaGEgZG8gcHJvamV0bzwvdGV4dD4KCiAgPHBhdGggY2xhc3M9ImxpbmhhIiBkPSJNNzc1LDkyIEw4MzgsOTIiLz4KICA8dGV4dCBjbGFzcz0icm90dWxvIiB4PSI4MDYiIHk9Ijg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5hbyB2aXZvPC90ZXh0Pgo8L3N2Zz4K" alt="Arquitetura da plataforma" /></p>
+<p>Uma leitura faz este caminho:</p>
+<ol type="1">
+<li><strong>O nó mede.</strong> Um ESP32 com um sensor lê o valor e, com
+a biblioteca-padrão <strong>CriaTelemetria</strong>, publica uma
+mensagem no broker MQTT pelo Wi-Fi. Cada mensagem leva o valor, a
+unidade, um número de sequência (<code>seq</code>), o número da vez que
+o nó ligou (<code>boot</code>) e a hora da medida (<code>t</code>).</li>
+<li><strong>O broker repassa.</strong> O <strong>Mosquitto</strong>, no
+servidor da escola, recebe a mensagem e a entrega a quem assinou o
+tópico. Cada projeto tem um usuário e uma senha, e só publica dentro do
+próprio projeto.</li>
+<li><strong>O servidor guarda e mostra.</strong> O servidor da
+telemetria, em <strong>Node.js</strong>, assina todos os tópicos,
+confere cada mensagem contra o catálogo, grava no
+<strong>InfluxDB</strong> e repassa ao painel na hora, pelo
+Socket.IO.</li>
+<li><strong>O painel exibe.</strong> Qualquer navegador da rede abre o
+painel, vê os nós, os últimos valores, os gráficos da última hora e
+baixa os dados em CSV.</li>
+</ol>
+<p>As placas sem rede (Arduino Uno, ou uma ESP32 sem Wi-Fi configurado)
+usam um segundo caminho: escrevem as leituras pela <strong>USB</strong>,
+e um programa no notebook, o <strong>gateway</strong>, as envia ao
+servidor por HTTP com a senha do projeto. É por esse caminho que começam
+os testes deste guia.</p>
+<p>O endereço de cada medida é um tópico com quatro partes,
+<code>cria/{projeto}/{no}/{grandeza}</code>, por exemplo
+<code>cria/teste/no11/temperatura</code>. As regras dos nomes, as
+unidades e os projetos registrados estão no <a href="../mqtt/catalogo-topicos.md">catálogo de tópicos</a>. O projeto
+<code>teste</code> é livre para as oficinas e para os testes deste
+guia.</p>
+<h2 id="o-que-você-precisa">O que você precisa</h2>
+<p><strong>Material para os testes:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Observação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Placa <strong>ESP32 DevKit V1</strong> (30 pinos)</td>
+<td>Qualquer ESP32 com chip USB CP210x ou CH340 serve</td>
+</tr>
+<tr>
+<td>Cabo USB <strong>de dados</strong></td>
+<td>Cabo só de carga não serve: a placa acende, mas não aparece no
+computador</td>
+</tr>
+<tr>
+<td>Sensor <strong>DS18B20</strong> à prova d’água</td>
+<td>Três fios: vermelho, preto e amarelo</td>
+</tr>
+<tr>
+<td>Resistor de <strong>4,7 kΩ</strong></td>
+<td>Entre o fio amarelo e o vermelho. Os módulos com plaquinha já
+trazem</td>
+</tr>
+<tr>
+<td>Protoboard e jumpers</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Computadores:</strong></p>
+<ul>
+<li><strong>O servidor da escola</strong>, com Ubuntu 22.04 ou mais novo
+(ou Debian 12), ligado à rede da telemetria e, de preferência, a um
+no-break. Para testar em casa, um Ubuntu no WSL do Windows serve, como
+foi feito aqui (seção 2.4).</li>
+<li><strong>O computador de quem programa as placas</strong>, com
+Windows 10 ou 11, ou Linux. Nele vão a Arduino IDE, o Python e uma cópia
+do repositório.</li>
+</ul>
+<p><strong>Com o coordenador:</strong> o endereço IP do servidor, a
+senha MQTT do projeto <code>teste</code> e, para o Wi-Fi, o nome e a
+senha da rede da telemetria.</p>
+<h1 id="parte-i-instalar">Parte I: instalar</h1>
+<h2 id="1-baixar-o-repositório">1. Baixar o repositório</h2>
+<p>Todo o software fica no repositório <a href="https://github.com/ErlyAquino/telemetria-cria">telemetria-cria</a>.
+Ele precisa ser clonado no servidor e no computador de desenvolvimento.
+O passo a passo do Git, da conta no GitHub e do fluxo de trabalho está
+no <a href="00-conta-github-e-git.md">Tutorial 00</a>; em resumo:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/ErlyAquino/telemetria-cria.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> telemetria-cria</span></code></pre></div>
+<p>No Windows, instale antes o <a href="https://git-scm.com/download/win">Git para Windows</a> e use o
+<strong>Git Bash</strong> ou o PowerShell.</p>
+<h2 id="2-o-servidor-linux">2. O servidor (Linux)</h2>
+<h3 id="21-o-servidor-base-broker-hora-e-banco">2.1 O servidor base:
+broker, hora e banco</h3>
+<p>No servidor, na pasta do repositório, com o computador ligado à
+internet durante a instalação:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> bash servidor/base/instalar.sh</span></code></pre></div>
+<p>O script instala e configura três programas que ficam ligados o tempo
+todo:</p>
+<table>
+<thead>
+<tr>
+<th>Programa</th>
+<th>O que faz</th>
+<th>Porta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mosquitto</strong></td>
+<td>Broker MQTT: recebe o que os nós publicam e repassa a quem
+assinou</td>
+<td>1883</td>
+</tr>
+<tr>
+<td><strong>chrony</strong></td>
+<td>Servidor de hora (NTP): acerta o relógio dos nós sem internet</td>
+<td>123</td>
+</tr>
+<tr>
+<td><strong>InfluxDB 2</strong></td>
+<td>Banco de séries temporais: guarda cada leitura com a hora</td>
+<td>8086</td>
+</tr>
+</tbody>
+</table>
+<p>Durante a instalação ele pede as senhas: uma para cada usuário MQTT
+(<code>servidor</code>, <code>ar</code>, <code>horta</code> e
+<code>teste</code>) e uma para o administrador do InfluxDB. Anote-as num
+lugar seguro, fora do repositório. As senhas aceitam letras sem acento,
+algarismos e os sinais <code>. _ @ % + = : , ! ? -</code>.</p>
+<p>No fim, o script faz um autoteste e escreve <code>OK</code> ou
+<code>FALHA</code> em três conferências: o servidor recebe o que o
+projeto <code>teste</code> publica, o usuário <code>teste</code> não
+consegue publicar no projeto <code>horta</code>, e o broker recusa quem
+chega sem senha. Ele também grava no <code>.env</code> da raiz do
+repositório as senhas do <code>servidor</code> e do <code>teste</code> e
+o token do banco. Esse arquivo só o dono pode ler e nunca vai para o
+GitHub.</p>
+<p>Depois de instalar:</p>
+<ul>
+<li><strong>Reserve um IP fixo para o servidor</strong> no roteador da
+telemetria. É esse IP que vai nos nós, no gateway e nos
+navegadores.</li>
+<li><strong>Guarde uma cópia de
+<code>/root/.influxdbv2/configs</code></strong> fora do servidor: é o
+único lugar com o token de administrador do banco.</li>
+</ul>
+<p>Tudo isso, com os comandos de manutenção e o uso do nó simulado, está
+em <a href="../servidor/base/README.md"><code>servidor/base/README.md</code></a>.</p>
+<h3 id="22-o-servidor-da-telemetria-e-o-painel">2.2 O servidor da
+telemetria e o painel</h3>
+<p>O servidor da telemetria é um programa em Node.js. Precisa do
+<strong>Node.js 22</strong> ou mais novo: no Ubuntu, instale pelo site
+<a href="https://nodejs.org/">nodejs.org</a> (a versão LTS), porque a do
+<code>apt</code> costuma ser antiga. Depois, na pasta
+<code>servidor/</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> servidor</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div>
+<p>O terminal mostra algo assim:</p>
+<pre><code>InfluxDB: respondendo em http://localhost:8086
+Painel: http://localhost:3000  (saúde em /saude)
+MQTT: conectado a localhost:1883 como &quot;servidor&quot; (sessão nova)</code></pre>
+<p>Abra <code>http://IP_DO_SERVIDOR:3000</code> em qualquer computador
+ou celular da rede. Enquanto nenhum nó publicou, o painel diz “Nenhum nó
+publicou ainda”. Para ver leituras sem placa nenhuma, rode em outro
+terminal o nó simulado: <code>npm run simulador</code>.</p>
+<p>O <code>npm start</code> precisa ficar rodando. Num servidor de
+verdade ele deve subir sozinho quando o computador liga, como serviço do
+sistema; esse serviço está sendo preparado e será documentado em
+<code>servidor/base/README.md</code>. Até lá, deixe o terminal aberto ou
+use um <code>tmux</code>.</p>
+<p>As rotas, os eventos e as variáveis do <code>.env</code> estão em <a href="../servidor/README.md"><code>servidor/README.md</code></a>.</p>
+<h3 id="23-backup-do-banco">2.3 Backup do banco</h3>
+<p>O banco guarda todas as leituras do projeto. O backup diário num
+cartão microSD, e o teste de restauração, são instalados com:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> bash servidor/base/backup/instalar-backup.sh /mnt/backup-telemetria</span></code></pre></div>
+<p>O passo a passo, inclusive a formatação do cartão, está em <a href="../servidor/base/backup/README.md"><code>servidor/base/backup/README.md</code></a>.
+Um backup só vale depois de restaurado numa cópia: faça o teste a cada
+quinzena.</p>
+<h3 id="24-um-servidor-de-teste-no-windows-pelo-wsl">2.4 Um servidor de
+teste no Windows, pelo WSL</h3>
+<p>Para testar em casa, sem o servidor da escola, o Ubuntu do
+<strong>WSL</strong> (Subsistema do Windows para Linux) serve como
+servidor. Foi assim que os testes deste guia foram feitos.</p>
+<ol type="1">
+<li>Instale o WSL com o Ubuntu: num PowerShell como administrador,
+<code>wsl --install -d Ubuntu</code>, e reinicie.</li>
+<li>Dentro do Ubuntu, clone o repositório e siga as seções 2.1 e
+2.2.</li>
+<li>Descubra o IP do Ubuntu com <code>hostname -I</code> (por exemplo,
+<code>172.30.133.181</code>). É esse endereço que o gateway e o
+navegador do Windows usam. Ele pode mudar quando o WSL reinicia.</li>
+</ol>
+<p>Três cuidados:</p>
+<ul>
+<li>O WSL desliga o Ubuntu alguns segundos depois de fechar o último
+terminal. Deixe um terminal do Ubuntu aberto durante os testes.</li>
+<li>Os nós ESP32 pelo Wi-Fi <strong>não alcançam</strong> o Ubuntu do
+WSL, porque ele fica atrás de uma rede interna do Windows (NAT). O WSL
+serve para o caminho da USB (Parte II) e para o painel; o nó pelo Wi-Fi
+(Parte III) precisa de um servidor Linux na mesma rede que a placa.</li>
+<li>Se o Windows tiver um Mosquitto próprio instalado, ele atende na
+porta 1883 do <code>localhost</code> e aceita conexão sem senha. Um
+teste que erre o endereço publica nele sem dar erro. Use sempre o IP do
+Ubuntu.</li>
+</ul>
+<h2 id="3-o-computador-de-desenvolvimento">3. O computador de
+desenvolvimento</h2>
+<p>É o computador de quem grava as placas e roda o gateway. Precisa de
+quatro coisas: o repositório (seção 1), a Arduino IDE, o Python com a
+biblioteca <code>pyserial</code> e o acesso à porta serial.</p>
+<h3 id="31-arduino-ide-2">3.1 Arduino IDE 2</h3>
+<ol type="1">
+<li><p>Instale a <strong>Arduino IDE 2</strong> pelo site <a href="https://www.arduino.cc/en/software">arduino.cc/en/software</a>. No
+Windows, prefira o instalador <code>.exe</code>; no Linux, o AppImage ou
+o pacote da sua distribuição.</p></li>
+<li><p><strong>Núcleo do ESP32.</strong> Em <em>Arquivo →
+Preferências</em>, no campo <em>URLs adicionais do Gerenciador de
+Placas</em>, cole:</p>
+<pre><code>https://espressif.github.io/arduino-esp32/package_esp32_index.json</code></pre>
+<p>Em <em>Ferramentas → Placa → Gerenciador de Placas</em>, procure
+<strong>esp32</strong> e instale o da <strong>Espressif
+Systems</strong>, versão 3 ou mais nova. O download é grande (centenas
+de MB).</p></li>
+<li><p><strong>Bibliotecas.</strong> Em <em>Ferramentas → Gerenciar
+Bibliotecas</em>, instale:</p>
+<ul>
+<li><strong>OneWire</strong>, de Jim Studt e outros;</li>
+<li><strong>DallasTemperature</strong>, de Miles Burton;</li>
+<li><strong>PubSubClient</strong>, de Nick O’Leary (para o Wi-Fi, na
+Parte III).</li>
+</ul></li>
+<li><p><strong>A biblioteca da rede.</strong> Veja em <em>Arquivo →
+Preferências</em> o <em>Local do sketchbook</em>. Copie a pasta
+<code>firmware/biblioteca-cria</code> do repositório para a subpasta
+<code>libraries</code> desse local e reinicie a IDE. Ela aparece como
+<strong>CriaTelemetria</strong>, com os exemplos em <em>Arquivo →
+Exemplos → CriaTelemetria</em>. No Windows com OneDrive, o local pode
+não ser <code>Documentos\Arduino</code>: use o que a IDE
+mostrar.</p></li>
+</ol>
+<p>Quem prefere a linha de comando pode usar o
+<strong>arduino-cli</strong> no lugar da IDE; os comandos de compilação
+aparecem nos READMEs de cada nó.</p>
+<h3 id="32-python-e-pyserial">3.2 Python e pyserial</h3>
+<p>O gateway e a ferramenta de calibração são em Python e usam uma
+biblioteca só, a <strong>pyserial</strong>.</p>
+<ul>
+<li><p><strong>Windows:</strong> instale o Python 3 pelo site <a href="https://www.python.org/downloads/">python.org</a>, marcando a
+opção <strong>Add python.exe to PATH</strong>. Depois, na pasta do
+repositório:</p>
+<pre><code>py -m pip install -r gateway/requirements.txt</code></pre></li>
+<li><p><strong>Ubuntu ou Debian:</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install python3-serial</span></code></pre></div></li>
+</ul>
+<h3 id="33-a-porta-serial">3.3 A porta serial</h3>
+<p>Ligue a placa no USB. Ela precisa aparecer como uma porta serial:</p>
+<ul>
+<li><p><strong>Windows:</strong> abra o <em>Gerenciador de
+Dispositivos</em> e procure em <em>Portas (COM e LPT)</em> a porta nova,
+por exemplo <code>COM5</code>. Se nada aparecer, instale o driver do
+chip USB da placa, escrito perto do conector: <strong>CP210x</strong>
+(Silicon Labs) ou <strong>CH340</strong> (WCH). Os computadores do
+laboratório podem não ter internet: baixe o instalador antes e leve-o
+num pendrive.</p></li>
+<li><p><strong>Linux:</strong> a porta é <code>/dev/ttyUSB0</code>
+(CP210x e CH340) ou <code>/dev/ttyACM0</code> (Arduino Uno original). Dê
+ao seu usuário permissão para usá-la e entre de novo na sessão:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> dialout <span class="va">$USER</span></span></code></pre></div>
+<p>O comando <code>ls /dev/serial/by-id/</code> lista as placas ligadas
+pelo nome; esse caminho também serve como porta. No Ubuntu, o pacote
+<code>brltty</code> toma as portas dos clones com CH340; se a porta
+aparecer e sumir, remova-o com
+<code>sudo apt remove brltty</code>.</p></li>
+</ul>
+<blockquote>
+<p><strong>A porta é de um programa de cada vez.</strong> O Monitor
+Serial da Arduino IDE, o gateway e a ferramenta de calibração não podem
+usar a mesma porta ao mesmo tempo. Feche o Monitor Serial antes de rodar
+os programas do notebook.</p>
+</blockquote>
+<h1 id="parte-ii-os-primeiros-testes-com-o-notebook-pela-usb">Parte II:
+os primeiros testes com o notebook pela USB</h1>
+<h2 id="4-montar-o-ds18b20">4. Montar o DS18B20</h2>
+<p><img role="img" aria-label="Ligação do DS18B20 na ESP32" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzYwIiBmb250LWZhbWlseT0iU2Vnb2UgVUksIFJvYm90bywgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiPgogIDx0aXRsZT5MaWdhw6fDo28gZG8gRFMxOEIyMCDDoCBwcm92YSBkJ8OhZ3VhIG5hIEVTUDMyPC90aXRsZT4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLnBsYWNhIHsgZmlsbDogIzFiM2E1YzsgfQogICAgICAucGlubyB7IGZpbGw6ICNkOWE1MjA7IHN0cm9rZTogIzdhNWEwYTsgc3Ryb2tlLXdpZHRoOiAxOyB9CiAgICAgIC50ZXh0by1wbGFjYSB7IGZpbGw6ICNmZmZmZmY7IGZvbnQtd2VpZ2h0OiA2MDA7IH0KICAgICAgLnJvdHVsbyB7IGZpbGw6ICMxZDI3MzM7IH0KICAgICAgLmRldGFsaGUgeyBmaWxsOiAjNWI2YjdjOyBmb250LXNpemU6IDEycHg7IH0KICAgICAgLnZlcm1lbGhvIHsgc3Ryb2tlOiAjYzYyODI4OyBzdHJva2Utd2lkdGg6IDQ7IGZpbGw6IG5vbmU7IHN0cm9rZS1saW5lY2FwOiByb3VuZDsgfQogICAgICAucHJldG8geyBzdHJva2U6ICMyMTIxMjE7IHN0cm9rZS13aWR0aDogNDsgZmlsbDogbm9uZTsgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kOyB9CiAgICAgIC5hbWFyZWxvIHsgc3Ryb2tlOiAjZTBhODAwOyBzdHJva2Utd2lkdGg6IDQ7IGZpbGw6IG5vbmU7IHN0cm9rZS1saW5lY2FwOiByb3VuZDsgfQogICAgICAucmVzaXN0b3IgeyBmaWxsOiAjZThkM2E4OyBzdHJva2U6ICM2YjU0Mjc7IHN0cm9rZS13aWR0aDogMS41OyB9CiAgICAgIC5mYWl4YSB7IHN0cm9rZS13aWR0aDogMzsgfQogICAgICAuc29uZGEgeyBmaWxsOiAjYjBiZWM1OyBzdHJva2U6ICM2MDdkOGI7IHN0cm9rZS13aWR0aDogMS41OyB9CiAgICAgIC5jYWJvIHsgZmlsbDogIzM3NDc0ZjsgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CgogIDwhLS0gU29uZGEgZG8gRFMxOEIyMCAtLT4KICA8cmVjdCBjbGFzcz0ic29uZGEiIHg9IjMwIiB5PSIxNTAiIHdpZHRoPSIxMTAiIGhlaWdodD0iMzQiIHJ4PSIxNiIvPgogIDx0ZXh0IGNsYXNzPSJyb3R1bG8iIHg9Ijg1IiB5PSIyMTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRTMThCMjA8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9Ijg1IiB5PSIyMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPnNvbmRhIGlub3g8L3RleHQ+CiAgPHJlY3QgY2xhc3M9ImNhYm8iIHg9IjE0MCIgeT0iMTU4IiB3aWR0aD0iNzAiIGhlaWdodD0iMTgiIHJ4PSI0Ii8+CgogIDwhLS0gRmlvcyBzYWluZG8gZG8gY2FibyAtLT4KICA8cGF0aCBjbGFzcz0idmVybWVsaG8iIGQ9Ik0yMTAsMTYxIEMgMjYwLDE2MSAyNjAsOTAgMzMwLDkwIEwgNjQwLDkwIi8+CiAgPHBhdGggY2xhc3M9ImFtYXJlbG8iIGQ9Ik0yMTAsMTY3IEMgMjgwLDE2NyAzMDAsMTcwIDM4MCwxNzAgTCA2NDAsMTcwIi8+CiAgPHBhdGggY2xhc3M9InByZXRvIiBkPSJNMjEwLDE3MyBDIDI2MCwxNzMgMjYwLDI1MCAzMzAsMjUwIEwgNjQwLDI1MCIvPgoKICA8dGV4dCBjbGFzcz0icm90dWxvIiB4PSIzMDAiIHk9Ijc4Ij52ZXJtZWxobzogVkNDPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJyb3R1bG8iIHg9IjMwMCIgeT0iMTYwIj5hbWFyZWxvOiBkYWRvPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJyb3R1bG8iIHg9IjMwMCIgeT0iMjcyIj5wcmV0bzogR05EPC90ZXh0PgoKICA8IS0tIFJlc2lzdG9yIGRlIDQsNyBrzqkgZW50cmUgbyBkYWRvIGUgbyBWQ0MgLS0+CiAgPHBhdGggY2xhc3M9InZlcm1lbGhvIiBkPSJNNTAwLDkwIEw1MDAsMTA0IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjIuNSIvPgogIDxwYXRoIGNsYXNzPSJhbWFyZWxvIiBkPSJNNTAwLDE1NiBMNTAwLDE3MCIgc3R5bGU9InN0cm9rZS13aWR0aDoyLjUiLz4KICA8cmVjdCBjbGFzcz0icmVzaXN0b3IiIHg9IjQ5MCIgeT0iMTA0IiB3aWR0aD0iMjAiIGhlaWdodD0iNTIiIHJ4PSI2Ii8+CiAgPGxpbmUgY2xhc3M9ImZhaXhhIiB4MT0iNDkwIiB5MT0iMTE0IiB4Mj0iNTEwIiB5Mj0iMTE0IiBzdHJva2U9IiNmOWE4MjUiLz4KICA8bGluZSBjbGFzcz0iZmFpeGEiIHgxPSI0OTAiIHkxPSIxMjIiIHgyPSI1MTAiIHkyPSIxMjIiIHN0cm9rZT0iIzZhMWI5YSIvPgogIDxsaW5lIGNsYXNzPSJmYWl4YSIgeDE9IjQ5MCIgeTE9IjEzMCIgeDI9IjUxMCIgeTI9IjEzMCIgc3Ryb2tlPSIjYzYyODI4Ii8+CiAgPGxpbmUgY2xhc3M9ImZhaXhhIiB4MT0iNDkwIiB5MT0iMTQ2IiB4Mj0iNTEwIiB5Mj0iMTQ2IiBzdHJva2U9IiNjOWEyMjciLz4KICA8dGV4dCBjbGFzcz0icm90dWxvIiB4PSI1MjIiIHk9IjEyNiI+NCw3IGvOqTwvdGV4dD4KICA8dGV4dCBjbGFzcz0iZGV0YWxoZSIgeD0iNTIyIiB5PSIxNDQiPmVudHJlIG8gZGFkbyBlIG8gVkNDPC90ZXh0PgoKICA8IS0tIEVTUDMyIC0tPgogIDxyZWN0IGNsYXNzPSJwbGFjYSIgeD0iNjQwIiB5PSI0MCIgd2lkdGg9IjIzMCIgaGVpZ2h0PSIyNzAiIHJ4PSIxMCIvPgogIDx0ZXh0IGNsYXNzPSJ0ZXh0by1wbGFjYSIgeD0iNzU1IiB5PSIzMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVTUDMyIERldktpdCBWMTwvdGV4dD4KICA8cmVjdCBjbGFzcz0icGlubyIgeD0iNjMyIiB5PSI4MiIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE2IiByeD0iMiIvPgogIDxyZWN0IGNsYXNzPSJwaW5vIiB4PSI2MzIiIHk9IjE2MiIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE2IiByeD0iMiIvPgogIDxyZWN0IGNsYXNzPSJwaW5vIiB4PSI2MzIiIHk9IjI0MiIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE2IiByeD0iMiIvPgogIDx0ZXh0IGNsYXNzPSJ0ZXh0by1wbGFjYSIgeD0iNjYyIiB5PSI5NSI+M1YzPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0ZXh0by1wbGFjYSIgeD0iNjYyIiB5PSIxNzUiPkdQSU8gNCAoRDQpPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0ZXh0by1wbGFjYSIgeD0iNjYyIiB5PSIyNTUiPkdORDwvdGV4dD4KCiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjMwIiB5PSIzMjAiPk5vIEFyZHVpbm8gVW5vOiB2ZXJtZWxobyBubyA1ViwgcHJldG8gbm8gR05ELCBhbWFyZWxvIG5vIHBpbm8gZGlnaXRhbCAyLCBjb20gbyBtZXNtbyByZXNpc3Rvci48L3RleHQ+CiAgPHRleHQgY2xhc3M9ImRldGFsaGUiIHg9IjMwIiB5PSIzNDAiPk3Ds2R1bG9zIGRvIERTMThCMjAgY29tIHBsYXF1aW5oYSBlIHRyw6pzIHBpbm9zIGrDoSB0cmF6ZW0gbyByZXNpc3Rvci48L3RleHQ+Cjwvc3ZnPgo=" alt="Ligação do DS18B20 na ESP32" /></p>
+<table>
+<thead>
+<tr>
+<th>Fio do DS18B20</th>
+<th>Liga em</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vermelho (VCC)</td>
+<td>3V3 da ESP32</td>
+</tr>
+<tr>
+<td>Preto (GND)</td>
+<td>GND da ESP32</td>
+</tr>
+<tr>
+<td>Amarelo (dado)</td>
+<td>GPIO 4 (D4), com o resistor de 4,7 kΩ entre o amarelo e o
+vermelho</td>
+</tr>
+</tbody>
+</table>
+<p>No Arduino Uno: vermelho no 5V, preto no GND, amarelo no pino digital
+2, com o mesmo resistor. Se o sensor vier num módulo com plaquinha e
+três pinos, o resistor já está nele.</p>
+<p>Dois sinais de montagem errada, que o programa já reconhece e avisa:
+<strong>−127 °C</strong> é sensor desconectado ou sem o resistor;
+<strong>85 °C</strong> é o valor de partida do chip, antes da primeira
+conversão.</p>
+<h2 id="5-teste-1-a-placa-escrevendo-as-leituras">5. Teste 1: a placa
+escrevendo as leituras</h2>
+<p>O primeiro teste não precisa de servidor nem de rede. A placa recebe
+o programa <code>firmware/arduino-usb</code>, que lê o DS18B20 a cada 10
+s e escreve uma linha JSON por leitura na USB.</p>
+<ol type="1">
+<li>Na Arduino IDE, abra
+<code>firmware/arduino-usb/arduino-usb.ino</code>.</li>
+<li>Escolha um nó livre. Abra o painel e veja quais nós do projeto
+<code>teste</code> já existem; troque a linha
+<code>const char* NO = &quot;no1&quot;;</code> por um número que não apareça ali.
+Neste guia, a placa foi gravada como <code>no11</code>.</li>
+<li>Em <em>Ferramentas → Placa</em>, escolha <strong>DOIT ESP32 DEVKIT
+V1</strong> (ou <em>Arduino Uno</em>, se for o caso) e a porta da
+placa.</li>
+<li>Clique em <em>Carregar</em>. Se a IDE ficar parada em
+<code>Connecting...</code>, segure o botão <strong>BOOT</strong> da
+placa até a gravação começar.</li>
+<li>Abra <em>Ferramentas → Monitor Serial</em> a <strong>115200</strong>
+baud.</li>
+</ol>
+<p>O Monitor Serial mostra a mensagem de partida e, a cada 10 s, uma
+leitura:</p>
+<pre><code>telemetria: no11
+{&quot;no&quot;:&quot;no11&quot;,&quot;grandeza&quot;:&quot;temperatura&quot;,&quot;valor&quot;:32.88,&quot;unidade&quot;:&quot;C&quot;,&quot;seq&quot;:1}
+{&quot;no&quot;:&quot;no11&quot;,&quot;grandeza&quot;:&quot;temperatura&quot;,&quot;valor&quot;:32.81,&quot;unidade&quot;:&quot;C&quot;,&quot;seq&quot;:2}
+{&quot;no&quot;:&quot;no11&quot;,&quot;grandeza&quot;:&quot;temperatura&quot;,&quot;valor&quot;:32.81,&quot;unidade&quot;:&quot;C&quot;,&quot;seq&quot;:3}</code></pre>
+<p>Cada linha traz o nó, a grandeza, o valor, a unidade e o
+<code>seq</code>, que cresce de 1 em 1 e recomeça em 1 quando a placa
+reinicia. Se aparecer <code>DS18B20 sem leitura valida</code>, confira a
+fiação e o resistor.</p>
+<p>Esse programa serve para qualquer sensor: para trocar o DS18B20 por
+outro, mude só a leitura dentro do <code>loop()</code> e chame
+<code>publicar()</code> com a grandeza e a unidade do catálogo.</p>
+<h2 id="6-teste-2-o-gateway-enviando-ao-servidor">6. Teste 2: o gateway
+enviando ao servidor</h2>
+<p>Agora a leitura vai da placa ao painel. O <strong>gateway</strong>
+(<code>gateway/gateway.py</code>) lê a porta serial, acrescenta a hora e
+o <code>boot</code> a cada leitura e envia tudo ao servidor por HTTP,
+com o usuário e a senha do projeto.</p>
+<h3 id="61-configurar">6.1 Configurar</h3>
+<p>Copie o <code>.env.example</code> da raiz do repositório para
+<code>.env</code>, na mesma pasta, e preencha quatro linhas:</p>
+<pre><code>PORTA_SERIAL=COM5
+SERVIDOR_URL=http://172.30.133.181:3000
+GATEWAY_PROJETO=teste
+GATEWAY_SENHA=a senha MQTT do projeto teste</code></pre>
+<p>No Linux, a porta é <code>/dev/ttyUSB0</code>. O endereço é o IP do
+servidor. A senha do projeto <code>teste</code> fica no
+<code>.env</code> do servidor, em <code>SIMULADOR_SENHA</code>; peça a
+quem cuida dele.</p>
+<h3 id="62-rodar">6.2 Rodar</h3>
+<p>Feche o Monitor Serial e, na raiz do repositório:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> gateway/gateway.py          <span class="co"># Windows</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> gateway/gateway.py     <span class="co"># Linux</span></span></code></pre></div>
+<p>O gateway abre a porta, mostra o que chega da placa e confirma cada
+envio:</p>
+<pre><code>01:11:42  gateway do projeto &quot;teste&quot; enviando para http://172.30.133.181:3000. Ctrl+C encerra.
+01:11:42  porta COM5 aberta a 115200 baud; esperando leituras.
+01:11:42  placa: telemetria: no11
+01:11:43  1 leitura enviada (no11 boot 1); seq até 1.
+01:11:53  1 leitura enviada (no11 boot 1); seq até 2.
+01:12:03  1 leitura enviada (no11 boot 1); seq até 3.
+01:12:13  1 leitura enviada (no11 boot 1); seq até 4.</code></pre>
+<p>As linhas <code>placa: ...</code> são as mensagens da própria placa,
+inclusive as de partida da ESP32. O <code>boot</code> é criado pelo
+gateway: ele sobe de 1 cada vez que o <code>seq</code> da placa volta, e
+fica guardado em <code>gateway/.estado/</code>.</p>
+<h3 id="63-ver-no-painel">6.3 Ver no painel</h3>
+<p>Abra <code>http://IP_DO_SERVIDOR:3000</code>. O cartão
+<code>teste/no11</code> aparece <strong>on-line</strong>, com o último
+valor, o gráfico da última hora e a perda estimada:</p>
+<p><img role="img" aria-label="O nó no11 no painel, alimentado pelo gateway" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAACyCAIAAAA1VDzqAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAACBlUlEQVR4nO2dBbxcxfXHZ+bq+j6XuBKFYMG1QAuFlra0FCtuFaCUQqlgLbT88eIUd7fgkhAgBEiQICFKPM/2vfW9PvP/zMzuffss5IV45vvZbHbvXpk7e9+d355z5hyYL5hAIBAIBAKBQLD+QOtxXwKBQCAQCAQCIbAEAoFAIBAI1j9CYAkEAoFAIBCsZ4TAEggEAoFAIFjPCIElEAgEAoFAsJ4RAksgEAgEAoFgPSMElkAgEAgEAsF6Ru7rAwghxhhCiBDir13XJYTYtk0IAQAQBn/B11/fbRMIBAKBQCDYqJSrGsjgL1RVhRDKsowQIoRgjAkh/HX/BFY3deV5Ht8XP0C3o9IdyX3uSiAQCAQCgWCLwHVdX2aV25K4LvI8j7r/GJjRl4FpTQKLyzSurjzP48cIBoMldUVXE3YrgUAgEAgEWw2KIvEX3DJFSFFs5XI5QggXWNwCxd9KUnH9bqzJ7IQQjdDyPM91XQihoigSpRdJRYhQWgKBQCAQCLZ4SEnSlD3Tf7quc0XERRE3Yq1hP31+5jsHHcfhAk3XdU1TerYD46LKEwgEAoFAINii6UvYaJqi67okSZ7nOY7jR1L1tZ8+P+AuQO4fJIQwdyFdjnGXA0MIEKIPgUAgEAgEgi0dxFSN75fjegvj4keyLHPPIGaL1jDDr08XIQ/s4n5HhFC5i7HXvQkjlkAgEAgEgi0d2EPkQNgpciRJ4tFXPusS5O7PPOTuQkKAbTuKpkDujeyMrkf0X8mIhUuWMbYOLhrJ+J5gaUmXt4D0ZkiDgIbxs8071yfF3QNc2sTfsvhB2UL/jH3tV2pN6RCkbCW2mr+TUvvLPis1iCtNu6z7vNImkt8znQfErKnF7oFdDoT5UQhAHntB90wAgWV9yHbksc34p6wT+FZdW1h2mr11Zvd1ei7hC/urk8v347fqu1vCTnNt1l/7hq1D49ewn77a1mu/9bqTtVltndvmsxn+rik/d1xqsERKV2/Z5b3ez/f7909/Q0k3w/4XCDYf4PfYlqzTXRp2HSj5Z4SHUpWNp/z+U34vKm+qx0doSHUVHdbZaAUgMC1HVRXuFuSh7nxqYb+D3CVJcl1XVVXTNAkhkgQxBoqm8JsmvV0ClyotiPym+fdT3mgJOCVJI1EtQddhS4hW7A+qIBx22ho7fxcDhAjdIaTLLX4ogEP++hA6hK4me0Dj3cc0iusBuVwelWQQBgQDiCCTgLxtrNPYvvgdv/jN0NUwpFKpdIPGEvDYpwqxPWxZUiRoQQ8CKDumpKgZ4CIgRYCEALLYVmpxIMH0DQKYnrPFvKkSADIGkkQPShdgJDGl6HjAk4EEAXLLBiEMIVNyCHmuwr4gLBEbuyGsAMsBugYlgF1i2lZA02n3s3g813GQTGU1ANjxsCwhDFC+kI8EQ+wiK11InReR3znAYxeYxPoP9jf3bJmzGPDAwD5mPJRf7nQdfyv/G/EbxiQr6zcEqdRnDUMyxpj+bqBXvych+g2XHYc3vt+5czulfmknpfYU9+bv078wWPP4KSL+26C3v9LixVh6S7+XtXju1p5uYEAQhPQZQH///XXPd/sl0u1HR1+boP49098O9KXH/uZlACSv+NcMpeKfIe/bdThf0s/1171/+H7YHakvxOQegYDTXeV0+4PiYxAXDOVLelJaxx+4ewigzr/0Xkac0sgOEdu/x27RfCClQwkiErVoyGy3XSwOpR+BdBskUesI8SRAX0CMXQcrqqxrikfHcsjNT4qi2Lbdl7r6jlmEa4I2hQ2S9EbW2WW+jindQ10mZdg9lQDWVKY/SqMsoFqiuDn7wN8b35bZhrqsT4c39o4KrK6HpV9G1xEOU8lKZQQfC8u+Ht+uxju0dCL+AiqQ+NdPMJQlCQUBAXk7H9KCqqLkbQOougeATSzgEEdVCUCYYKtghjWVShyAPORBYBGAPaCwr1aWCJCpPQs67JrDwGEyzPMgKjCBrHoIEmAiah6TgaRJCOfypm2BykqAFKYl2SQDApAEgwG9dGmwPGSKwiyY2DAMPRDABNueHQqGyr6zLkMa27Czw3l8XemDdQqp87+jMjHyHWsWTZjdxvguf3W2ZSmKBJFMdQ9LQELd1Uxd9dhkbbTCd1LS4Z1vu+3TbzDs1tzOVYu/qooXXtcWrvl5De3nt6eyZ6aP1/Uce7ZqzbvC/XsuCXquRovG19IDs/b7gp6sn/Ndf/1DyvqH9N0/a77IBQIB4H+J3e/qZUt6/vXDrnfOtfhL5+YS3z3UaTdhf8v0I/+3K9UDuOyeUzIGlW+IqcHCs6l9BUr8Jxo1WMnIMWwlqPbr/NdFYJV+QpZ8kiWNxUceX7EUz5xbTfw7Uc8XxY7o9ccgkzpdRAHdIf9VWr5XRHUMNzb0/rX4K7O2FtcsPyfe7t72QICHiW3DkB7SQu3ZRCAcT6VS9778jOU6gZyLPGjrKpIlxQbQcx3H8hBwEfYQAdAmkGBmwZJcIFHLFRNYCGGECXIRwLIjEYgKClU7cRNCAgoKNY7R78bBYU8ePW7s9gfuFQxFMgWzOhiRAXIdr5ilg3pxCUSIG7GYgUdyHE8PAASZAbPL19uzY7gF0P+AWyC+N2sedboqcmYk6LZGl2aoqgqoe5rn1e0SC9iDdRlNudF4bUbKModydwfyd7Fe5oCUSyLeoHXebbcNv3M//TgQlU+9fq1d3vIbHF6v57v++qfbhn1ZsIS6Egi+4w8CMb3S4x7iL+lpxPL/+kr3kK5b9nbTKJmrO100xUAkbt8quxcxTxk3XPV9d6CfyJLMVyPAc1ysSgqAQO4tR9X6FFjFoa+L57PomiNlqrBswF4jfYysZeKs12+NyoKiN6LsRySkbomi8OpxYP6LuWhvZJ6Kboax8v3QXRXTXhCUTKYrKis7WpNV4ToISFWk6u233pgx84Nf/e60YCTcKEdkiNLYdTwcAqqmyB6AHsAuFXyEeTOLMxIkeuEUJ2K6ADnUrelJAKnUMYgM9oM+yjxiFvUY0u1ML18lRb5c8PVd9987YrvRxxx0JA/VwoRgeu3QFGWlhK8lCE3UQb2tnhvQqB0LFa/XTk9u2frFj7ou2fgzQnuO98Wvl30LErNdSY7jcFnZW1a3tXR1rWVL/J8JvXUIKb9l9HLE7naNXhTk1k0pYrJ0L+z82+oe0Vb2u3Ptdy4QCLYkUB++Ee7K720LvryXj77z939pFOgMAGcaq3jjKR6u6LJie0PMyk4NFEWnXKfRhrBQEASgYdsYuLoegEr3NFXr/4ble0dLzWVOAGp262K+YvZ/LnVK45DfZeWmvC6jVMnc5b+m+k/uNBl0HdWKYqoYz0O1C6SBUzxynDenFNtWMv3xiHLSsz2l6Cu2d0w9d/wdhPGqymQuVzWgwfHctnTbP674uxbQL/3HpTUVVVVKTIESAjCItIgS0On4T49AqNcXM7OSTIAM6ZdEh2VCnZt0t1QaAZc1W8JUYNFvkV9T/IXEpizEpAgEZMLo8Rf97gKA3RvuuqEt14EBkFWZzWgom7zAopQQkx2qqmICLMsBAOUymWJns+Dicng/lKYX+G6v/g9gsMej7xWL3xvEpUcf67MLg39iGAZvlaIoGGPLsnhI1oYceqntcY29UXZVr2/W2IXlh17nNnz/Pawd7FrvdKaWhb6Xm/C/yxLUS1M3bP8Q1P0hEAi+F4g/ysIE2Mw22DkMlT94fHopXAf7j/LNe3MuckNP6TOmj7xuH1NzA0JUJ/AZa6WPiuNjWYQywYZhudglAISCAU1XgOtQ20j/z3xdBoCiHuTNph7Toi2rbKf+rbW3+2GXwbg8Ar0ciT1KkqvzVzA1CHEjEzXn0EfxLNgkPvpNdMoF1qGd7WRKhM8PKHlnmauTfRMldyztbf9Y7ZlUMBLK2XmM4HPPPffb35691157YYBDUJcBcRzbsW1AQ+HobjzXlQFRAFRpJD9UgKICRQdIB1ADRKUfURGkARACUgCoEpAVuhrU6UNSAZSJpAMYpJ8i1yy4hmmZBQl4vzrk54cd8sNbbr6pPZPg3eURLCkyRAg7dKIAB7N5DZ7j8uireCzOe8iXv+zEXb7EP2XWFcXLdx3o71Z8Jkfn8X3Pd6fDvnOneiBg2cXLGiGkaZqiKKZp9tznOra/N93p3wt6uouL1xUbd7vNq+iyT7pC+Q+G9czmOXmts0NKLkBuc+124+jyU5RsuGtMIBBsFpCym4P/zAcAPhL440GXgamncurclsd3doo2X0gUYTrALbNmsSgTHgiEaVR48WbO12WmK36DwjQmCEAUCARdAhyPzcOjcThsKhrZkALLnwVGm+vH+BJqweIapSRM3JL7UC66DsuHmS6iq4u6Yo4vfyVuvmKBUVwGMcHLdZT/+5RrYRrZ1NmN5QbJshVpPSFc9nGx//m8zTK97LHlVKJ5AEWicQKgqgWmf/B+NBoN6QGPxQPJ7EuiszclJEMqm+gEQ0mWAFAJfeig+AgCWacLse5ijS3RgCubBvQcjYmtINVb9EEj/l0guUB2geZJUSUcUANRNRgBUhCA7QYOPWT/A2d/PMtwDQKwgx0asQUxLUspsWkEVF2hYtwSAAsWLiqdZrmWZ11U6ofS1eLPpVyXkcyf1tDz0cf6iNCfI2W/SIr978836bKx7WGPieGOjpRhWNwrXr7O9xpNu86V4GB2RfFYSLJ2G5bfQbpd5H11ztr3WM9H2VSSfp/uhnt0o2QHZiZhyHq0NwvW9zzfNa/f71Poatj+7odAsA3T259/6acy6PL36I/N/nO5qPKllddjE57ms7Rrflvmd2YuHvi92h9ZOn01DnsUfxGX6ZPiuiUrV5f2Q+Bg4Lh4VVMrBkCRVDri+GfS14ScvlkHAzhtWXEs4Q6xko2kbBIgH8JRuXmpOyXTETV/lexOpY9KyR2o+4zmX6ACqNN1KEMmp/wtyudVF5+ZOO28YxY7yAWQlKlj1rcsIZP/vTLnYMm4xfZgAVwgRsYpvPr6K8f+/OjKcIVhF/jmCBBZpvUZCfA84jnYo98XPSUCPBd4xbRYbOIjT6xR0nGW5eWyVs50HbYOZtMru11ZvKGWQ0xLZjpMR/J+e+zzyWeftrUnqDb0+GxKmsag9M0QhKBr0+UYgGeee7ato53v0d8rOy/aD/41Xeo2uqTcoLo2lP8o6dzbGjcore/nxfUbUPbTpewydqgjkQbXeR746MNZ77//fiGfD4XD3b5zvwHf03TRbSdrOCM/n1O3I3Ztw/p3MPn9vF7Od/3S2R7/Zxh7181F2Hm1kH6f73pfvzvlHojNqnMFgi2Ash/JXW9TRcdL2bM/KpU/ygfA8pQ+XEv4viZfnJWGTWoNKXOLUFwusBj8I6dTDHQZfIqHhjSIBxPgEHjPgw+0plIEAEXX+G0cu/32D67LAGDk0wDikkUEk1wGEPf5xx8bO2HXrE3balpUXRU6krzpHqanYtlFhZRM0+W859KpvEdIJpebOGGf6e98ZVrAsln/lOZ4c4mWzhkeoQNt3qTd1dzUssPESS89/4JnFiDAhoNtAlyWF8yzbRpcznOEAdDWkS7d4ulpXnvFFWNHjnr/o9m85cCmebauvuKKcRN2//SLlS7NuUC/Sc/I8a/Jdqgao7P2CP549qz9f3AgjdbDTkgLGXaeuvMANF3aYhplRWsGQZYZjE5O97JJALHtlb5s2wK2ASD+7PPPzj3vXKCgZ559+urrrrcxMR3suvS8sGny77HoWfVs2s/YhQGNZvsASEGKR8gPDj7w/Y9mUAsWcfjO6WxBfiXKNF4NIWRZ3uNPPH3YoYdXVVYB4s36+ONFy1s9AKZOe+edqW8B7C34eu5f/vYvaqljaSRoh7tFexIGIJ83+K8Gl8Xop1KZ4lfPtHxLS9vrr7/Jl5imTQBoZxdiSyJxwUUXrW5pnTt/wUOPPka1kVMUbMXaSgQYhsMb25FN8iNncvQsbBd43HFJ3Pnzv73//udNA9j068YSAnpAtm2walWTYRgHH/yD8sJProsvu+xfJ598xkUXXbKqqb1ccTqOk8vl+GpOmRe1F0pnappu+d9b3qDZZAsFnlMW2DSsjR8AmKa3aOGK5557xWI/bxwX2OxDjIFNv1C2Nxo9Rh33gNresqU+LP6Vzp//7aOPPsWXXHvtTbNmfZ7PFw/EbxGu61ps77kcFfRUUhP68H//tSezhH47uTvuuIsfsSS5iy3h/e+6ePr09849949nnnn2e+/OBAA89dTz55zzpxNPPI03ZunSlf/73330bzOZZufiFAx6xP/dfeeHH314882353KW5zHzaDHYj/UZ/VXBrwF+FN7PpQs+b91/5/8KxDKBjdnvo6I93nXvv+OO16e9xQNL/cZ6nlcoFC677LKzzjrrzDPPPv30M/904cVNre2WS9dauHjZpZdfyX5U8LWdlStXvvjii/6Z8huo5ZKOdO63vz+vYLpz5y166pkXHI8u5P3AohKLXzR/wTdsbU34n7I+LJ6L54Ebb7x15Ypm+jO391vrOko4gWBrovvfAPu1TOj9nJLO5KlJwQWLl7f87pw/n3za70494w9/vOBvGIAv5y8/+oSzjj/lD78540+zv1r2j39en3dAe5b+iRYs8H/X3bJo6QqXgIJh8qxVPG/TV/MX3/Pg43TsMIuhLwWXDiUOuzdamEoFAMDUqdOfe+NDG9BUSdyy0VGwXADSedYsgr0Cvbta7JZlUXsIvU+5AEgauO2ue/50wZ+D4Rg1Yska24DVw+l/RGZ/0zTgQChYyGdtNUajvkxTDgcBcTRVcVwvlcWhKoQ9r5BIBCsrDdOVdBkhaJo0nSa96xaMilhFLpcLh8ItLana+rjlFVauarIcb8HCxfvuP0GiqzmFTCoYrclmDSSpWkgKhwPcWqbrSkcqf9utdw4fPnLfffaSNMk0ckogShPtSAhjV1LY6UCUSaYjlVWVlTEPANMGdj79x7NPX71kQTQajVbWYAA62hOV8cg5J53w9ruzIo3bpfMmYZYxAIikaTwdaN4wA0qAed68ufPnHv2Lo6hVDUkWsHU1wHtDkuW2bEc0HJWhknONgBzIOrmYokgVwUI27URq6bESbY0VOqCzPl0cVPPIAcj9zRknZ0CceSLpUQuFnKIqWMJ5Ox+RA9jzJE1KZ1LheNymWpBmfGWmPmnc9hPfmPq2C7ywHrYcK6hooWiUjjyS5FmWpGmEEE2T9j/ggJraKkywBEl7e8II1MQKtXowEKL5X53R48Zc+s8dPABUSJWVYmRhKNKRdsIxhTggFAoYhqXrmiyjVCoTj0c9j9rGAgF6qfECTOl0NhaL6LrqARCORTEAlZWVV1xxRUDTJEniY5eiSPm8YVmWLMvRaNjIm4GgbmGQLbixSCxrZsJ6UA8oNKOoRHsgEtIRlMPhcDab1zQAJcV28kAOmTYIaqC+sWG/Aw6g0yQDtPNpYlUk33vP/T858sgddpzQlsg//dyzZ55+AiFUYvKgeEVRDMMIBAJrKMZJAwghkGVm76RpyOjfWyqXj4dDekDN5s1ISHdc7Ni2rtLTxy6dg6DpkmnaLS1tqgYKBRAM0l0ZJlZlpCr0YC729ECATnhUJMNwKysj/HCBAL1ELYvm9HIcJ5+3QyH1ggvOtW2iqtDzgISo3zmXywUCAU3TstlsOBIhBJi2KyuyhOgPLARBKmvFKyL5gh2PhxFC7e3tVVVVsowMwwoENJrphc5Zpf1v2/bnn39+0003rFix6pabbxs0eJhtuVdd+Z90JvnCCy/8/Oc/f++99w877DCMQUVFLJ1Jx6IxRVYKRsGyrB133PGLOXNbWlpGjBhMJaZN8vl8RUXYMNxAQJbopQQ0jf5pu64ny5Ki0PuUYZJAUGte3ZIrGNFQXAbYNk1Z17+a8/kzdzxQUVdXH47wv2i74Co6na0jSUowGDzvvPPi8TgB4Ouvv5k7f0FtbVW+YEOkzpw5EwPUnsxXV4Rs21ZVWZZlSZL4jAd+PUAqDd1YLHzDDTd4nmfaLpQURG8oEBLaQoXNAOL5PhyW6MSyHEVRamurOzpSlZVxrtX4/NRUyojHA6effvrdd9997rm/XVNuEIFgW6V7EKqf2rDo2COm5USjIQ+ApctX3XLr7X/92z+qq6P5vBOPKl/OW/bfm2+976E7aKJIFuHy+lvxxUtaxo2uwwBkcwVM4OBBgxAEeiDse1cyJtZD8bZ0PmWASAA1d1g1lRqGKO+AoELzR0IE8nmga0DTA46pZACI04zh9BEIajkbxCI0w7dr5CCKex5QFWrlspiZBNtAD4CsAY77zcl5E4dDyGG+o1Q2F1ZVRWd3+X7S7zxYxDKCoRC31Om6vuzzD/983u8//nphYMhue+2zr4TtB2659tADdgYAn3TKqdNnzlIV/Kfzzj/r9DNMG3y7dMmRRx5eUz141crWu+68e9/99rrgL+fP/uRLwzDvuuvuf//nij12G//Uo3cFY+Eb/u/6Bx55wnTI6DGjnnr2EZfQSKOAogKAnn/+xRuv/b9wIGhlkn+/7IoWKzjllTcrQ8oRh+z778v+EdCUTz//4rw//eWTL+ZO3Hm3O+68a+SwQaubWiKRyCWXXHLy785xPZyxwaCqqi/enxoKBJ555pkfHXd2KEqlWN4AqmQrboFeKboSjQaZeQKoirp85YqqSBUNuqILqNMPY5rs9YXXp7z7wcxEayIQDP7uj38cNnD4lbffWF8ZXjpn9tKVHcddcO0+O0+I1da4IAepmQO0QzOrkVYr8cyzLzaRilOPPfX/7rhOsoxVS5Zl87m9Dz3k+J+fsNrNPnD//R+8P6NuQMNxJ5+y06gdVFVK5dOhUIUHsIL0VDbN0jMSx7GIwmQhszxIqmbkzPdnfjB81KgBQwZ5BNx03XV/+dNv4/F4IF758adzXn7kfh3nF+4yacfd9/l8lbnnAfs8du8jA+Lq3A/ebGgcfPz5fz/zt38NS+75fzh71Khhb789/YknnggGg8OGDTv33N8ROjPR0zSJYNjRnopFI5bp3Xr7bXPmzSUQXHfdda7tvP3225MnT/7TeX8cPmzYV3O+uuCCC2Z99PERRxwKAHjrjWlVVVWSrH3w8Zft2baVzZ9edskl55x/PiLhllWphx++ORKKZAsJ7MhVVdUSlK675n/zF88YMmLw7869JBiUb7n9ga+/mGMb2cN+9KOjj/6Fa1myRuVOQ0PDvHnzxk2cULDshsZBjgdkCaxevbqmpuauu+6aOnXqxIkTzz777Lq6ur6u5wcfvH/gwIEvTHlJkuXq+obfn3uursmffPrZQw88jIl75uln7Dxp0l233Tp2zJj3pr9z/PG/aWvteOPNaXmjMGzYiEFDhgAAXn751dffegNj95BDDvrVUT/lu5WQ5Lr2nXf+78OPPg2GoxdccMHgwQNuvPHmTz/9dOjQoYcffvjdd98di8WWLl953nnnTZky5dhjf/HBh58tWbzw44/ej8ciJ5100tKlS++86+4f/OAHp59xxoIFC+978CHDtJqbWx9+5L50zs7mC1dfc23TqpXDBw4IB4N1tTVvvz392WefDYfDVVVVF154vscC80LBwLvT3z/k4B8BAhrqB+y4445fffVVKpsDkvzRrE9kVf/0888jsVjDANo/tocjUfqjDQP3rWlv7bH3XoqqZXL5gmmffuY5AIDddtvtlFOOS3TkH3300Tlz5iiKsueeex5//C8JAM+/+NK0adMIBNX1DVf946LrLv43kOAFF/75qOOOPmrPA1VdXZVs2WHSpEk37rRgzpyvzTTzk4OQLrMUdq7n2oQQroFM037zzTd/fdzxgM7fUadOnxmrqIrGUxUVIY/l5c1ljUg4mM9lNHYN3Hb7nbNnzyZIuvW22wEAd9197yGHHPL0s8998cUXc+bM+d2ZZ7wzfdqvjz4KIPDM81Mikciee+555513uq6bzWZPOumka6+9NhKJdHR0XH/99aqqTn1j2quvvg4hPPTQHx522A8qqiqXLFs1dOiArldNl1g7gUDQDRoVDiD/BW454Iknn/7jny8KRiOeB+JRZVVboaq2UQ/HqOPIpUmMAABjJmw/48OPh488QkZg7oJF2223nSTRGJlUKlldU/nYky+8+Mpr4XjFyFFjK6sbFI1am2689X8rli1tqK/54/nnapX6Hy+4vDWZrwxqJx223z2PPlEYOum9T7+++YLj585bdt5lF++yxz4htf63J/ysISzJoTDwtBdenVZA5L6HHm6oazz217/eb48JBQfcdueDH382W1LQ9pMmnv/7U5MFqyoSVgAwMxk9EOysCbiW5AtmX49srmDZbqI92ZFMU5OfRwtIEy/nmNmER3K0Bo9J3ARp/vLDN54btfO+n7eRFTniEEJybTdeetHZv/+jQchXi5ZM2HG3J59623bJnnvv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0uf6AoFAIBAIBJuLfa8PtWKarud1yibsOK5h2paV6EiYroNp9WLX8hyurTBwy6PguV9vjaHcYvaZQCAQCASCrd6C1cMupOt0V5jmccUQEyRJSFYABJVamJdGhkjCHnFppBVCQO5MfQ4QLmZ3QrhrUJkfUNV7A3rQ3/UFAoFAIBAINgTrLQaLqytACJJKAfmO6wACVMWwXUJISFMkScLEsx1LVdVS7D4VVeXuP7YtS7pfRnn+guIHva32HesLjSUQCAQCgWCzFliwF8mC6GxBCAix84VPP5s14933vlq4SApVmRhMGDfmyCN/MmxQA4QSABoqGaq4cauXYoosmUJf5aw75wby+kf9WH8dT1cgEAgEAoFg4xR7ZhKrJFmwCyQZEA9A4qm6vvtee++++57z5i+458mX/vzXi8M6XZ+GalkgqEkEgELeDYWoo9BxgVJqhecBWQJGoRAIhou7JTTFA8cwXV2TEdVSJNGWqKmp8lzXdYCm09xaluVIqvLBBx/MnffNqaeeCumxrCCLuHddrMg01RYm1D2ZTKYrKmKmaeu6WiiYvJALS9wlEAgEAoFAsNEFFssm2vmmvCwML4KCMWYZRouLJElRkCaxj158Ydqbb7wWj0YOP+ywfffd6cEHHlU1+f0ZM4cOHbr33vu8+vrriUTHb886fbddxl162WV77LX31LffSWVzp59x5p577PrZ53Offeb5ltamvffc46hf/uLTWR9/POvDZHti2NChgwcNf+yJxwGEp5xySmVN9YsvTbFt+9JLL/3n5ZTTTjl11MgR999//7hx4wYOGHD77bc3NDbmcrnDDjts6tSpn3zyyZgxY84444y6upr10ZkCgUAgEAgE39OC1dXhxoUXrVRI85Qjastiud0zmUxABTNnzJs7d97tt12daLP+d+ft48eOKxQM11Xuvfvme+9/ctq0aVdd9Y9Zs+a98spLO0/azjTNhoaG66+/fuHipc8+/8LAAUNfeuW1k049bdjQ2ltuvnPeN/Mty8rn82edddaQIUNaWzt+dOgPk+ncf/7zn3PP/+PPf3bUa6+99o9L/pbOG4oWQJKCCaiuroVQWjB/ESBol10m77nnZADA0KHDzz//vNtuu+udd949+uhfiMtBIBAIBALBJhZYfcWL03xWSCrFVWHsegMbGlvbPIhAR6Ltwj9f6Vj5uppaVVUkCY0dOxZCMGjAAMeyFQkMHtBoGPlkMhkIBOLxOJRRwTSymbxhO6ZpP/jgg83NzUFN3WuvPRxM1duQIUMAAJ9++un8eQuXr1yxZPmyisrKjz7+OBKPAQAioYDjOIVCARPQ2p6oqqoaMWLEtGnTdt99cjKZTafTr7766rfffpvNZg888MB17z+BQCAQCASC7y+wuuVfxzQrA8sEiqmyQtRTWFrFpcmuOpJt0bCUyyYHDW44+cSTqioU2wIBFThWvqYqZuRdVUMjRw1Lpaym5pWaKtfUVlVVVc2dO3fU6O1YaJQ0eHDjqpWrzzvvvO23H04PRMDsWU5NTY3jON9+++306dPPPeePtuv855r/gxAGAgFeVziTK8TjcdM0CQGu6xYKhYqKikwmk88buq4/9dRT48aNO/vs0x988FFJkjKZQjQa7G9XCAQCgUAgEGzANA0YltKzs3LPbBEVXCE9IMkkGAD77rdHOtV2xeV/S7Ynjvr5zw488EBNlZpWr9hxp3GaghYvnH/ggXs11Fdnc6lksv3bpUtiVdXnnvcnTMApJ5+hqeD8889/+OGHn3lWdUzjH5dcvHz58kwuJytKXV2drus33HTj6LFjEEL5fH7HHXd87c03/vTni6675uqddtrpnnvuUVV17JgxWjCwZNnSIUOGhEIBhMD48ePvu+++F154YcCAAaqqCnUlEAgEAoFgPQLzBbOvzzDGqqpms1mEUDwepZKplEehmDsUgJbW9urqKoQAdIEksQI5CANa4dkFSDKyGSlWhRHw2FRBZugiCoKWWdBZsedcLhcKhwFAmXwuHKIzB00jd/vtt//4iJ8OGjRM1xWMQSrjxuIyZmkYJEjbYNuepkqea9EaiLLmecDFQFFok/IFOxBULY84jhPWi9m2sAccxwvqNDeEZWFNQ64LaEFqAByHxo0pCs0v0XsHrc/e3rYghEAIPc9ra2urr6/3PE+il4hAIBAIBFseVIYwIZRKZTDGkUjEtm3muFuvJWhQ+TOhj5JA8YrpFgCtUBiIRSHGCABNBp5DcyooNErL0XXVw47tmOFwMJVMFoxcNBROZ7IAgEBAa2paFVBDKisf7WEQj8s8q6gkUf+g4+CAKhVypipLEmLZIiSqrjCh5rhYUO1IZVUJxnQVu55NgOkARQIhXcqk8pAATaOtlmVQKNisRjUoFPJ9qSuBQCAQCASCjWHB8qUIzSkFQXNLW011NV1enEbIkn/SF+yZLqPJrvxsWWW5RX3zEFVoZRlBLVovB8sslymtXYiB4tfVQcChL4jC3rtMz2ke+08BAHo5AKGLQhgAlVgAogJdDKj/jzisDA8qNq8fiDKI64iwYAkEAoFgm7Vg9T8GqyR2uDiCXQvSdMoXiPzlsFx4FeEfkaLo6fUYdBMb0kztNNVCMVM8oGYnUBRYnbUH/bj6TvFGXCrdoMLWYC5LyBvdL4El1JVAIBAIBIJNWotwTcDvFi5r0DJ9f1RWmbDbulThlW1H337ncQQCgUAgEAjWAxtFbZBux/KNX91lF3vfWTmw83WXdbvsp6u7kbowSysiABHzKgpRJRAIBAKBYKu0YBXxhU6ZV9HXTuW54cukFwR+RWff/1j8nwdvle2XFhwsvqUmKxrx06m3ehxXIBAIBAKBYCsQWD2NSeVePPrES+2UDFElVQS5cuLyiH7KdRRmAVWdwowF2vPgLx7dxbdnK4iJggKBQCAQCLYygcU0DukrdqrMz4fZpELu2us0VAG3fD0e3M7MV13lGqSn47sFvS4foWIKibKjCwQCgUAgEGzZFqxifcI1axwCCETcToWpDYrP6i+f90cdfzzTg5/stKSzSu4/ttQrs2yxXQkEAoFAIBBsJNabLadQKLA86RZ/4XmeadEMW45d9O3ZNjEMbogCtudhADKZHH1DAHYsmjcLY9d0MKCprrikcl3suQQQ4Bh54No06yhz/DkuXc0FwKEf0oxclm25Ds90JbmWBdnygg0Mi2osQo1XKJVM0hwWrFIhbYNtO3ST4mue98s/HYwxIX2VtBYIBAKBQCDYKAIrGAxyRRIM0ryeruvqGi2GI8vQtuknqgq1AE066ngAQSmTLYSjYQJAoq2Nbk8/cGStmPLK8jAGRJZVSVIBxEpABTICEsh0pDFGskxTj7rMlUg1EQS6qliW4XrYc7GsKtgj6SxRVRDUgG2RdI6qvFAoxMK0aOpL/sJkAABUVaV9gRBNNu84/grrq3MEAoFAIBBsU6znaCRN03iFQU3TCCD33HPPEYf/dPLkyaNHjd9l573+8pdLFy5aLks0ICoSCRIAHn/8yV/84hc777jTnrvs8tMfH/bEI491JFmFQano7PMsjA2TVhMEZMGXX/37qmt2322vQUMG7bLHHtffcGfeosJs0ZJvXc8OhcNIkpEir16y9IRjj7v475e2dBCAga7CcFjFAMgKso08RAgh6jBUFCUSiei67ro4m81nMjmMgSzLiqJIkgQhwhh4njBiCQQCgUAg2HQxWK7ryrR+MlUkPHN8oVBYsmRJIpGQZbmyoiJnGvfcd28ym/nXv66KxQIeBs889fS/rvhnQJXC4TDC3pzPPm1qv25VBp/22+MkSD2AMgCSKgOiA+i0LF961lm/TXQ4QNGPPeE3L73y+r33PDht+gfPP/fAiGHDZVZCZ+nKpvvuufeZ++9CamgojMUrWTp5XIyvhxApipKn5aWjjuOxQkCKYZi6rkci1LjFIQS4rqcoEjNgCSOWQCAQCASCTWfBghASQrhzLRgMYoxDwdAf/vCHDz+aMXv2zFkfvz9lysvDh42cMuXlFStWIQQkGdQ3Nlx00UUffvjhex/MfPXVV2+//fZcLvfEk8+0J6njjyZWIFyw0RfPPv1MOpkas92EOZ9/eOGf//LR7FlaIPzFl9+8/to0AIBpGK+9+urPj/r1k08+297erutqdW0dz05KXCqx8hYrYiijUDjMzFeSpimEUJMVQsVoMM8jluV4HlaUYky8abLKPAKBQCAQCASbSmBBCG3btizLN2LV1dUl27OeBwgE0Wg0EonFYhWKprosmnznnXc+6aTjNZ2GagV0bZ+99gYANDW1IWZWQzQoiwksywWmmcvlsAf23GMfAEBFLGJazrARI2vrGiqqa1yC9YBWU1NT3zjgf3ff+8RjjxeyuZa2dtMFngdUlSZ90DTFwx7AnmkYzLpmui7mabIwBtEoVV2SBDVNkWVk226hYBICdJ3GZgkEAoFAIBBsyhgsSZI8z/Pn37W2tlZURiQJtLRk/ve//61evXr33XePx+MyO6zGouBXr2oCjgMDgdbW1trK2kisgpZ0ZtMAi1HmmgZ0/bhjjqmurn7yySc//niBC8A777wz75tFFfHqsWPHyhARgnfeZZdHHnlk9z13aGtpgRAOHDhYkYEksemJPJsDQgBJzz777Im/OfX/rr7WtmhlaMf2VixfdfJJpx937ImXX3ble+/O9FygKnIwoHvFKY8CgUAgEAgEmygGCyFkWRZCkM8izOfzoVCgurp6jz32bGlOBMKRcCz62z/89qyzTqKTBB0gQaArdMPGAQ3YspFLrrru+uZkao8fHlgZAcDDkoQcAhQaRUXVVuPI0X+/5JK/X/Hfk087OWe2AFmZuNNB/7315kgEmABoEAHshYJUucXCCiR2OpdPmyCq0+AwW5JVifkcbZe43r333T3zg4/mzZ+7046Tnn3u6eXLVt5+x626pra0trUnkon2trraGgBLaeAFAoFAIBAI+sn6FBGapikKE01sjl6+kEcI1FTFRo8aEosFEonWG2+8/prrbvEIUGXqmUMAZNJZAIGD5GNPO2v2ohWBmpo/X/BbDYAwdJBnShqwEcjks0BWku0d/7nhuoyTHzis8ZTjflUTlJcv+OSyy/6WdqmByvNc12b5twiJ6l5AckyMsULNYKoiKxILdfcwQDAcCpx66skvvfzimDGjc/nCZ5998re/X6TrqmU7dXU1Q4YOqqur8ViuCMctZskSCAQCgUAg2DQCi4e3W5ZlsCAnVVVDQTo178VXXnzxxWc/+OD9p595qr6+/vbbb3/66RcRBCq1TYFYLNLU3HrUr389Y9YnFfUDnn7hheFDa1Md7ZDYSKKORgxAOBY388a///N/Ta1te+yz15QpT136979Mf/OVyTtPmDb1jQceeZ5Q16Qss3ipfDbT2rTccfLReExloeqFvOVimkWLVdxxDjrggPvvv/8//7kqGAx+/PGHe+21VzKZJIRommKaZigUWL16tSTRYDJNK4pFgUAgEAgEgk0jsCSJyhlN0wKBANdblm1ZPI0nC2PffuK4X/3qV47jTHv7LUSTp7ueR7766qvJkyevXr368MMPv/t/dzbU0GDzcDgKkIwtd1VTgpW7kSzLmT79Pdu2L7zwQrpE1sKV1SeeeLJt22+/8Sahe7NcdqxYNBYMh2pra9OZFI/gUhRFRiwJvOsCSQlVVNi2bZomIWThwoWRSKSiogJCmMlkdNbOxsZGx3F46lHXFXFYAoFAIBAINp3AsqiaMkuppAi1AKmapuuOaRLqwHNdD8RiscrKStd1c3lL1+TlK5Yec8wxgwcPPu20066/9sqG2kjOAKmspanUdIQUZUBDNRdJEELLtFVVt0zHtHA+nQUAZLPZgKqlUx08AkzWg3xly8GrVjcpEq1piAlQ2CxC7AFiOQAC1zJVVdV1nRCy4447JhIJnhk1Go3yludyOUVRMpmMb5YTCAQCgUAg2DQCS9M0hJBt21RKeV4gEEi0Jz6YMUPRdYiQJMsLFi66//77bds+4ogjwiHNsZzrr73OyBcOPujAU085KZezEQDhAIhHaC74VGsCQGoSKzDNRjDYZZfJ+Zxx//0PBDQUisXNTO6JJ57K5/P777uPTAvysAzyBs0QUVlVo+rBWCSkskQPFstlpSoABsMAIFkPNDU1YYxpQndJWrhwYS6X4+a31tZWCGGYJcqKRqOZTIYnphcIBAKBQCDYNLMISxX9sGnS3OgAgE8++eSfl1/h2haCElCCHZlcW3vypz/7+a677soEmfLpp7Md15o69a3XXn8zEIm5QHJcbJnm/1156cH77bFy6bJDjz516LDhD955c0Vl9dFHH/3NomVPPvn0c88+c9DkcR/PnJm00fYTJ5564okQAMM0ArrG1aLtgmzOXLXsW8sB1SpARE1ZIKQBWrnQ8Uwj19DQwBu8ww47fPTRR//973//+te/AgBqa2vvv//+Y445xrZtXdej0Wgikaiurl6PXSQQCAQCgWBbYL0JLMMwEEKapnB1xYOZxo8f/8H770Ujsabm5mGjtvvHpZf/6LAfR4LUXJROpcKhkCrJ+Vxu+Yqm6vqGjnROC4QlSWpPdAAAF8xftHpV0ymnnhGPh4HrHfyjw2oah/zv4adfnvLie+/OiIYDJx5z7FG/OWVgPQ2l56amUEBzPbcjna2pr99u5EiFuQwhpGa6gkGrTQMk6WHdNKmXMJPJxOPxs88++7bbbjv99NMdx6mqqrriiisghJFIhLsghboSCAQCgUCwDsA8d8L1BqvWp2azWYRQPB7FmKaGgjyHKKQ1+yAELS1t1dWVCCEIoed5kkRFTSaTiUQiEBLseUhCgMBcwdFDAQyAg2kGLFqDWaJVbGgguWXJesghgIY7QWDZIKwCySzcfe/919/92H9vuXWH0UNqqmKebSNNNelEQBCRsFvIwXDUAXQr1wUx2XUd24EBXYbQTAIkN9uRUBiYiVRNVdyGwLFASHGBZwNZzxeMUIjKMoyx67qqquZyOe4ZLBQKPI+X4zg00wTN5tVZplDQLwgh/Kpoa2urr69nl0exBpFAIBAIBFsWNLMBE0KpVAZjHIlEbNvmdWs2uIuQDZ+0CA4PGAeAIJpJHQCIQqEADxeXEU2qTlcsJnsnskYdizJkoegA6CoNnIIYv/XWW0OGDNl+++0jCt2npKpsRiGNpgIYyMGgx95KACjsJGRFLdZmVnUAUYVKtVdNdRwQasHSNQAwApICIPA1E0KIzxbk6opXUeQveEIvoa4EAoFAIBCsA2iTHRJiLgf95XwOoOMBnqzUdV0Ioa4DTUOe3bPoclGgIaax2P9UorEdyVzCFcUjxMXlyC++IxAIBAKBQLABWZ8WrHUFA+pKAgggmnhdAplsoSKkPf3Mk5aiExoLZUSDzGzly0GIub7iFqzuIpFNP+QfcQFXWoFZzzaFphQIBAKBQLBNseHVxpptRlQncVNWJ9Rt51o0hod9oChSL82kBrCSWapoBvMdodSaVbJsdTaB7U2oK4FAIBAIBBucjSA4qNzpdAR2gaYC5cIHEOrIgwDkC66uyUCRgExdfhAAXVcdyyh3Jvq+xaK6ItS45Ws0j33Mlvt52DFk1Qi7SzmBQCAQCASCDcDGs+jgMmMSPSpVRd3NUTSuPCjbjuvk81xGdaQNy7YUXWfTF/3V+hBsjOJ6dP+kdJTi+kJdCQQCgUAg2EZisDp1EQLIofMEZUkO8OD0ylhAo/LIYetIZTFYJY1VJtRgFwnFhRbbhFm0hLoSCAQCgUCwuQosuC7mMVQmfUpz/RBLpeV/Drs2SPZsm6il8CkMIIuw4k5DHq6O1mzIKm8ozzi6jVqwcF9fCk97IRAIBAKBYLOyYPEBus/xu5zSnL7Ot6U5feWLadBV8T1UJFXhEorNL1QIxhAhGQDiEZroi6U0pWYpWEr70O1AdDn/qPjM/9vGJAUGxCubgAn9eZTcvlf+bW1jPSMQCAQCwVbhIuxt/EZ9r1a0V5X0F+IprCQaw47ZZED6CfEwy3jV5x7KD7StCgjmTu0jP0Vx+uXGb5RAIBAIBFs1m08M1toCISQMXoxlUzdn84dbCnv9oAulGkgCgUAgEAi2PYFVXvdnDTWABCVgZ4hbyZ0qEAgEAoFgg7LFCCxuteqmqITA+i5QX6Kq3FIlzIACgUAgEKxf0JboGeQI/+B3QljaVf/RV38Jt6BAIBAIBNuoBYtWK2Siir9wHAdjjBBSeGloQR+U8toXs1p05sPoMv2Tzt8UclUgEAgEgm1OYPkai8ss13U9zxMCa81gANySwJLYo5R6tSxTqwjMEggEAoFgfbPBB1fHcVzXrwkIbAZf7nler24+z/MwrRzYfXPE4EasQCCwevXqYDAINhG4BOnKmrdKJBJ82w3h4iSE+P1WXMIsWCva7LRFXxil78EyzdLnvJpQ51bd9sCXmKZpWZb/kd9y4aUVCAQCgWDTWLC6WZgUReGGKH851yi+dQpCiDGGEPIAdkVRuN7a3OLZe23PdwoOfprlz9227bawX/TcFgPw8RcrFi1dEVSlw364W0gGhuUFFahpaqdLkBZ57FyfZcgXCAQCgUCweQssbvbwRZIs0yN2U1QcfxNJksqVitQjlehmiG++WhuF1HOdcuvX99RY5S0hEDYnkqYHm1Y0FePcoeRhjGiP+sUcmaISge4CgUAgEKw/Nri5wg9F1zTNN19BCF3X5dqrm7rixiG+Ql8+xM2BcrcgN8J9n71xix0/8XXbg+d55W3zexVDadwOO2vBSK5AJZWqAllG2GHFswkumbHWWNRRIBAIBALBZiiwyl/7QkSSJN/LhjHmsVYeg2ssbsfabGVWuc0JlfGdW2249vivfaFGAGhOJGNVKlT05kTBcP107X7oVZcALIFAIBAIBFuGi1BV1XL7CsZYkqSeVis/JMsPaYcQcn8i33xzcxT2NyasvLZPuYd0Q+Dv3LRB3rCIBFRNt2xHk6mXkEfAAcL6mc8wLG/nhmuWQCAQCATbDBsjTQO3TgUCAf7Wtm2EkOd5iqL4MsV1Xe4mk2WZEMI3UVWVa6zNTV2V42sm/qKvppZPM+wpsHzbnh/d31/843IJy/s5lXVD4UgkDCqra3IFE4CYRL8OT6GdiqmagsxLCMtjsgQCgUAgEGz2Aqu5ubm9vR1C2NjYGA6HOzo6WltbbdseMWIEhJDbt6gUSKWy2axlWRMmTCgUCm1tbYZhRCKR2tpaVVW/n8mnp3JYSwXDE3OuYT8AY+Bh4GDildI1hINSr3vHBBECMJEIe80tRfycPAAcD7ge12dIQfSofCewq1WJt4Bbnbo/QzobEALgAIlKNQgKFs4XTFlCIQDCAS3RshqAOroTRH2vEKql/RXby/8j3c9aIBAIBAJBv9ngQ+nMmTM9z/vmm28+/vhjWZanTZumqmpbW9tzzz3nsFBry7LS6fSUKVNSqdRrr7329ddft7e3P/roo0uWLHnjjTcKhQIAwDAMbuXiSos7HHlCB5bKqcujRCnAiHR9sIU9t+pr87KFGBAPEKf08IDr0LxcEprzzWKkyy0FkPFUB4BExnYAyDvAAcDw6LMNAJZAayq3qi1pEeBJoOACF9KPHJYLFCto9teLgC7nCMywDW0mvDDVZPSFy5bYAFh9PAqk+MKVgA3pC1vSW9pTAypDKgBjh9YVUgmX7QpIwEMygQqAGntILNcohuzRef7fO3JfIBAIBIJtlg0usH72s5+NGTPmxz/+8VdffeV53tFHHx2Px3/4wx96nrd06VIAgKZpq1evdhxn5MiRNTU1X331VUtLy6RJkw477DDLshYsWOA4Dk8o6sdu8+e1CSrvVExl2Z64mFhjagKurqixCRZXw4CqjXKhBoAkuwDkPdCSMdsdsDJlz1+ZcAAIR1UMQDrnrG4tdKRtDICD6e4yecuwMYswB7ICWtqtRcs7VrWbiRzVT8vbMkvaCFIBUkBzBrSmrLaOXFsyk0im2zsybckCXZJy2tK4LYPb0qD7c9Jr6rBbkri5w25qdzvyoCNjuK4bDyrIBRpwoyHdc4BLgOUC0yuvTljqQ6Y+USmxux8n1zNgTiAQCAQCwaaPwbJt++GHH544caJlWcFgsLa2dtGiRYqijB8/3rKsTCYzcuTIL7/88sMPP8QY77zzznPmzAkEAhhjVVWXLVs2efJknuuhp0Flja5DVnyPKTH2lnm+oG+hocoJEES3Lt9rjwRVxWBwJraKuopKEASgZLjIkajAai94GRcUYCCVTrL8B1TEfDD7s1QqVVNTs88+O6oSyLmguSOdy5t5Fu6vSmDGrE8JgJaHXSDtve9u7Tl7VSJdWxNflQDT3ny9viIsAVciHiSYQEQA8qCEAZOYECOCcNdnVVIN25ChTBC1U0mqBDyQymR+8IMfBGUQqJTHjhoeVlktQnlNSa8IxpA5ObnHEyHEE9ZvboleBQKBQCDYpgWWbdu5XO6ggw6aMWOGoigY46ampmeeeeawww5Lp9OxWKympubbb78NBoPjxo1raWlpa2uzbXvo0KEIoXg8zsd1z/NSqZTrunwGouu6siwnEolYLMYOgiFBZK2MLNx2VSp/THNsUu3S+TlVYOzBpBgkLGaKrtrpO/OA5EHZJpKNNAsGkiZZ1JSKLnfaU0br6uSSloEVQRAKAcPF0aqa5vZka5JKqkhEam5Puq5resAw6DS+JStXj5swcWDdgHfen7loRSZj4ZaOTMqLt+ccoATGTNxRJo4EXBq6RdsNPSATCGRAyh15PqqqGoYhSZKiKI7jQAglSaIZLlyzo0OSJElFIJM2bdvWFNk2C6oiI+Jb8ugzIrR3PFycIMnza/DpCLZt19bWroerQSAQCASCbYONkaahvr6+ra2to6Pj66+/Hjx48Msvv3zqqadWV1fzooQAgI8//jiVSg0ePHjChAmzZs0aPHjw4sWLR48e3dzcfPDBBxcKBV3XKysru+25rq6uurq6FGiFyswyzABTtqavR6j9puj+46KKPZet2k2lQeAWPYPlO4DUM2iz8CkDgEwGKtGalpxnYM2Ael0d7dOCDVa2duywww7frmwOxKSQQtfvyJnUJqSCkApcDORgdMyk0SEdzPiialVHDgViBpZdRCsG1jQMHDAgqLCvx49z54kulL7dupYTVhRuuAOeB2SJbgtp7BpQZFAdHSBD4Li6IgPPC8oSP5leO6k7tm2LeCyBQCAQCDYjgfXcc89ZlhWNRkeOHDlp0qSbbrqJELJo0aIPP/xw//33X7JkiSzLBxxwwNSpU++44w4I4e677x4MBt9666133nknFouNHDnS91L5FiyeFsu2bc+1paI+4vIDYZZDkxulcCnZpi8fuD7iE+8QLxEDepEYvsyCQJKJi/wod6rOJA/S+PQCptHiJgArW7BNpIVLViAtbOYKWQAiAFgYhCuqxk8aMG/xkpYO0FhHD11wqCnIwCCAQIFGsiOkgQIAwUhla3sSyFrWsE0HtCbaZdZ+3lCprPH+o1dUia7M15SYuuKvCSASgBKvMgjpa4QA9gjLidVpDOOvPez1tGA5juPnJBMIBAKBQPCdbPBR88gjj2xublYURVXVRCJxwgknOIxRo0ZpmtbR0VFTU1NXV/fjH//YZUSjUV3XKyoq8vl8LBbjg71f+NkPb+dvJVmms/k4VDVBFqNNFRE3UpWbZUrzAblo6TPtE1+tpGkgBopvuuHL+VtEY5zovgqm1djYuGhlS0jXgpWVmRyIhMGSFdn2dCZnAqRqHZnsgLpIymKR7Zgks0CKgZXNlgug4wJdASNGDHnn3ZnxyupsNptOgkIuu+v2o4oZ1lnWhLIT7LOfIezUXh4GPFeE5zGlBXFJegEECWSTBJDEBVh51i76mpUp7JJYi78QFiyBQCAQCNaejWGWqK2t7ZZ+k9ui8vl8IBBgbj4QCoUkSTIMQ9d1AEAsFqutreVGlFwuFw6H/XzuvgWLBhhhbqViaqprigVfDJVbsHp4+zpfd1unVFKml1xY3FvHt8UAGLlMLBgHZhY6AYk4ixZ3NO5QadtuVU11XAf1jQ25XMECkUSCqLqm60HHo07AXCFfWVkdUZgFSwMQu9uNGNrW1mbm8erlS6SJI3UajA4UWFRAxZaX3nLtWP7Ms2Bxcxf0ikqTGeOIJLHCOKzFCBKCXWrC6uJU7WXeAKZ9S+HmQzGRUCAQCASCtWeDTw3j0dbdFsqyDCEMh8OTJk2Kx+O+mcTP9q5pmm+p4urK34oQwlemo35vU9t8oWVa1OpiskxUXGnx2CkTgLRTfOECYBI6E9Bhsok/aAwTe7hliaZ4Giq3M7sBfa0DkG9vGj1I07z84KpgdVhycplkgVqhhg8dggGor61ZvnSJBsDqlSsa6mqrKyu+XbRUk0E62TFsyGAIQBiAhkpQ6Gge1qjo0Fm9ZEFVWB1Yx9QVACo1K2EJYP6WB2BxadjtGUEgM/cnAkBVqLqCAMgSZDMfyxJMAFKUpMVw/i79Rh9lBRaFqBIIBAKBYN3YOgJrSmnPmX/QN18hGboYTJ8+07ScnFFAUMay4qIAUtXtRo+Oh4MfvD9DRZKu0OI8rmPxffFJejwMi+ZyIMUuQnSuIvanE1I3p0dqGwd5+Q6dgMaYOrgyEApVzpzx3iwj1d7eMXHiBAWAeEhzzNwLL32YzxfGjh2DEZw3b0E60ZZMdtRVVqgAmA6IqWDCqCEVQSB7Zj6T0CUSZF8Mrc5Ik0R43EoFeXqIEnAtnosSipXn4S7UDf9dCAQCgUAg2BoElh+RXoy+4tBknhJIZ922trYhQ4dXy/WhUMRBUgbL8xZ8m8wUTMvJF6zGYcOqKuOFbEZT5WLUU0lasTSjiNAuQlxaFZ8BgYTm6DJNMxqNDq6rGFYFFlcGo9CojQZ3HDMCQzx8UOPo0bUKAPWVYK/JO2WzaQil7UY3FgpEZ77NCdsNGzasihqlZOC5oC6q6QRMHDnIyMexYxXnD3J1VUy+5RdmXgejIzsl2jVlbsE+XIQCgUAgEAi+P1u6wOqSncEPn/JdXznDgBBuv/2EIPM9Zj06oS5nebmCkU2nR4waufcug5n/sqK8I/xgLD85gu+MK/fKeYRGkSNEO3FwbbQiLNeGQeWEAZDFQhFWYVBFYNKISgIquUBKWmSPiYO5UqJ1A10QkoHp4uqQIntg1IAgAEHs0R2yVrHYqWKL1u2b6k1FcWkl1JVAIBAIBBuMrSA9dzF3QXlwui+SOjo6MMYKdbZRXJaVvaG2xrHMRGtLQ20tjQon1BknMQnDHzzaiZuRVPbgr/2FVP14QIVAwlhD9NgNVfGGqpgKQAiCANsEWyAigTAEMqZvNQBkAmSnQIPLTABdIHkgLNGPIhoaM2JwRKW7lQBQit9JWYAUjcii+be65ETtZ/+Ueomqqx6FF9lBhOgSCAQCgWA9saVbsErhVl1tV9R65AJVphkyKysrMS6uENFABoCaavDVZ5l0MlFToSMAHAPIQapsqGmKGZe6TTz08TNLUZiJSVZpyBeAIB4J6gpwHZofgWZGIMBxLVXVOqOeMFVOroJUGviPFRlBwpx+mGZdr4mHPQAclsKLBqYXvYGlsjxMXfHgeqk/Msg/EX++YbczEggEAoFAsCHYsgVWuU+wm26gIVUsBXljYyNkceu2QxNRSQDQ5Aj5rGsXIgH6Ns7UFfB4zBOfZ0dVE0sUhfoKDPcInWfHnqjG4hPuPOxqCFFxJ8m6RGftWfm8HgyxGYwukBC2chBrqsIm9xFg5TN6KARchxYUlBRId+cbqbgoYjqOqSteE5F7J9ee8v7BW5fpUiAQCASCzZatYZwtnzdXmk9IXxgmSSVaKyKhkMK8eywVp0yot66xpmL4gIagDBybruw5zFRErVgsforLHLoXWl65xwMBhCSJFp+mqSJ4FlNChVhAlSECRiFHpatGHZM84adrFoBM07MTQjzbpJMQjTzwPJ1noEB0dwAAo2CwXfknhviDfD8XXtd5hZ29JBAIBAKBYAOxZVuwejXn+Em3PDMXUlF1LERlEqLz9SwPhFhtnQCwqmvjBNOiyzRrqEQNVbSSMsQlkxXz89FjdE/i5YOkYhoums4qoPJ06oCgYCxemqOHFGq+QnIgWFwiK5IewC7hy6ndDPnKDsTCLBS/a1FF/zT9M+2XzOpVS4lYK4FAIBAINihbtsBas1aoioUHNdRWRIISKmaB5wFMBIAYTaquS9Sk1Jn7iqkqZjQqpo/CpRCo/jSDOxb7eGbiDRHIUlvRWCvEkoN+97mssyQSWkogEAgEgo3PFi+w1gCEcMCAAeWl9GgwFqvTF4/HNU1j6TvXsL3wpAkEAoFAIFgXtlqBZdu2qqqhUKh8oQyBy4xTFRUVispqG3MbD6/Tt6naKhAIBAKBYOtiqxVYvI4hrwlNZ/qxt9whSKOdomFaa4+tSQgLgBIIBAKBQCBYT2y1VhtZLmpHz/P8osWEEB6XHgggNsmPL+x37gOBQCAQCASCNbA16wqXJW7n6gpj6hpECEosqpzmbWepGIrJRbuztrHtAoFAIBAIBD3ZmmWEZVm+r7CYs4rP2StVnMHMdiUm2gkEAoFAINjCYrAwxh9++OHQoUOrq6tN0wwEAosXL1ZVtbKyUlGUUCjkOI5hGJIktbS0IIQikUhVVdWSJUtkWXZdd/Dgwf40QAih4zgKqyzoeZ6maXxhX4fmEe58c74Vr0DDUrQXpRU1VaGNoT55U/lkRv7sLwSbJUyPUjZ1QwQCgUAg2PLY4ALr9ddfj8Vin3zyCQDgiCOOeOutt2Kx2MqVK7PZ7OGHHx4KhRRFgRA+/vjjdXV1ixYt+tGPfrRs2bIXXnhh77337ujoqK6uDoVCGGMeU8XVErdL0Sj1kmRZeyCAGLLS0IweG2+oSn09BRYpATY//IbxNm/OQlAgEAgEgm1RYB166KGFQiGVSk2ZMgUAsMsuu2iatssuu/zvf/+TJMkwjEKhkMlkXNc9+OCD99lnn1wul81md9xxx3322eeJJ56YP3/+uHHjgsEgnwzoOI6maa7rYowdx+G5GPrVHl5wpm+1sKFkBBco3JDGnyGEvl7cfODtLG+bJEmKoniet6mbJhAIBALBFsMGF1imabqu+9lnn8Xjcdu24/E4AGDBggUAgEwmM2jQoEAg8Pnnn7e2tj700EPz5s077bTTVqxYUVlZyQf4pqamXXbZxbddaZrmzxBUVVWWZR693l82vtWITWBEtm3zHF2KovCwMB4itvnA21kKWYMIIc/zbNveDLWgQCAQCATbrsDSdd11XYWRz+dVVZ0zZ86XX3552GGH1dfX8wo2uVyuoaHhyCOPnDt37vTp0x3HGT9+vKIokiRxRWVZVjqd1jSNj/Su60II29raZFk2TVo7ee0pFcXppBTyDnpd3nP9dQYhlEgkTNMsF1iboeutV4E1dOjQTd0ugUAgEAi2GDZGolFFUXbfffcnnngim82m0+nZs2fvt99+oVBIlmXDMAKBwMiRI99+++1IJJLP5w3DGDp0aD6ft207l8tNmDCBi7CqqipJkngwEDf8OI5TU1PTf8tKT8HUl8CirF/5Ew6HKysr+RltnkHufpPKX3DDm0AgEAgEgs1FYD344IPjxo1rb28Ph8PBYPDZZ5+trq62LOubb76ZOHFiS0tLdXX18OHDZ8yY8SHjpz/9KSFkypQppmkihIYOHcq1SHlSK+5Wk2WZS65+tQcCUqri7OP1asfiORzWlzuxLyG1eQa5b1ktFAgEAoFgmxNYRx999OLFiwOBwKRJk6qrqw866KBcLmfbdkNDgyRJra2tlmWNHz/+l7/8ZUtLyzHHHNPY2KhpmiRJ0WhUlmUes4UZ5XPxullZ+gMEsBejF8+QtfbLv2cIefnbzZMtopECgUAgEGyjAkvTtHHjxvlvhw8f7r9OJBINDQ3BYNB13QqG53ncXjJ06FBd1/0Adj55kMsp7lX0PM9xnPKx30+RlclkotGoHz/uuq5fi9D3za0N6ywr+NxG0zR1XecHtW07EAjwTwuFQjAY9KWh385MJhOJRCCEfAWwUeBzAyVJsm2bEKJpmr+E9zPvVcdxJEnyU7amUqmKiopetRcPjxMR8QKBQCDYxtmUxZ7j8XggEOCTAfkSf2DmcsR1XcdxMMbBYNAwDK5X/IRYmqblcjlFUXhQtp+vIRqN+m7E8qKE5Qs3HL484q3lMoUrFYyxJEn8U66rePg/F2TRaJSLy42jTmzb5v3GD8d7z7IsVVV7yiaEUCAQyOfzEMJgMMjVVT6f54KM61rfb8uF7+Y2O1IgEAgEgo3JphwFZVnmiUb5W4wxn7zW1tbmOA63fum67qcz8FNJFQoFy7LCDFmWFUXh+iCTyXCN0tra2u1YruuWV33ecHD9VCgUeLIubv4xDINPivQbYFkWhJCfu23b+XyeENLe3s61Tn+nRq4DXNfyyYypVCqTyXieJ8syn0NgWRY3ZfEWuq5rmmYoFAoGg5ZlmaaZz+f5NAVN0/hMQ9M0/U2EuhIIBALBNs4ms2CVe+7KI6kRQjU1NVxvOY7DRRgXW4ZhuK4bCAR8Dxq3CeXzeW5iiUajlmUpilJbW+vHxXML1sas+lLu40MIWZYVCAR4Y/zlXLgUCgVFUTRN42+rq6v9GjUboZ2ZTEZRlEAgwAPdOKZp8iZxn2w+n+cdWygU+AoQQp47g7c/EAhwpegL5W49IBAIBALBNsgmszTIssxdVH5JFm6jSqfT3LPGRRV3YPG4eFmWI5EIF0yu6xJC+HMoFAoEArlcjm+SSqWK54YQxpgrGz+EaCOgqiq3xvlnyi1wvOWWZRmGwRuj67ovTbj5p7m52TRNX8FsUCKRCHfF8owYlmVhjHVdhxDyxkAIQ6EQPxEumEzT9I2FnucFg0HHcQqFAp+FkM/n+YZCXQkEAoFgG2fTu3I8z/OD2THGsVjMzyfOPVO2bYfDYe5uwxjbtm2aJjfzqKrqOA4f1P0ocr4HLrBUVS3XVRuh3gt3tHmex4Vda2urJEkYY//QvEw1nwtpmia3DDmOwwVifX19KBTK5/Mbup3ZbJbbyTzPU1U1HA5zZx+3LEIIueqCEPKwKt5Oy7L4JtFolNsOVVUNBoPcGMmrGPHT2dDtFwgEAoFgc2ZTBrn709B8pxgvOMhNICtWrHjqqadqa2tlWf7Vr36l6/qqVaveeeedwYMH77PPPlyEFQqFUCj01ltvJZPJX/7yl4lE4oEHHuAB4z/+8Y8rKiq44ao8seeGPqNcLvfGG2/wMLKzzjqrtra2ubn5mWee+dGPfjR06FDHcbh1J5FIzJ071zCMH/7wh8lkcsqUKTxb/bHHHtvY2MhlygYlEomUewmXLVv2+uuvt7a2Tpw48Sc/+QlCaPXq1Z9//vnEiRMHDx7MzWwtLS2PPPKIJEmFQuHYY49taGj44IMPZs2apSjKbrvttsceeyiKwq10IgZLIBAIBNs4m2wg9DUE9xXyGCk+PCeTSe46HDJkyM9+9jNeu7CtrW327Nnz5893XbdQKMyZM2fu3LmhUOiNN9749ttvm5qaeGj28OHDjz/++HA43NTU5IcN+dajjTDwt7S05HK5U045JRKJfPHFF0uWLHn++ec9z+OlGBctWrRgwYL29vbZs2fPmTOHR7UvWrQIQnjcccdVVVV1dHQ4juMb4TYcPDk7965ijL/88stAIHDOOecsWLBg8eLF8+bNe/vtt+fNm8djyL788svVq1dHo9HDDz/83HPPHTt2bFtb2zfffNPU1HT++ecfeeSRvLSRb7tatwKRAoFAIBBsNWzKGKzORpR0D7djxeNxCOGcOXPGjh1rGEYsFmttba2srDzkkEPGjBnDM0iNHj16/PjxnucdeOCBBx98cCQSQQitWrVK1/VIJFJVVTVv3jxupOEuMO7b2giuq1WrVjU0NDiOM2bMmKVLlw4bNuzEE0+MRCKe5+m6Pm7cuMbGRn4uP/jBD2RZJoRUV1e7rpvL5XhRmo1gvvKTQXCTHrdX7b333jwGa9WqVWPGjPnlL385bNgwXt5n/PjxjY2NGOPRo0cDANLpdEdHRyaTSSaTf/vb3+68885IJMKrevOvsjzgXSAQCASCbZDN0ZVTKBR4ZstsNltdXV0oFLiPj4eEa5rGM0tx8cStU1w5ZTIZ13V5zBAPgffVG5du5apuA+F5nmEYkUiEh4EbhmGaJo/B5w5QPu2ON1vXdcuy6uvro9HofffdN27cuMrKSp5xauMILB6An8/n0+l0IpGIx+M8ao1nRuWFurlscl2XB4e9/fbbgUBgzz33zGazAIDLL7/80EMPffLJJ3Vd58ZI/g1u6PYLBAKBQLA5szkKrGAwqChKVVUVnw/oeV51dTUhJFeCexj5wM9nGvKpbaFQiFuqTNPk6UY3fqWXuro6LuySyWRdXV0gEOBpuoLBoJ8ila/pOI5lWbIsv/baa/X19RdddFEul5s7dy4/kQ3dTt9Oxvtw0KBBvOtaW1vD4TAPujIMI5vN8mbz588++8yyrJ133pknIaupqQmHw9Fo1E881tHRIWYRCgQCgUCw2Qksng4UYxwIBNra2hYvXmzbdkVFBYQwHA5XV1dz8cETNPBRP5VK8RfxeDyTyXzxxRfpdHro0KHl9iouszaCi7C6uto0zc8++yyTydTV1fnB+OFw2LKsFIM70XilasdxRowYsWzZspUrVy5evLihocFPM7FB4d5JP4dFY2PjggULZsyYEQwGBw8ezL8CQgiXSul0ulAofPHFFwsWLNhrr71GjBhhGMbIkSNt2/78888/++yz0aNHc41VVVUlYrAEAoFAINjEswj7ghBSX1+fzWYTicSwYcPq6+t5Bqa6ujpZllOpVCKRQAgNGDBA07RwODxy5EgAwODBg9vb2/kmgwcP5vvhyUg3WlRQVVXVqFGjksnkuHHjBgwYwM05Q4YM4WV/eE7UaDSKEKqurh45cqQkSdtvv30mk3n11Ve333774cOHq6q6TkWsv1c55/Hjx2ez2Xw+f8ghh1RVVfE09KNGjRoyZAgAYNmyZaNHj/Y8L5/Pv/vuu4ZhDBkyZLfddhs/fvy3335bV1d3+OGH800sy+ImsQ3deIFAIBAINmdgvtBnVRaMsaqq2WwWIRSPRzEGCHWWQOYioKWlpbq62q9js77gO8cYt7e3h8NhP8eV67q84IxfF48v5wnceQBQS0sLNx2VFzP2z2jjZBDw28CPyNNi8axdPBk9hJArElVVeb1CHj3GK1VvhBb27ApeTYhrI17j2U/IzsOzeNlBnkCLN5LbwPxsWP6u0ul0LBbjX6LneW1tbfX19f2qtC0QCAQCwWYFoUMnFUKpVAZjHIlEeFXfLcZFyIsi+/HpNTU1vGYLz+3Oi+VxsxAf0XnkkKZp/AUAgNfJ8esZ8zyffMlGUFe8nbwNjuPwnKi8NDXPjBoMBv2Ie1VVPc8LBAI8LYXjONFolNuBNnQ7/a7AGPNIfD9EnSfH4p3MqyJWV1fz1nLzG1dXra2tvEiOX2mHV10sz/UqEAgEAsG2yWYnsPgwzwd4PpmO52r3pw26rssrJXMJxS0uhBC+ArevcMOVX92ZK7aNkMa9fNKiZVmSJAWDQV5GxrZtXhHZF0++dc0wDK5U/Mh9HrO/oeGJIfjERq5B+TNXt1xaIYT8KZk8+zyPY3Ndt7Ky0vM8x3H4lEMeWKbrugjAEggEAoGg3y5CXOZ049mbuFWmZ9gQt8qIpN7bLIQQy7J0XV+4cOGQIUM2jmoUCAQCgWBzcBH2O8i9PIymm63CL9vM3/Lk7BuhOo1g8wRCyK8WSZI2QgYygUAgEAg2H77XsMetVlxR9RXkvpHTUAk2E3jMPhdY/vyDjTbJQCAQCASCTUu/Rzue+MAvseJHnZevIKxWgl4T6IvwLIFAIBBsI/TbgoUx9q1WiMGrL/MwrJ4CS1gstk18k5Xrun4SMmHOFAgEAsE2Qr8FVnnKK/7a8zzbtv3sA+WD6MZJmCnYbOEzQPnUQgihUNsCgUAg2Ebot8AqF0w8uQCfus9TeEuS5A+i3JkoxtRtE56WgkdihUIhjLHneSLUXSAQCATbCP0e8PzkUtxRKEkSr2fc1tbGK9KURzSLNA3bLFxdAQB4dgaezn5TN0ogEAgEgs0gD5Yfz86VU3HKfR96iZso+LDqR8EL/+A2y8Yp+CMQCAQCwcbBY9O0eIZtbmxac53APi1Y3PhECOGGB1YmBaxhdiAPeFcUxfM8P32DEFgCgUAgEAi2AiCkD4xp6DnGmBee4RHG/RZY3GRlWZbv6VsbvbTeCz8LBAKBQCAQbFq4tOERLxhjTdMkSfLjpvoXg8UtWNxR+J0HLs/OUB56JVIfbZuI2DuBQCAQbJX4IeZrHun6FFjlFW+40xGhziI5va7fq4gTA61AIBAIBIKtAx431U0j9Uqf6ocnuCKEcC8jC+nqX352kdJdIBAIBALBVoPn0bxUvIwND1JflyB37lnkdU5c17VtGwAQDOpr2QihrrZxRByeQCAQCLYyLMuybZsLLB4B5Yul/lmwMIPnDnVd13GctZdMfPqi8A8KBAKBQCDYCiCElidxXZenVecaaQ3WhD7zYPFUC37KUIfheV51dXWv6wspJRAIBAKBYEsH9zE3L5FI9JpQfV3SNEAI/YxWsixzm1ZbW1sfDRKzBQUCgUAgEGzZ9OV803Wd2664ouJxUGuoufz/8t2mTX3t8GAAAAAASUVORK5CYII=" alt="O nó no11 no painel, alimentado pelo gateway" /></p>
+<p>O painel inteiro, com os outros nós e a exportação em CSV, é
+assim:</p>
+<p><img role="img" aria-label="O painel" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAHRAyADASIAAhEBAxEB/8QAGwABAAIDAQEAAAAAAAAAAAAAAAIDBAUGAQf/xABNEAABAwIDBAYJAgQDBQYGAwEBAAIDBBEFEhMhMVKRBjJBUVOSFCIzYXFyobHRgcEHFSNiNEKyFjU2Q3QkN1WC0+EXc5OUovBjlbPS/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAsEQEBAQABAgMHBAIDAAAAAAAAARECIUESMfADEyJRYXGBkaGxwdHhMkLx/9oADAMBAAIRAxEAPwD7siIqgiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiBnbG1z3uDWtaSSdwC02D9KabF8RnpGtyFpJiJPtAN/5W5JY1j3SW0w0l2bdbtutLg+L4FW4g6Ghp44p2g5XaLWZx22IUVul88/i5V1FJguE6FRWwiTEWMk9CeWyuYWuuG23nuHfZfQ1o+kvRqPpI3DhJUug9CrGVYytzZy2/q+7er3idnzjol0mnwPDOkuNy1GJ1WC0rmRU0GITB1QJb2Idw7SP/ANC3VH/FeB1Lib6umpnvo6VtS30OcyMfchuQktFnAkXW3xL+HdDiOJYrOauWKlxSJrammY0WMjTdsgPY4EDs7+9KboE92CYhhWK49X4lDVxtjbrWGiAbgt37b25LVssTMrlP57idb/EbozXY3hJwzTpamVoEokD49Mm+zaCLbitrgv8AFaLFcZoKU0tO2nr5XRRCOoLpordUyNy2F/cSs/Df4btpMWoMQrMbrMRfSRSQ5KgXa5jmluUbdgAJ77rI6P8AQSTo9iET6fpBiMmGwucYsPeRkbe+wntAurvH196nVk9LeldTgNTh2H4bhpxDEsQe5sMJkDG2aLkklcDgnS89G5el2KV9CY6ubEYohSukFmyEO2Fw2WFibr6F0q6Ix9JZKGpjxCow+uonl0NRBa4vvFlpmfwtofQMSppsTrJpKyoZVMqHW1YpWXs6/adp7lnjZJfXeLWw6G9NG9KKjEKR0dOJqMtJkpZTJFI1w2FpIB7LblyfTDAJabptglPDj+ORxYvUya7GVpAjGw2YANg29t133RzAqrBIJmVmNVeKSyOB1Ki3qAdgCjjPRqPGMdwfFH1LonYZI6RsYbcSXA2E9m5Xp4odcrh3fxMp+jss2FxNFVSYZKKaSSrqyaqfbZzmjLZ1veRuVGG9JoOi+JdOsWljMwFdE2OMG2dzs1tvYO1dS7oAYekE+JYdj2IUMFTOJ6mkiIySOvc7ewFKj+HNDWNx5tTVzOGLTsnu1oaYHtvYtPbvTZnr6GdWnb/FV38pxmf0OkmqcOjilb6NUF8UrXuDesWggi/cpf8AxIxw1s1AOij/AEw0grKeP0lvrRdrnHs+Aub7FtH9Aqip6N4hhGIdI66tNZkAmnaDpBpvsF+34rPb0PiHSFmL+mPzMwz+XaeQWtxXvv8Acpc6+u3/AITfX4/25+o/ipEzB8EqI6WniqcTY959KnLIoQwkG7g0k3I2bFrq/p7jOLwdG6rBmwU7aqvdTTxulNnyNPVzBp9Qgg3G3buW7P8ADKBmEYTTUuMVdLXYWHiGthaA4teSSCL+/vWbinQX+a4Hh1FNjVb6bQTa0debGQuub3H67O6wV+HfynXPwxB0zxmfpbWdH4MCinNIIjUzsqLNY1zQXHaBe19g3my1mAdLYMN6B4fVUFJh1BHPPM0Q1lc8NBDjexyuc4k+7YuqwnomzC8exPFfTpaiSvhiieJGi4yNy5r9pO9aOL+F0MGHYTTwY1WQT4bJK5lRC0Nc5shu4e49l0mLddD0Q6St6VYC3ERBoSNkfFJGHZgHNPYe0bivnHTfpjiPSHojjTafBHDBY6hsDa/WFy9sjdpZvsf3C+kdFOjUfRbC5qGKpkqGyVD588gsRmts37d29cxWfwnp6mHEKWLHa+CgqpddtI2xjjeXAk2vt3bB97KdPF6+hNxOv6eYnBXVlFgmAHEIsKhY+tmdOI8vq3s0HfsXUUGMxY50Sbi1M18bKimdI1pO1psdl/cVocX/AIcR1+I1FXRY1XYb6ZG2OtjgtlnAFv0NviunocHpcNwKPCKQFlPFDosvtNrWuff2pz68bnmcOlmvkP8AD7EssEWK1Tul1XVwQTzOzvLqKTKHbATtJt9V1FN/EqqqOieIY8KTDnspo2vbBDVl0jSXAZZAWjLsN9lwsnBP4eYjgUccFL0vxAUsbXhkAiaGguB22v2E3Wq6TdBJaDo10hxFtTPimK1sLIzpUzWXAe07GMG07Np9yvKypxlbbDun2IPxuloMYwL+XR11M6opJXVDXZg1uY5uHZ37lRh/8Ton4v6HXR0RidTyztmoah0wbptLnNddrdtgd1wpYR/DeCaCOrxXE6+re+g9HhinNvRWvZZwHvFyNqnh38L6ekrKCarxirr46SGWnEMwGUxvaW5RY+qACfirZJbPXf8A0TbNMP6fYpNhVTjtd0ddS4I2nfPDOKhrnyWIDQW9l+9e4P0+xOfF8LpcZwA0FPizSaKZs4kzbLjMOzYRzWHgXQepp8QxbBK2txGo6PejmKljkfZgDt42gesCNhFxt/RbTBP4dx4ZitJW1uM12JCgaW0UM9g2AEW7N5snw769adcU9P8AE8ROKYF0dw+tdQfzSZzZapnXa1ttje4m61fS/Ap+iPQDGaijx7GKiSTRs6pqi50Z1BctIta4K7DpT0ToulVLCyeWanqaZ+pT1UDrPid7lp5v4f1Vb0fxDCsR6TV9b6ZpgSzNB0gx2bY2/asdmu7kugtVX1PSDEvQa/GXYZT4efSIsWmBlExGwtbvA7isim6SVVD/AAPpqh9bIcRrXOpYZpZTmzOkcL5idlmgm/ZZdpU9DIpMfp8Ypa19LO2lNLUNawEVLLWGbbvHf7h3LWRfwxov5fgeH1dc+qosLfI8wPiAE5eSfW27LXW7Zf2/msyWevpFP8MsVkc/GMBqMT/mL6CfNDVGXU1InDZ61zexB5r6CuWw/oLh2DdKWYzhBFDH6OYJaSKP1JNt8177De3JdSpyu9VkzoIiLKiIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgKLnWNgLnuUlCMbC7tJQe+v/AGp6/wDasKKrqKmom0Y4m08Mmm5z3G7iOsRbcB9bLxuNULonSZ5MgaHAmJ3rNJsC3ZtFyN3epsZ8UZ3r/wBqev8A2rBONUQjz5pL3cCwROzNy9a7bXFrjmFCrxylp6aeaNss4ibcmONxadxtmtbtTTx8Z3bH1/7U9f8AtWHLi1JBI1kzpIszS4Okjc1uxuYi5Fr2BNvcqG45AamVjmStYxsZbmicHPc4u2BtrnqpsPFx+bZ+v/anr/2qmnrYaq2kXm4J2sItY2INxsN+xY1VjMFLHOdOZz4gCWabhmBda42bdvcml5STdZ/r/wBqev8A2rGbiVK8tAe4F0uiAWEHPlzW5LFlxyEPjbEHXMunIJGOYWDI54NiLnqpbIvijZ+v/anr/wBqwo8XpnujZ/Vc58OsC2F9nNsDcG3vCg7HaFjMxdLcZ7tELy5uW2a4tcWuOau4nj4/NsPX/tT1/wC1a6fGqdkkccN5XOljjLg05W5rf5rWvYg2WRTYlTVcunC5xJaXNLmEBzQbXBI2jdu71NPFx+bJ9f8AtT1/7ViSYrSxSyxyOkY6Npec0bhcAgbNm3aRu71JmJU0lPPMC8Np76rXRuDm7L9Ui+5Ni+KeWsn1/wC1PX/tWBNjVFC8AzjKL5yGk/5M+wjZ1dqlLjFHFI+PNI97CQ4RxOfawBO4bhcc1dTx8fmzM5Bs4W7iNymoMfHPC2Rjg+N7Q5rhuIO4r1hJYL70aUYl/uiu/wCnk/0lfO+hv/FNJ8H/AOgr6JiX+6K7/p5P9JXzvob/AMU0nwf/AKCor6aqKirgpSwTPILyQ0BpcTb3BXrVYvTSy1NFLHBPMyJzy8QShjhdthtLm/dWIyjidI2V8bpHBzGlzrxuFh33tu2KyKsglgdOx502i5c5pbste+0LCq6Wed1Y5kZ/q0ek0Fwvm9bZv94XlNBKcEmp/R6iKQxFgbPKHknLbYQ42HJO1O8Z9PUxVUepC4uZ3lpF+YU3Sxtdlc4NOwbdgJO4XXNFk8EeFU7qOu2PLXxOqATJaM7jnta43EhXyYbWvij1o3zaYgcGCXbdr3FwBJFzYjad9lqyakvRvhKx0row672gFw7rqWYZy3bcC+5c66lxR1ZVPbA5kbgdgkA1PXB2HOdpaCL2ba6vmpax7c0ME0cWVl4DMMxs8lzb5rAkW7bdl1MVuZpo6eF8srg2Ngu5x7Ao09TDVMc6F4cGnK4WsWnuIO0LWPo6qXAKmnyvbLLn02OeC5gJ2Am5Fx+qxq/CqyNzTTSVE+pmMz7tz5yAGutmY3YBb9jcpkTXQotA+lr/APtgEU7g4gtdnbmccw2D17Zbdhynsud68jpMR1mGSF4e7SLHsm9SEC2ZpBNzfbuvv37Ew10ChJKyJodI4NBIbc95Nh9VqsMhr24lUyVMJiic2zRmuCcx2j1j2e4fBZdXTTyUbI8+rIJmPLiA3YHg/QKKzHODRc3322C6Ne17czHBw3XBuuepKLFGh4mMmcPZd1wGyAPBJBzk7r7LBeeh4hS0z46allN2TxgCZo9ZxBa/a7db9R3K4OjRaA0eIR01S7RfNLJKywMt7MDG3sMwHWB2XCUFLiUVTRGeKR2WINlc+UFrbB26zr32jeCD3iyYmt+i0FdTYrNi4dTMMUQJAmz7CDGQLjNxEbMvZe6ysKp6iJ7nSwyws02sLZJRJmeL3cNp2cie4Jito5wba99psLC69WjFDXl2V7n6ccrWM/q7XRhxJcdvcQO/YqxQ4k2Jj5tWYRytY6FkoDpImtIBvcC5JzHaNyYOgUI5Y5S8McHZHZXW7D3LXGnqxgrYg15mDg4x6nrZM18ma+/Ls3/qtRPQYo2gnZS0cjHyyyPYNYFzLhuW5zgd+25tbckiOollZDGZJHZWjeVH0mDVdFqsD2kAtJsbnaB9CsLEGVgkp5aeJ8wDHsexrw3aQLONzuBHx27FrGYTWZqeWeF0j43U7nWkFyWsId27bEphrpGuD23F7e8WXq0LsNrZS4yOlBAGUtmI/wCaSdx4bKmuo8UFKYaWJ7iJJDG/V2sBN273j9/gkmlroXSxtlZE5wD3glre8Df9wprWYjQPrKundlcWMilBLXlpDiBbcb9hWDT0eJiWL0hkrpSYna4mGWMBoztLb7SSHbgb5t6SK6FFzVZQ4m3D4o6aF7pznc5+rctdfZveOz4/BdL2KdgREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQFAHI4tO4nYVNCARYi4QYJwxoqnzRVNREyR2aWFhaWPPebgkfoRdUxYHBGzIZ6iRjQ1kQeW/0mhwIaLDdsG+52b1stNvcmm3u+qmRm8ZWprOjlHWOL3ueJDK6TMWMfbMACLPaRb1R2X96tdgkJZPE2onZTzNIdAwtDASLZh6twdm69vctjpt7vqmm3u+qZE8HHdxppejFHUVvpVTNPM8ggh+TbdhYdoaHAEEmwNr7QFaMBju5762rknOTLM4szMLb2I9W3+YjaDdbTTb3fVNNvd9U8MPBx+THpKFtIBlmlfsObOR6ziblxsBtv3bFgx9HKWOSqkE02eoaWudZgLdubeG3JB4rrbabe76ppt7vqmRbwl6NYcBidUarquqPrmTJmaBnLMhdsbe5B77X3WVNL0XoqUENlmcS8PJIY25DHM3NaBucf1W502931TTb3fVPDDwcd3Gpb0eYwSMGIVmnJE2EsOmQGgWFjkv77Xte69pOjtJRxuZG+UhzZGnYxvXy32NaAOqNwW102931TTb3fVMiT2fGdmsbgMDJGFlRUtja5khiDm5XPaAA47L7gNl7e66uosKiopQ9s00gYwxxMkLbRNJBIbYA9g3k7lm6be76ppt7vqrnXVnDjPKNQOjdJ6XUVJlmMk7XNJ9QFt3B1wQ0EkEC1ybLPpKFtIJSZZJ5ZTeSWW2Z1hYbgBsHcFkabe76ppt7vqpkJxkuxr4cEpIGQMbnLYXPcA4g5szS0g7NwBsPgFBuBQx08MUFVUwuia5moxzS57XG5BuCO7ba/vWz02931TTb3fVMh4OPyVxxx00EdPC0BrGhjG9wGwK1oytA7kDQ3cAF6q1mMbEv90V3/Tyf6SvnfQ3/AIppPg//AEFfRMS/3RXf9PJ/pK+d9Df+KaT4P/0FRX01ERVBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREGNiX+6K7/AKeT/SV876G/8U0nwf8A6CvomJf7orv+nk/0lfO+hv8AxTSfB/8AoKivpq0+NNmkrKCKFjX5zJdjpXRg+r2kAlbheE2IG8ncAqjmBjNfSTS0TtN76aNwJkc0OfljvnsX5jc/2/qsibEamCRj5XwtJiiLpi0hkYeXXJGbd6oG/tXQbeB3JNvA7krpjmMQxmc4VLepghzwSlkuU2mIJAyetvIse3esqLFZ/TWU5khzajY/Ry06jmFo/qXvu/S2zfdb3bwO5Jt4Hck1MET1uB3JPW4HclFET1uB3JPW4HckBE9bgdyT1uB3JARPW4Hck9bgdyQEXl7GxBBO64XqDmqOrqKPCaWaQQwNncGvqZJHSBosTmcDa1yAN9tqukxat9ElnYYLRUrprlhIkIJAI27AbA9u9b4G4uGuI7wF7t4HcldGjZiNfHWiOZ0DoxUiB2SMgkGPPcbTa273rBbjtRWxyOjqYY4opYTq5RbK5xBBs823DfY94C6rbwO5Jt4Hck1MaeixSapxAQF8L76mpEwWfBY7M23t+AW4TbwO5J63A7kooietwO5J63A7kgInrcDuSetwO5ICJ63A7knrcDuSAietwO5J63A7kgInrcDuSetwO5ICJ63A7kvCSBctdyQeogNxcLxzmt6zgPiUHqKGrH4jeaasfiN5oJooasfiN5pqx+I3mgmihqx+I3mmrH4jeaCaKGrH4jeaasfiN5oJooasfiN5pqx+I3mgmihqx+I3mmrH4jeaCaLwODhcEEe5eoCIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiIMbEv8AdFd/08n+kr530N/4ppPg/wD0FfRMS/3RXf8ATyf6SvnfQ3/imk+D/wDQVFfTVKL2p+VRUovan5VU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" alt="O painel" /></p>
+<p>Os nós “sem notícia” são de testes anteriores. Um nó alimentado pelo
+gateway fica <strong>off-line</strong> no painel quando passa 30 s sem
+leituras, porque as placas USB não têm o aviso de queda (LWT) do
+MQTT.</p>
+<h3 id="64-o-que-acontece-quando-algo-falha">6.4 O que acontece quando
+algo falha</h3>
+<p>Com o gateway rodando, experimente desligar o servidor por meio
+minuto. O terminal mostra as leituras esperando e as tentativas, com
+espera crescente:</p>
+<pre><code>servidor fora do alcance (...); 1 leitura esperando, nova tentativa em 1 s.
+servidor fora do alcance (...); 2 leituras esperando, nova tentativa em 2 s.
+...
+4 leituras enviadas (no11 boot 1); seq até 8.</code></pre>
+<p>Quando o servidor volta, as leituras guardadas saem de uma vez,
+marcadas com <code>&quot;fila&quot;: 1</code>, e nenhum <code>seq</code> se perde.
+Desconectar a placa também não derruba o gateway: ele tenta reabrir a
+porta a cada 5 s. A tabela completa das falhas e das mensagens está em
+<a href="../gateway/README.md"><code>gateway/README.md</code></a>.</p>
+<h1 id="parte-iii-o-nó-pelo-wi-fi">Parte III: o nó pelo Wi-Fi</h1>
+<h2 id="7-a-biblioteca-padrão-criatelemetria">7. A biblioteca-padrão
+CriaTelemetria</h2>
+<p>No caminho do Wi-Fi, a placa fala direto com o broker, sem notebook
+no meio. A biblioteca <strong>CriaTelemetria</strong> cuida de tudo o
+que não é ler o sensor:</p>
+<ul>
+<li>conecta no Wi-Fi e reconecta quando a rede cai;</li>
+<li>conecta no broker com o usuário do projeto e avisa quando está
+on-line e off-line;</li>
+<li>acerta o relógio pelo servidor de hora da rede e só começa a medir
+depois disso;</li>
+<li>numera as leituras (<code>seq</code>) e conta as vezes que o nó
+ligou (<code>boot</code>);</li>
+<li>guarda na memória flash as leituras feitas sem conexão e as reenvia
+quando a conexão volta, mesmo que o nó tenha reiniciado;</li>
+<li>guarda a calibração de cada sensor na memória do nó.</li>
+</ul>
+<p>Um nó novo só precisa ler o próprio sensor e chamar
+<code>publicar()</code>. A referência completa está em <a href="../firmware/biblioteca-cria/README.md"><code>firmware/biblioteca-cria/README.md</code></a>.</p>
+<h2 id="8-teste-3-o-nó-com-ds18b20-publicando-pelo-wi-fi">8. Teste 3: o
+nó com DS18B20 publicando pelo Wi-Fi</h2>
+<p>O exemplo <code>NoDS18B20</code> da biblioteca é o mesmo sensor da
+Parte II, agora publicando pelo Wi-Fi. A montagem não muda.</p>
+<h3 id="81-abrir-o-exemplo-e-salvar-uma-cópia">8.1 Abrir o exemplo e
+salvar uma cópia</h3>
+<p>Na Arduino IDE, abra <em>Arquivo → Exemplos → CriaTelemetria →
+NoDS18B20</em> e use <em>Arquivo → Salvar como</em> para ter uma cópia
+editável, por exemplo <code>meu-no-ds18b20</code>. Exemplos não podem
+ser editados no lugar.</p>
+<p>O programa inteiro cabe numa tela:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;CriaTelemetria.h&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;DallasTemperature.h&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;OneWire.h&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;credenciais.h&quot;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> <span class="dt">int</span> PINO_DS18B20 <span class="op">=</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>CriaNo no<span class="op">(</span><span class="st">&quot;teste&quot;</span><span class="op">,</span> <span class="st">&quot;no1&quot;</span><span class="op">);</span>          <span class="co">// troque &quot;no1&quot; por um nó livre</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>CriaCalibracao calibracao<span class="op">(</span>no<span class="op">);</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>OneWire umFio<span class="op">(</span>PINO_DS18B20<span class="op">);</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>DallasTemperature ds18b20<span class="op">(&amp;</span>umFio<span class="op">);</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> temperaturaBruta<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  ds18b20<span class="op">.</span>requestTemperatures<span class="op">();</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> t <span class="op">=</span> ds18b20<span class="op">.</span>getTempCByIndex<span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>t <span class="op">==</span> DEVICE_DISCONNECTED_C <span class="op">||</span> t <span class="op">==</span> <span class="fl">85.0</span><span class="op">)</span> <span class="cf">return</span> NAN<span class="op">;</span>  <span class="co">// sensor com falha</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> t<span class="op">;</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  Serial<span class="op">.</span>begin<span class="op">(</span><span class="dv">115200</span><span class="op">);</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  ds18b20<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  calibracao<span class="op">.</span>sensor<span class="op">(</span><span class="st">&quot;temperatura&quot;</span><span class="op">,</span> <span class="st">&quot;C&quot;</span><span class="op">,</span> temperaturaBruta<span class="op">,</span> <span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="kw">false</span><span class="op">);</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  calibracao<span class="op">.</span>iniciar<span class="op">();</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  no<span class="op">.</span>mostrarPublicacoes<span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  no<span class="op">.</span>iniciar<span class="op">(</span>WIFI_SSID<span class="op">,</span> WIFI_SENHA<span class="op">,</span> MQTT_HOST<span class="op">,</span> MQTT_PORTA<span class="op">,</span> MQTT_USUARIO<span class="op">,</span> MQTT_SENHA<span class="op">);</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> loop<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  calibracao<span class="op">.</span>atender<span class="op">();</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  no<span class="op">.</span>manter<span class="op">();</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>no<span class="op">.</span>aCada<span class="op">(</span><span class="dv">10000</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> temperatura <span class="op">=</span> calibracao<span class="op">.</span>ler<span class="op">(</span><span class="st">&quot;temperatura&quot;</span><span class="op">);</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>isnan<span class="op">(</span>temperatura<span class="op">))</span> no<span class="op">.</span>publicar<span class="op">(</span><span class="st">&quot;temperatura&quot;</span><span class="op">,</span> temperatura<span class="op">,</span> <span class="st">&quot;C&quot;</span><span class="op">);</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="82-as-credenciais">8.2 As credenciais</h3>
+<p>Na seta ao lado das abas, à direita, escolha <em>Nova aba</em> e
+chame-a de <code>credenciais.h</code>. Cole nela o conteúdo de
+<code>firmware/credenciais.exemplo.h</code> e preencha:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define WIFI_SSID    </span><span class="st">&quot;rede-telemetria&quot;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define WIFI_SENHA   </span><span class="st">&quot;a senha do Wi-Fi&quot;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MQTT_HOST    </span><span class="st">&quot;192.168.0.10&quot;</span><span class="pp">      </span><span class="co">// o IP do servidor</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MQTT_PORTA   </span><span class="dv">1883</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MQTT_USUARIO </span><span class="st">&quot;teste&quot;</span><span class="pp">             </span><span class="co">// o mesmo nome do projeto no programa</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MQTT_SENHA   </span><span class="st">&quot;a senha MQTT do projeto teste&quot;</span></span></code></pre></div>
+<p>O <code>MQTT_USUARIO</code> precisa ser igual ao projeto do
+<code>CriaNo</code>: se não for, o nó avisa e não publica. O
+<code>credenciais.h</code> está no <code>.gitignore</code> e nunca vai
+para o GitHub. Senha enviada ao GitHub por engano deve ser trocada no
+servidor na mesma hora.</p>
+<h3 id="83-nó-livre-gravação-e-conferência">8.3 Nó livre, gravação e
+conferência</h3>
+<ol type="1">
+<li>Troque <code>&quot;no1&quot;</code> por um nó que não apareça no painel. Dois
+nós com o mesmo nome se derrubam um ao outro no broker, e o Monitor
+Serial avisa que “a conexão cai logo depois de abrir”.</li>
+<li>Clique em <em>Carregar</em>.</li>
+<li>Abra o Monitor Serial a 115200 baud e reinicie a placa pelo botão
+<strong>EN</strong>. A saída esperada, com as mensagens da biblioteca, é
+esta:</li>
+</ol>
+<pre><code>[cal] temperatura: reta da folha de dados (medida = 1 * C + 0)
+[cria] nó cria/teste/no7, biblioteca CriaTelemetria 0.2.0
+[cria] boot 1
+[cria] aguardando o Wi-Fi &quot;rede-telemetria&quot;...
+[cria] Wi-Fi conectado, IP 192.168.0.23
+[cria] conectado ao broker; status online em cria/teste/no7/status
+[cria] relógio acertado: 2026-10-19 04:12:07 UTC
+[cria] cria/teste/no7/temperatura {&quot;valor&quot;:27.4,&quot;unidade&quot;:&quot;C&quot;,&quot;seq&quot;:1,&quot;boot&quot;:1,&quot;t&quot;:1792383127113}</code></pre>
+<p>A hora pode levar até uns 30 segundos para chegar; antes dela, nada é
+medido. No painel, o cartão do nó aparece on-line com a temperatura,
+exatamente como o da Parte II. A diferença é que agora não há gateway: a
+placa, o broker e o servidor conversam sozinhos.</p>
+<blockquote>
+<p><strong>Os testes deste guia pararam aqui.</strong> O servidor de
+teste usado nas capturas roda no WSL, que os nós não alcançam pelo Wi-Fi
+(seção 2.4). O trecho acima mostra as mensagens que a biblioteca
+escreve, com os valores de exemplo; o teste com a rede da escola ainda
+está por fazer e deve ser registrado no caderno quando acontecer.</p>
+</blockquote>
+<h3 id="84-quedas-de-rede-e-do-servidor">8.4 Quedas de rede e do
+servidor</h3>
+<p>A biblioteca foi feita para a rede cair. Com o nó publicando,
+experimente desligar o servidor ou o roteador por um minuto e observe o
+Monitor Serial:</p>
+<ul>
+<li><code>conexão com o broker caiu; as leituras vão para a fila</code>:
+o nó guarda cada leitura na memória flash, com o <code>seq</code> que
+ela recebeu na hora da medida;</li>
+<li><code>fila esvaziada: todas as leituras guardadas foram reenviadas</code>:
+quando a conexão volta, as leituras saem marcadas com
+<code>&quot;fila&quot;:1</code>, e o painel e o banco as recebem na ordem
+certa.</li>
+</ul>
+<p>A fila guarda cerca de 6000 leituras, mais de 2 h de um nó com seis
+grandezas a cada 10 s. Um reinício do nó no meio da queda não apaga a
+fila.</p>
+<h2 id="9-calibrar-o-ds18b20-pela-usb">9. Calibrar o DS18B20 pela
+USB</h2>
+<p>O DS18B20 sai de fábrica com erro de até 0,5 °C. A ferramenta de
+calibração corrige o zero contra um termômetro de referência e grava a
+correção na memória do nó, onde ela sobrevive a desligar a placa e a
+gravar um programa novo. É a mesma ferramenta usada no pH e na
+condutividade da horta.</p>
+<p>Com o nó ligado ao notebook pela USB e o Monitor Serial fechado, na
+raiz do repositório:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> calibracao/calibrar.py <span class="at">--porta</span> COM5 temperatura</span></code></pre></div>
+<p>A ferramenta conduz o roteiro. Esta captura é de um teste real, com a
+ESP32 do guia, e o “termômetro de referência” marcava 32,40 °C. A espera
+para a leitura se firmar é de 120 s por padrão; no teste ela foi
+encurtada com <code>--estabilizar 20</code>:</p>
+<pre><code>Calibração de temperatura do nó teste/no1 (um-ponto-deslocamento).
+Reta atual: temperatura = 1,000000 x C + 0,000000 (da folha de dados)
+Digite &quot;sair&quot; em qualquer pergunta para desistir sem gravar nada.
+
+Ponto 1 de 1: mergulhe o DS18B20 e o termômetro de referência juntos, num copo com água.
+   Tecle Enter quando o sensor estiver na solução.
+   Esperando 20 s para a leitura se firmar (Ctrl+C interrompe a ferramenta).
+   faltam  10 s   bruto agora: 32,6875 C
+   faltam   0 s   bruto agora: 32,6875 C
+   Coletando 10 amostras, uma por segundo...
+   média 32,73750 C, desvio 0,02635 (10 amostras)
+   Leia agora: valor do termômetro de referência, em C: 32,40
+
+Reta nova: temperatura = 1,000000 x C - 0,337500
+
+Gravar a reta nova na memória do nó? [S/n]
+   Gravado no nó: temperatura = 1,000000 x C - 0,337500
+
+Registro: calibracao\2026-10-19-temperatura-no1.csv e calibracao\coeficientes.csv. Anote no caderno e faça o commit:
+   git add calibracao/ &amp;&amp; git commit -m &quot;Registra a calibração de temperatura do no1 de 19/10&quot;</code></pre>
+<p>O nó passa a publicar a temperatura corrigida. O
+<code>--listar</code> mostra as retas gravadas:</p>
+<pre><code>Nó teste/no1:
+  temperatura = 1,000000 x C - 0,337500   (calibrado em 19/10/2026 01:09)</code></pre>
+<p>Os pontos e a reta ficam registrados em <code>calibracao/</code>, em
+CSV, no formato da página de calibração do caderno do projeto, e o
+<code>gerar_relatorio.py</code> monta o relatório de calibração. O
+roteiro do pH (dois tampões e uma solução de verificação) e o da
+condutividade estão em <a href="../calibracao/README.md"><code>calibracao/README.md</code></a>.</p>
+<h2 id="10-ver-e-usar-os-dados">10. Ver e usar os dados</h2>
+<table>
+<thead>
+<tr>
+<th>Para</th>
+<th>Onde</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Acompanhar ao vivo</td>
+<td><code>http://IP_DO_SERVIDOR:3000</code></td>
+</tr>
+<tr>
+<td>Baixar em CSV</td>
+<td>Botão <em>Baixar tudo em CSV</em> ou <em>CSV deste nó</em> no
+painel. O padrão abre direto no Excel em português; o formato
+internacional usa vírgula e ponto decimal</td>
+</tr>
+<tr>
+<td>Ver o estado do servidor</td>
+<td><code>http://IP_DO_SERVIDOR:3000/saude</code>: broker, banco,
+contagem de leituras e a latência medida</td>
+</tr>
+<tr>
+<td>Listar os nós</td>
+<td><code>http://IP_DO_SERVIDOR:3000/api/nos</code></td>
+</tr>
+<tr>
+<td>Ver tudo o que chega ao broker</td>
+<td>No servidor:
+<code>mosquitto_sub -h localhost -u servidor -P &#39;SENHA&#39; -t &#39;cria/#&#39; -v</code></td>
+</tr>
+</tbody>
+</table>
+<p>Para o teste de aceitação de 24 h, com os seis critérios do plano de
+trabalho (perda, latência, pH, condutividade, disponibilidade e reuso),
+o roteiro e as ferramentas estão em <a href="../validacao/README.md"><code>validacao/README.md</code></a>.</p>
+<h2 id="11-problemas-comuns">11. Problemas comuns</h2>
+<table>
+<thead>
+<tr>
+<th>Sintoma</th>
+<th>O que fazer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A placa não aparece como porta serial</td>
+<td>Troque o cabo USB por um de dados; instale o driver CP210x ou
+CH340</td>
+</tr>
+<tr>
+<td><code>Connecting...</code> sem fim na gravação</td>
+<td>Segure o botão <strong>BOOT</strong> da placa até começar</td>
+</tr>
+<tr>
+<td><code>could not open port</code> ou
+<code>Permission denied</code></td>
+<td>Feche o Monitor Serial; no Linux, confira o grupo
+<code>dialout</code> e o <code>brltty</code></td>
+</tr>
+<tr>
+<td><code>DS18B20 sem leitura valida</code> ou −127 °C</td>
+<td>Confira os três fios e o resistor de 4,7 kΩ entre o amarelo e o
+vermelho</td>
+</tr>
+<tr>
+<td>85 °C fixo</td>
+<td>O sensor ainda não converteu: espere a próxima leitura; se
+persistir, falta alimentação</td>
+</tr>
+<tr>
+<td>Gateway: <code>servidor fora do alcance</code></td>
+<td>Confira o <code>SERVIDOR_URL</code>, se o servidor está no ar e, no
+WSL, se o Ubuntu não desligou</td>
+</tr>
+<tr>
+<td>Gateway: <code>o servidor recusou o projeto</code></td>
+<td>Confira <code>GATEWAY_PROJETO</code> e <code>GATEWAY_SENHA</code> no
+<code>.env</code></td>
+</tr>
+<tr>
+<td>Gateway:
+<code>outro gateway deste computador já está usando o nó</code></td>
+<td>Cada placa precisa de um nó só seu; o segundo gateway recebe a porta
+dele com <code>--porta</code></td>
+</tr>
+<tr>
+<td>Nó Wi-Fi: <code>rede não encontrada</code></td>
+<td>Confira o <code>WIFI_SSID</code>, letra por letra, e se o roteador
+está ligado</td>
+</tr>
+<tr>
+<td>Nó Wi-Fi: <code>o ponto de acesso recusou a conexão</code></td>
+<td>Confira a <code>WIFI_SENHA</code></td>
+</tr>
+<tr>
+<td>Nó Wi-Fi: <code>usuário ou senha recusados</code></td>
+<td>Confira <code>MQTT_USUARIO</code> e <code>MQTT_SENHA</code></td>
+</tr>
+<tr>
+<td>Nó Wi-Fi: <code>MQTT_USUARIO é ... mas o projeto é ...</code></td>
+<td>Os dois precisam ser iguais, <code>&quot;teste&quot;</code> nos dois</td>
+</tr>
+<tr>
+<td>Nó Wi-Fi: <code>esperando a hora do servidor</code></td>
+<td>O chrony não respondeu: confira a porta 123/udp do servidor</td>
+</tr>
+<tr>
+<td>Nó Wi-Fi: <code>a conexão cai logo depois de abrir</code></td>
+<td>Outro nó usa o mesmo nome: troque o número</td>
+</tr>
+<tr>
+<td>Painel: nó “sem notícia”</td>
+<td>O nó nunca publicou desde que o servidor ligou; os valores vêm do
+banco</td>
+</tr>
+<tr>
+<td>Painel: nó USB off-line</td>
+<td>Passaram 30 s sem leitura: veja o terminal do gateway</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-próximos-passos">12. Próximos passos</h2>
+<ul>
+<li><strong>O nó da horta</strong> (<code>firmware/horta-no1</code>):
+pH, condutividade, vazão, pressão, nível e a proteção da bomba, com a
+montagem pino a pino em <a href="../firmware/horta-no1/README.md"><code>firmware/horta-no1/README.md</code></a>.
+O <code>no2</code> mede o ambiente e o <code>no3</code> é a câmera.</li>
+<li><strong>A calibração do pH e da condutividade</strong>, com os
+tampões e a solução-padrão: <a href="../calibracao/README.md"><code>calibracao/README.md</code></a>.</li>
+<li><strong>O teste de aceitação de 24 h</strong>: <a href="../validacao/README.md"><code>validacao/README.md</code></a>.</li>
+<li><strong>As decisões técnicas</strong>, uma por arquivo, com data,
+motivo e o que se perde: pasta <code>decisoes/</code>.</li>
+</ul>
+<h2 id="anexo-referência-rápida">Anexo: referência rápida</h2>
+<p>Comandos na raiz do repositório. No Linux, troque <code>py</code> por
+<code>python3</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Tarefa</th>
+<th>Comando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instalar o servidor base</td>
+<td><code>sudo bash servidor/base/instalar.sh</code></td>
+</tr>
+<tr>
+<td>Subir o servidor e o painel</td>
+<td><code>cd servidor &amp;&amp; npm install &amp;&amp; npm start</code></td>
+</tr>
+<tr>
+<td>Nó simulado</td>
+<td><code>cd servidor &amp;&amp; npm run simulador</code></td>
+</tr>
+<tr>
+<td>Gateway da placa USB</td>
+<td><code>py gateway/gateway.py --porta COM5</code></td>
+</tr>
+<tr>
+<td>Listar as retas de um nó</td>
+<td><code>py calibracao/calibrar.py --porta COM5 --listar</code></td>
+</tr>
+<tr>
+<td>Calibrar a temperatura</td>
+<td><code>py calibracao/calibrar.py --porta COM5 temperatura</code></td>
+</tr>
+<tr>
+<td>Relatório de calibração</td>
+<td><code>py calibracao/gerar_relatorio.py</code></td>
+</tr>
+<tr>
+<td>Backup do banco</td>
+<td><code>sudo bash servidor/base/backup/instalar-backup.sh /mnt/backup-telemetria</code></td>
+</tr>
+<tr>
+<td>Testar a restauração</td>
+<td><code>sudo telemetria-testar-restauracao</code></td>
+</tr>
+<tr>
+<td>Testes automáticos</td>
+<td><code>cd servidor &amp;&amp; npm test</code>;
+<code>py -m unittest discover -s gateway</code>;
+<code>py -m unittest discover -s calibracao</code></td>
+</tr>
+<tr>
+<td>Gerar este guia em HTML e PDF</td>
+<td><code>py tutoriais/gerar-documentos.py</code></td>
+</tr>
+</tbody>
+</table>
+<p>A estrutura completa do repositório está no <a href="../README.md">README</a> da raiz. O código é MIT; os textos, dados
+e modelos 3D são CC BY 4.0.</p>
+</body>
+</html>
