@@ -39,6 +39,7 @@ npm test
 | `src/estado.js` | Estado de cada nó na memória: status, último valor, perda estimada |
 | `src/publicador-http.js` | Publica no broker as leituras recebidas pela rota HTTP |
 | `src/csv.js` | Formata as leituras em CSV. Coberto por testes |
+| `src/imagens.js` | Guarda e lista as fotos da câmera da horta. Coberto por testes |
 | `src/config.js` | Lê o `.env` |
 | `src/validacao.js` | Cálculos dos seis critérios de aceitação e montagem do relatório. Coberto por testes |
 | `painel/` | O painel: HTML, CSS e JavaScript, sem etapa de compilação |
@@ -59,6 +60,9 @@ O roteiro do teste de aceitação, com o uso das duas ferramentas de validação
 | `GET /api/historico?projeto=&no=&grandeza=&minutos=60` | Pontos de uma grandeza (até 1440 minutos), para os gráficos |
 | `GET /api/exportar.csv?horas=24&formato=br` | As leituras do período em CSV, agrupadas por série (projeto, nó, grandeza) e, dentro de cada uma, em ordem de hora. Filtros opcionais: `projeto`, `no` e `grandeza`. `formato=br` (padrão) usa ponto e vírgula e vírgula decimal; `formato=internacional` usa vírgula e ponto decimal. Até 744 horas (31 dias). Uma exportação por vez: um pedido durante outra recebe 429 |
 | `POST /api/leituras` | Recebe leituras das placas Arduino (veja abaixo) |
+| `POST /api/imagens/:no` | Recebe uma foto da câmera da horta (veja abaixo) |
+| `GET /api/imagens?projeto=&no=&limite=50` | As fotos mais novas de um nó, da mais nova para a mais antiga, com a URL de cada uma |
+| `GET /api/imagens/arquivo/:projeto/:no/:dia/:arquivo` | Uma foto. Como a foto não muda depois de gravada, o navegador a guarda por um dia |
 
 ### Rota HTTP das placas Arduino
 
@@ -81,6 +85,27 @@ A resposta diz quantas leituras foram aceitas e por que as outras foram recusada
 | 503 | Broker fora do ar, ou não confirmou as leituras em 10 s |
 
 Uma placa Arduino não tem LWT: o nó que passa 30 s sem enviar leitura fica off-line no painel.
+
+### Fotos da câmera da horta
+
+A ESP32-CAM (`firmware/horta-no3-camera`) envia cada foto como o corpo do pedido, em JPEG, com o usuário e a senha do projeto:
+
+```bash
+curl -u horta:SENHA_DA_HORTA -H 'Content-Type: image/jpeg' --data-binary @foto.jpg \
+  http://IP_DO_SERVIDOR:3000/api/imagens/no3
+```
+
+O broker confere a senha antes de o servidor receber a imagem. A foto fica em `IMAGENS_DIR/horta/no3/AAAA-MM-DD/HH-MM-SS.jpg`, com a data e a hora da escola, e o painel mostra a mais nova no cartão do nó. As fotos ficam fora do banco e do repositório (`decisoes/2026-10-18-imagens-da-camera-por-http.md`); o servidor não as apaga.
+
+| Resposta | Quando |
+| --- | --- |
+| 201 | Foto guardada; a resposta traz o caminho e o tamanho |
+| 400 | Corpo que não é um JPEG inteiro (cortado no envio, por exemplo) ou nó fora do catálogo |
+| 401, 403 | Como na rota das placas Arduino |
+| 413 | Foto acima de 2 MB |
+| 415 | Content-Type que não é `image/jpeg` |
+| 503 | Broker fora do ar: sem ele, a senha não tem como ser conferida |
+| 507 | Disco com menos de `IMAGENS_ESPACO_MINIMO_MB` livres |
 
 ## Eventos do Socket.IO
 
@@ -112,7 +137,9 @@ Para a medida valer:
 | `INFLUX_URL`, `INFLUX_ORG`, `INFLUX_BUCKET` | `http://localhost:8086`, `cria`, `telemetria` | Onde gravar |
 | `INFLUX_TOKEN` | obrigatória | Token do bucket, criado pelo instalador |
 | `PORTA_HTTP` | `3000` | Porta do painel e das rotas |
-| `FUSO_HORARIO` | `America/Recife` | Fuso da coluna `data_hora` e do nome do arquivo CSV |
+| `FUSO_HORARIO` | `America/Recife` | Fuso da coluna `data_hora`, do nome do arquivo CSV e das pastas de fotos |
+| `IMAGENS_DIR` | `servidor/imagens/` | Onde guardar as fotos da câmera. Pode ser outro disco |
+| `IMAGENS_ESPACO_MINIMO_MB` | `1024` | Abaixo disso livre no disco das fotos, as fotos novas são recusadas, para não faltar espaço ao banco |
 
 ## Limitações conhecidas
 

@@ -20,6 +20,7 @@ const NOMES = {
   vazao: 'Vazão',
   pressao: 'Pressão',
   nivel: 'Nível do reservatório',
+  bomba: 'Bomba',
   umidade: 'Umidade do ar',
   iluminancia: 'Iluminância',
   co2: 'CO₂',
@@ -92,7 +93,21 @@ function atualizarNo(resumo) {
     const item = garantirGrandeza(no, resumo.projeto, resumo.no, grandeza);
     mostrarValor(item, grandeza, g.valor, g.unidade);
   }
+  if (resumo.ultimaImagem) mostrarImagem(no, resumo.ultimaImagem);
   atualizarTempos();
+}
+
+// Última foto da câmera, com o link para a imagem inteira.
+function mostrarImagem(no, { caminho, t }) {
+  const figura = no.elemento.querySelector('.imagem');
+  const url = `/api/imagens/arquivo/${caminho}`;
+  if (figura.dataset.caminho !== caminho) {
+    figura.querySelector('img').src = url;
+    figura.querySelector('a').href = url;
+    figura.dataset.caminho = caminho;
+  }
+  figura.dataset.t = t;
+  figura.hidden = false;
 }
 
 function garantirNo(projeto, nomeDoNo) {
@@ -245,6 +260,8 @@ function mostrarValor(item, grandeza, valor, unidade) {
   const numero = item.elemento.querySelector('.numero');
   if (grandeza === 'nivel' && unidade === 'estado') {
     numero.textContent = valor === 1 ? 'acima da boia' : 'abaixo da boia';
+  } else if (grandeza === 'bomba' && unidade === 'estado') {
+    numero.textContent = valor === 1 ? 'ligada' : 'cortada pela proteção';
   } else {
     numero.textContent = formatar(valor, 2);
   }
@@ -259,6 +276,12 @@ function atualizarTempos() {
     const ultima = no.elemento.querySelector('.ultima');
     const t = no.dados.ultimaRecepcao;
     ultima.textContent = t ? `última leitura há ${tempoDesde(t)}` : '';
+    const figura = no.elemento.querySelector('.imagem');
+    if (!figura.hidden) {
+      const quando = Number(figura.dataset.t);
+      figura.querySelector('figcaption').textContent =
+        `Última foto: ${new Date(quando).toLocaleString('pt-BR')} (há ${tempoDesde(quando)})`;
+    }
   }
 }
 setInterval(atualizarTempos, 1000);

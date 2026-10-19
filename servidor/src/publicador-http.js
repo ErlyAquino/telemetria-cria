@@ -67,17 +67,27 @@ export function criarPublicadorHttp({ host, porta }) {
     }
   }
 
-  // Publica as leituras já conferidas. Devolve quando o broker confirmou todas.
   // Lança um erro com codigo 'recusado' se o broker não aceitar usuário e senha,
-  // ou 'indisponivel' se o broker estiver fora ou não confirmar a tempo.
-  async function publicar(projeto, senha, leituras) {
-    let cliente;
+  // ou 'indisponivel' se o broker estiver fora.
+  async function conexaoConferida(projeto, senha) {
     try {
-      cliente = await obterConexao(projeto, senha);
+      return await obterConexao(projeto, senha);
     } catch (erro) {
       if (erro.code === 4 || erro.code === 5) throw Object.assign(new Error('usuário ou senha recusados'), { codigo: 'recusado' });
       throw Object.assign(new Error(`broker indisponível: ${erro.message || erro.code}`), { codigo: 'indisponivel' });
     }
+  }
+
+  // Só confere usuário e senha no broker, sem publicar nada (rota das imagens).
+  async function conferirSenha(projeto, senha) {
+    await conexaoConferida(projeto, senha);
+  }
+
+  // Publica as leituras já conferidas. Devolve quando o broker confirmou todas.
+  // Lança um erro com codigo 'recusado' se o broker não aceitar usuário e senha,
+  // ou 'indisponivel' se o broker estiver fora ou não confirmar a tempo.
+  async function publicar(projeto, senha, leituras) {
+    const cliente = await conexaoConferida(projeto, senha);
     const publicacoes = Promise.all(
       leituras.map(({ no, grandeza, valor, unidade, seq, boot, t, fila }) => {
         const mensagem = { valor, unidade, seq, boot, t, ...(fila ? { fila: 1 } : {}) };
@@ -125,5 +135,5 @@ export function criarPublicadorHttp({ host, porta }) {
     conexoes.clear();
   }
 
-  return { publicar, fechar };
+  return { publicar, conferirSenha, fechar };
 }

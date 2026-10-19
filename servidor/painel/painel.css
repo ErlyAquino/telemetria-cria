@@ -181,3 +181,21 @@ select,
   position: relative;
   height: 90px;
 }
+
+/* Última foto dos nós com câmera (horta/no3). */
+.imagem {
+  margin: 10px 0 0;
+}
+.imagem img {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+.imagem figcaption {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}

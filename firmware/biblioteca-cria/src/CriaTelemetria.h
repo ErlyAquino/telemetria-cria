@@ -25,6 +25,7 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 #include <WiFi.h>
+#include <Wire.h>
 
 class CriaNo {
  public:
@@ -63,6 +64,19 @@ class CriaNo {
   // Servidor de hora (NTP). Padrão: o próprio broker, que é o servidor da escola.
   // Chame antes de iniciar().
   void usarServidorDeHora(const char* host) { _servidorDeHora = host; }
+  // Usa o RTC DS3231 (relógio com bateria) do barramento I2C: depois de um corte
+  // de energia sem rede, o nó volta a medir com a hora dele, e cada acerto pelo
+  // servidor corrige o DS3231. Chame antes de iniciar(), com o Wire já ligado
+  // (Wire.begin(21, 22)).
+  void usarRelogioDS3231(TwoWire& barramento = Wire) { _relogio = &barramento; }
+  // Intervalo do keepalive do MQTT, em segundos (padrão: 5). Um nó que passa
+  // muito tempo sem chamar manter(), como a câmera enviando uma foto, precisa de
+  // um intervalo maior, senão a conexão cai a cada envio. Chame antes de iniciar().
+  void usarKeepAlive(uint16_t segundos) { _keepAlive = segundos; }
+
+  // Projeto e nó, como no catálogo: ("horta", "no1").
+  const String& projeto() const { return _projeto; }
+  const String& nome() const { return _no; }
 
  private:
   void cuidarDoWifi(uint32_t agora);
@@ -72,6 +86,8 @@ class CriaNo {
   void esvaziarFila(uint8_t maximo);
   void contarFila();
   void avisar(const char* mensagem);
+  void acertarPeloDS3231();
+  void corrigirDS3231();
 
   String _projeto;
   String _no;
@@ -107,4 +123,9 @@ class CriaNo {
   bool _jaAvisou = false;
   uint32_t _ultimoAviso = 0;
   bool _mostrarPublicacoes = false;
+  TwoWire* _relogio = nullptr;  // DS3231, quando o nó tem um
+  uint16_t _keepAlive = 5;
 };
+
+// Calibração dos sensores (opcional): CriaCalibracao calibracao(no);
+#include "CriaCalibracao.h"

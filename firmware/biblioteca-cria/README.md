@@ -1,12 +1,14 @@
 # CriaTelemetria: a biblioteca-padrão dos nós ESP32
 
-**Versão 0.1.0.** É o produto de reuso da plataforma, com o [catálogo de tópicos](../../mqtt/catalogo-topicos.md). Com ela, um nó novo só precisa ler o próprio sensor e chamar `publicar()`. A biblioteca cuida de:
+**Versão 0.2.0.** É o produto de reuso da plataforma, com o [catálogo de tópicos](../../mqtt/catalogo-topicos.md). Com ela, um nó novo só precisa ler o próprio sensor e chamar `publicar()`. A biblioteca cuida de:
 
 - conectar no Wi-Fi e reconectar quando a rede cai;
 - conectar no broker com o usuário do projeto, registrar o LWT (`offline` com retain) e publicar `online`;
 - acertar o relógio pelo servidor de hora da rede local (o próprio servidor da escola), só começar a medir depois disso e conferir a hora a cada 15 minutos;
 - numerar as leituras (`seq`, dado na leitura) e contar as vezes que o nó ligou (`boot`, guardado na memória não volátil);
-- guardar na memória flash (LittleFS) as leituras feitas sem conexão e reenviá-las com `"fila":1` quando a conexão voltar, mesmo que o nó tenha reiniciado nesse meio-tempo.
+- guardar na memória flash (LittleFS) as leituras feitas sem conexão e reenviá-las com `"fila":1` quando a conexão voltar, mesmo que o nó tenha reiniciado nesse meio-tempo;
+- com um RTC DS3231, voltar a medir depois de um corte de energia mesmo sem rede (versão 0.2);
+- guardar a calibração de cada sensor na memória do nó e atender a ferramenta de calibração pela USB (classe `CriaCalibracao`, versão 0.2).
 
 O passo a passo para quem nunca usou, do zero até o painel, está em [`tutoriais/01-primeiro-no-esp32.md`](../../tutoriais/01-primeiro-no-esp32.md).
 
@@ -65,6 +67,9 @@ Placa: *DOIT ESP32 DEVKIT V1* (ESP32 de 30 pinos), com a tabela de partições p
 | `no.boot()`, `no.leiturasNaFila()` | O boot atual e quantas leituras esperam na fila |
 | `no.mostrarPublicacoes(true)` | Mostra cada leitura publicada no Monitor Serial |
 | `no.usarServidorDeHora("ip")` | Outro servidor de hora; o padrão é o próprio broker. Antes de `iniciar()` |
+| `no.usarRelogioDS3231(Wire)` | Usa o RTC DS3231 do barramento I2C. Antes de `iniciar()`, com o `Wire.begin(21, 22)` já feito |
+| `no.usarKeepAlive(30)` | Keepalive do MQTT, em segundos (padrão: 5). Para nós que passam vários segundos sem chamar `manter()`, como a câmera enviando uma foto. Antes de `iniciar()` |
+| `no.projeto()`, `no.nome()` | O projeto e o nó, como no catálogo |
 
 ## Quando uma leitura é recusada
 
@@ -82,11 +87,53 @@ O valor vai na mensagem com 7 algarismos significativos, a precisão de um `floa
 - **Wi-Fi.** Quando a rede cai, o ESP32 tenta voltar sozinho. Se continuar sem rede por 30 s (por exemplo, depois de uma senha recusada enquanto o ponto de acesso reiniciava), a biblioteca pede uma nova conexão a cada 30 s.
 - **Servidor que some sem avisar** (desligado, cabo solto). A conexão TCP continua parecendo aberta, e o ESP32 só percebe a queda pelo *keepalive* de 5 s, em 5 a 10 s. As leituras enviadas nesse intervalo se perdem e aparecem como lacuna no `seq`. Quando um envio falha, a biblioteca derruba a conexão na hora e manda as leituras seguintes para a fila.
 - **Reinício no meio do reenvio da fila.** A posição do reenvio fica só na memória, então as leituras já reenviadas daquela fila são enviadas de novo. No banco, a repetida sobrescreve a original (mesmas etiquetas e mesma hora), mas a perda estimada do painel conta as duas.
-- **Hora depois de reiniciar.** Num reinício por software (botão EN, watchdog, pane), o ESP32 mantém a hora e volta a medir na hora. Só depois de um corte de energia ele espera o servidor de hora.
+- **Hora depois de reiniciar.** Num reinício por software (cão de guarda, pane, `ESP.restart()`), o ESP32 mantém a hora e volta a medir na hora. O botão EN e um corte de energia reiniciam o chip inteiro e apagam a hora: sem o DS3231, o nó espera o servidor de hora.
 
-## Limitações da versão 0.1
+## Hora pelo DS3231
 
-- **Relógio:** a hora vem só do servidor NTP. O uso do RTC DS3231 depois de um corte de energia sem rede, previsto no catálogo para o nó `horta/no1`, entra junto com esse nó, na Etapa 5.
+Sem o DS3231, um nó que liga depois de um corte de energia espera o servidor de hora para começar a medir. Com ele (`no.usarRelogioDS3231(Wire)`), o nó lê a hora do DS3231 na partida, alinhada à virada do segundo, e começa a medir na hora. A cada conexão ao Wi-Fi, o nó pede a hora ao servidor até receber a primeira resposta, e cada vez que ela chega a biblioteca corrige o DS3231, com erro abaixo de 20 ms. O DS3231 guarda a hora em UTC. Se a bateria dele acabou (marca de oscilador parado) ou se a hora dele for anterior à data em que o programa foi compilado, a biblioteca não a usa e espera o servidor.
+
+## Calibração dos sensores
+
+A classe `CriaCalibracao` guarda, na memória não volátil, a reta de cada sensor (medida = inclinação × bruto + deslocamento) e atende a ferramenta `calibracao/calibrar.py` pela USB:
+
+```cpp
+CriaNo no("horta", "no1");
+CriaCalibracao calibracao(no);
+
+double tensaoDoPh() { /* lê o eletrodo; NAN se falhar */ }
+
+void setup() {
+  Serial.begin(115200);
+  // nome, unidade do bruto, função que lê o bruto, reta da folha de dados, exige calibração
+  calibracao.sensor("ph", "V", tensaoDoPh, -5.63, 21.10, true);
+  calibracao.iniciar();
+  no.iniciar(WIFI_SSID, WIFI_SENHA, MQTT_HOST, MQTT_PORTA, MQTT_USUARIO, MQTT_SENHA);
+}
+
+void loop() {
+  calibracao.atender();          // comandos da ferramenta, sem travar o nó
+  no.manter();
+  if (no.aCada(10000)) no.publicar("ph", calibracao.ler("ph"), "pH");
+}
+```
+
+| Função | O que faz |
+| --- | --- |
+| `calibracao.sensor(nome, unidadeBruta, ler, inclinacao, deslocamento, exige)` | Registra um sensor (até 8, nome com até 15 caracteres). A reta dada vale até a primeira calibração |
+| `calibracao.iniciar()` | Lê as retas gravadas e mostra a situação de cada sensor no Monitor Serial |
+| `calibracao.atender()` | Atende os comandos `cal ...` da serial. Em todo `loop()` |
+| `calibracao.ler("ph")` | Lê o bruto e aplica a reta. `NAN` se a leitura falhar ou se o sensor exigir calibração e ainda não tiver sido calibrado |
+| `calibracao.converter("vazao", bruto)` | Só aplica a reta a um bruto já lido |
+| `calibracao.calibrado("ph")` | O sensor já foi calibrado neste nó? |
+| `calibracao.aguardandoCalibracao("ph")` | O sensor exige calibração e ainda não foi calibrado? |
+
+Um programa em modo de teste, com leituras inventadas, deve guardar as retas noutro espaço da memória, `CriaCalibracao calibracao(no, "cria-cal-sim");`, para a reta de um ensaio nunca valer depois com os sensores de verdade. O `horta-no1` faz isso sozinho quando `SIMULAR_SENSORES` está ligado.
+
+O roteiro de bancada e os comandos estão em [`calibracao/README.md`](../../calibracao/README.md). O nó completo da horta, com pH, condutividade, vazão, pressão e boia, está em `firmware/horta-no1`.
+
+## Limitações da versão 0.2
+
 - **Ritmo:** um só `aCada` por programa. Para dois ritmos diferentes, use `millis()` no próprio sketch.
-- **Comandos:** os comandos de calibração pelo tópico `cmd` ainda não existem; ficam para a Etapa 5.
-- **Teste:** a versão 0.1 foi compilada sem avisos para o ESP32 DevKit V1 (núcleo esp32 3.3.12). Ainda não rodou numa placa: o material não tinha chegado em 18/10/2026.
+- **Comandos pela rede:** a calibração é pela USB (`decisoes/2026-10-18-calibracao-pela-usb.md`); o tópico `cmd` continua sem uso.
+- **Teste:** a versão 0.2 compila sem avisos para o ESP32 DevKit V1 e para a ESP32-CAM (núcleo esp32 3.3.12). A calibração pela USB foi testada numa ESP32 real, com o `horta-no1` no modo simulado. O Wi-Fi, o MQTT e o DS3231 ainda não rodaram numa placa: em 18/10/2026 o computador de teste não alcançava o broker pela rede sem fio.

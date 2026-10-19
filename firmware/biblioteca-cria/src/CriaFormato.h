@@ -33,4 +33,8 @@ size_t montarMensagem(char* destino, size_t tamanho, double valor, const char* u
 // Devolve o tamanho escrito, ou 0 se a mensagem não terminar em "}" ou não couber.
 size_t marcarComoFila(char* destino, size_t tamanho, const char* mensagem);
 
+// Segundos desde 01/01/1970 de uma data e hora UTC (mês de 1 a 12), sem depender
+// do fuso configurado no ESP32. Usado com o RTC DS3231, que guarda a hora em UTC.
+int64_t segundosDesde1970(int ano, int mes, int dia, int hora, int minuto, int segundo);
+
 }  // namespace cria

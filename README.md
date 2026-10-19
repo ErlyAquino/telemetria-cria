@@ -82,11 +82,14 @@ telemetria-cria/
 ├── firmware/                  código das placas: nós ESP32 e placas USB (C++/Arduino)
 │   ├── biblioteca-cria/       a biblioteca-padrão reutilizável (CriaTelemetria)
 │   ├── no-ar/                 o nó do monitor de qualidade do ar
+│   ├── horta-no1/             o nó da solução nutritiva: pH, condutividade, vazão, pressão, nível e proteção da bomba
+│   ├── horta-no2/             o nó do ambiente da bancada: umidade e iluminância
+│   ├── horta-no3-camera/      a câmera da horta (ESP32-CAM), fotos para o time-lapse
 │   ├── arduino-usb/           placa sem rede, ligada ao gateway pela USB (Uno ou ESP32)
 │   └── credenciais.exemplo.h  modelo sem senha, para copiar
 ├── gateway/                   ponte USB -> HTTP das placas Arduino legadas (Python; veja gateway/README.md)
 ├── servidor/                  Node.js + Fastify + Socket.IO (veja servidor/README.md)
-│   ├── base/                  instalador do Mosquitto, do chrony e do InfluxDB
+│   ├── base/                  instalador do Mosquitto, do chrony e do InfluxDB; backup/ do banco
 │   ├── ferramentas/           nó simulado e, depois, os scripts de validação
 │   ├── src/                   o servidor: assinatura MQTT, banco, rotas, CSV
 │   ├── painel/                a interface web
@@ -96,7 +99,7 @@ telemetria-cria/
 │   ├── mosquitto.exemplo.conf configuração do broker, sem senhas
 │   └── acl                    quem pode publicar onde
 ├── modelos-3d/                arquivos STL dos abrigos e suportes
-├── calibracao/                pontos brutos e relatório de calibração
+├── calibracao/                ferramenta de calibração pela USB, pontos e relatório de calibração
 ├── validacao/                 roteiro do teste de aceitação, evidências e relatório dos seis critérios
 ├── decisoes/                  uma decisão técnica por arquivo: data, o quê, por quê, o que se perde
 ├── tutoriais/                 passo a passo para quem vai usar ou replicar

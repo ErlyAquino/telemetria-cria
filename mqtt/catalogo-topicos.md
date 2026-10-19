@@ -25,7 +25,7 @@ Exemplo: `cria/horta/no1/ph` — rede CRIA, projeto horta, nó 1, pH.
 - `no` é a palavra `no` seguida do número, de 1 a 9999, sem zero à esquerda: `no1`, `no2`, ..., `no10`.
 - `grandeza` é o nome da grandeza física, não o do sensor: `temperatura`, e não `ds18b20`. A única exceção são os sensores MQ (seção 4.1), cuja leitura é relativa e não corresponde a uma grandeza física definida.
 - A mesma grandeza tem o mesmo nome em qualquer nó. A temperatura da solução e a do ar da horta são ambas `temperatura`; o nó é que as diferencia.
-- Dois nomes são reservados e não podem ser usados como grandeza: `status` (seção 3) e `cmd`, guardado para os comandos de calibração que serão definidos na Etapa 5.
+- Dois nomes são reservados e não podem ser usados como grandeza: `status` (seção 3) e `cmd`, guardado para comandos aos nós. A calibração não usa o `cmd`: ela é feita pela USB, com o notebook na bancada (`calibracao/README.md` e `decisoes/2026-10-18-calibracao-pela-usb.md`).
 
 ## 2. A mensagem
 
@@ -128,6 +128,7 @@ As oito grandezas do plano de trabalho são as seis do `no1` mais a umidade e a 
 | `cria/horta/no1/vazao` | YF-S201 | `L/min` | Calibrada pelo fator de pulsos por litro |
 | `cria/horta/no1/pressao` | Sensor de pressão de água | `kPa` | Pressão manométrica, isto é, acima da atmosférica |
 | `cria/horta/no1/nivel` | Boia | `estado` | `1` = solução acima da boia; `0` = abaixo, hora de repor a solução e proteger a bomba |
+| `cria/horta/no1/bomba` | Relé da bomba | `estado` | `1` = ligada; `0` = cortada pelo nó porque a solução ficou abaixo da boia. Complementar, fora das oito do plano de trabalho |
 
 **`no2` — ambiente da bancada**
 
@@ -137,7 +138,7 @@ As oito grandezas do plano de trabalho são as seis do `no1` mais a umidade e a 
 | `cria/horta/no2/iluminancia` | BH1750 | `lx` | O plano de trabalho fala em irradiância do painel, mas o BH1750 mede iluminância (luz ponderada pela sensibilidade do olho, em lux), e não irradiância (W/m²). Serve para acompanhar o fotoperíodo e grandes variações de intensidade. Não mede a luz útil à planta e subestima os LEDs vermelhos e azuis de cultivo. Veja `decisoes/2026-10-18-iluminancia-no-lugar-de-irradiancia.md` |
 | `cria/horta/no2/temperatura` | DHT22 | `C` | Temperatura do ar. Complementar, fora das oito do plano de trabalho |
 
-**`no3` — câmera.** A ESP32-CAM é o nó `no3` da horta. As imagens não passam pelo MQTT; o formato de envio delas será definido junto com o nó, na Etapa 5.
+**`no3` — câmera.** A ESP32-CAM é o nó `no3` da horta e fotografa o cultivo para o registro em time-lapse. Pelo MQTT vai só o estado do nó (`status`, seção 3). As imagens não passam pelo MQTT: cada foto é um JPEG enviado ao servidor por HTTP, com o usuário e a senha do projeto, em `POST /api/imagens/no3` (`servidor/README.md`). O servidor guarda as fotos em pastas por dia, fora do banco, e o painel mostra a mais recente. A câmera enquadra o cultivo, não pessoas. Veja `decisoes/2026-10-18-imagens-da-camera-por-http.md`.
 
 ### 4.3 Projeto `teste`
 

@@ -18,6 +18,7 @@ export function criarEstado({ segundosAteOfflineHttp }) {
         grandezas: {},
         contagem: null, // { boot, recebidas, menorSeq, maiorSeq }
         alterado: false, // a contagem mudou desde o último envio ao painel
+        ultimaImagem: null, // { caminho, t }, nos nós com câmera
       };
       nos.set(chave, n);
     }
@@ -74,6 +75,13 @@ export function criarEstado({ segundosAteOfflineHttp }) {
     obter(projeto, no).origem = 'http';
   }
 
+  // Imagem nova da câmera (ou a última encontrada no disco, ao ligar). Não mexe
+  // no status: o nó da câmera tem o próprio LWT pelo MQTT.
+  function registrarImagem(projeto, no, { caminho, t }) {
+    const n = obter(projeto, no);
+    if (!n.ultimaImagem || t >= n.ultimaImagem.t) n.ultimaImagem = { caminho, t };
+  }
+
   // Valores lidos do banco ao ligar o servidor; não mexem no status e não
   // apagam um valor mais novo que já tenha chegado.
   function carregarUltimas(ultimas) {
@@ -116,6 +124,7 @@ export function criarEstado({ segundosAteOfflineHttp }) {
       ultimaRecepcao: n.ultimaRecepcao,
       grandezas: n.grandezas,
       perda: c ? { boot: c.boot, recebidas: c.recebidas, esperadas } : null,
+      ultimaImagem: n.ultimaImagem,
     };
   }
 
@@ -127,6 +136,7 @@ export function criarEstado({ segundosAteOfflineHttp }) {
     registrarLeitura,
     registrarStatus,
     marcarOrigemHttp,
+    registrarImagem,
     carregarUltimas,
     verificarSilencio,
     retirarAlterados,

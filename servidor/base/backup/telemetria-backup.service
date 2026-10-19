@@ -1,0 +1,11 @@
+# Backup do banco da Rede de Telemetria do Espaço CRIA (servidor/base/backup/README.md).
+[Unit]
+Description=Backup do banco da telemetria (InfluxDB) para o cartão microSD
+After=influxdb.service
+Requires=influxdb.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/telemetria-backup
+Nice=10
+IOSchedulingClass=idle

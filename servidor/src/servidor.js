@@ -7,6 +7,7 @@
 // Uso, na pasta servidor/:  npm start
 // Rotas e eventos: servidor/README.md.
 
+import { mkdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { Readable } from 'node:stream';
@@ -20,6 +21,16 @@ import { NOME_VALIDO, NO_VALIDO, PROJETOS_RESERVADOS, interpretarMensagem, lerLe
 import { lerConfig } from './config.js';
 import { criarFormatador } from './csv.js';
 import { criarEstado } from './estado.js';
+import {
+  ARQUIVO_VALIDO,
+  DIA_VALIDO,
+  TAMANHO_MAXIMO_DA_IMAGEM,
+  eJpeg,
+  espacoLivre,
+  listarImagens,
+  salvarImagem,
+  ultimasImagens,
+} from './imagens.js';
 import { criarPublicadorHttp } from './publicador-http.js';
 import { percentil } from './validacao.js';
 
@@ -264,29 +275,32 @@ app.get(
   },
 );
 
-// Rota HTTP das placas Arduino (gateway). Usuário e senha são os do projeto no
-// broker, enviados por autenticação Basic. O corpo é uma lista de leituras no
-// formato da seção 2 do catálogo, com "no" e "grandeza" em cada uma.
+// Rotas que os nós usam por HTTP (gateway das placas Arduino e câmera). Usuário
+// e senha são os do projeto no broker, enviados por autenticação Basic, e o
+// broker é quem confere a senha. A conferência do formato vem antes de ler o corpo.
 app.decorateRequest('credencial', null);
 
+async function exigirProjeto(pedido, resposta) {
+  const credencial = lerAutenticacaoBasic(pedido.headers.authorization);
+  if (!credencial) {
+    return resposta
+      .code(401)
+      .header('WWW-Authenticate', 'Basic realm="telemetria-cria"')
+      .send({ erro: 'envie o usuário e a senha do projeto (autenticação Basic)' });
+  }
+  if (!NOME_VALIDO.test(credencial.usuario) || PROJETOS_RESERVADOS.has(credencial.usuario)) {
+    return resposta.code(403).send({ erro: `"${credencial.usuario.slice(0, 40)}" não é um projeto do catálogo` });
+  }
+  pedido.credencial = credencial;
+}
+
+// Leituras das placas Arduino (gateway). O corpo é uma lista de leituras no
+// formato da seção 2 do catálogo, com "no" e "grandeza" em cada uma.
 app.post(
   '/api/leituras',
   {
     bodyLimit: 256 * 1024,
-    // Confere usuário e senha antes de ler o corpo.
-    onRequest: async (pedido, resposta) => {
-      const credencial = lerAutenticacaoBasic(pedido.headers.authorization);
-      if (!credencial) {
-        return resposta
-          .code(401)
-          .header('WWW-Authenticate', 'Basic realm="telemetria-cria"')
-          .send({ erro: 'envie o usuário e a senha do projeto (autenticação Basic)' });
-      }
-      if (!NOME_VALIDO.test(credencial.usuario) || PROJETOS_RESERVADOS.has(credencial.usuario)) {
-        return resposta.code(403).send({ erro: `"${credencial.usuario.slice(0, 40)}" não é um projeto do catálogo` });
-      }
-      pedido.credencial = credencial;
-    },
+    onRequest: exigirProjeto,
   },
   async (pedido, resposta) => {
     const { usuario: projeto, senha } = pedido.credencial;
@@ -322,6 +336,104 @@ app.post(
     contadores.recebidasPorHttp += aceitas.length;
     for (const no of new Set(aceitas.map((l) => l.no))) estado.marcarOrigemHttp(projeto, no);
     return { aceitas: aceitas.length, recusadas };
+  },
+);
+
+// Imagens da câmera (nó horta/no3): o corpo é o JPEG, com Content-Type image/jpeg.
+app.addContentTypeParser('image/jpeg', { parseAs: 'buffer', bodyLimit: TAMANHO_MAXIMO_DA_IMAGEM }, (_pedido, corpo, feito) =>
+  feito(null, corpo),
+);
+
+// A senha é conferida no broker antes de o servidor receber os até 2 MB da imagem.
+async function conferirNoBroker(pedido, resposta) {
+  const { usuario: projeto, senha } = pedido.credencial;
+  try {
+    await publicadorHttp.conferirSenha(projeto, senha);
+  } catch (erro) {
+    if (erro.codigo === 'recusado') {
+      return resposta
+        .code(401)
+        .header('WWW-Authenticate', 'Basic realm="telemetria-cria"')
+        .send({ erro: `o broker recusou o usuário "${projeto}" com essa senha` });
+    }
+    return resposta.code(503).send({ erro: erro.message });
+  }
+}
+
+app.post(
+  '/api/imagens/:no',
+  {
+    bodyLimit: TAMANHO_MAXIMO_DA_IMAGEM,
+    onRequest: [exigirProjeto, conferirNoBroker],
+    schema: { params: { type: 'object', properties: { no: NO } } },
+  },
+  async (pedido, resposta) => {
+    const { usuario: projeto } = pedido.credencial;
+    const { no } = pedido.params;
+    if (!Buffer.isBuffer(pedido.body) || !eJpeg(pedido.body)) {
+      resposta.code(400);
+      return { erro: 'o corpo deve ser uma imagem JPEG inteira, com Content-Type image/jpeg' };
+    }
+    const livre = await espacoLivre(config.imagens.pasta);
+    if (livre < config.imagens.espacoMinimoMb * 1024 * 1024) {
+      console.warn(`Imagens: disco com ${Math.round(livre / 1024 / 1024)} MB livres; imagem de ${projeto}/${no} recusada.`);
+      resposta.code(507);
+      return { erro: 'o disco do servidor está quase cheio: a imagem foi recusada' };
+    }
+    const imagem = await salvarImagem({
+      pasta: config.imagens.pasta,
+      projeto,
+      no,
+      jpeg: pedido.body,
+      fusoHorario: config.fusoHorario,
+    });
+    estado.registrarImagem(projeto, no, imagem);
+    io.emit('no', estado.resumoDoNo(projeto, no));
+    resposta.code(201);
+    return { caminho: imagem.caminho, bytes: pedido.body.length };
+  },
+);
+
+app.get(
+  '/api/imagens',
+  {
+    schema: {
+      querystring: {
+        type: 'object',
+        required: ['projeto', 'no'],
+        properties: { projeto: NOME, no: NO, limite: { type: 'integer', minimum: 1, maximum: 500, default: 50 } },
+      },
+    },
+  },
+  async (pedido) => {
+    const { projeto, no, limite } = pedido.query;
+    const lista = await listarImagens({ pasta: config.imagens.pasta, projeto, no, limite });
+    return lista.map((i) => ({ ...i, url: `/api/imagens/arquivo/${i.caminho}` }));
+  },
+);
+
+app.get(
+  '/api/imagens/arquivo/:projeto/:no/:dia/:arquivo',
+  {
+    schema: {
+      params: {
+        type: 'object',
+        properties: {
+          projeto: NOME,
+          no: NO,
+          dia: { type: 'string', pattern: DIA_VALIDO.source },
+          arquivo: { type: 'string', pattern: ARQUIVO_VALIDO.source },
+        },
+      },
+    },
+  },
+  async (pedido, resposta) => {
+    const { projeto, no, dia, arquivo } = pedido.params;
+    // Uma imagem não muda depois de gravada.
+    return resposta.sendFile(`${projeto}/${no}/${dia}/${arquivo}`, config.imagens.pasta, {
+      maxAge: 24 * 3600 * 1000,
+      immutable: true,
+    });
   },
 );
 
@@ -366,6 +478,15 @@ if (influxRespondendo) {
   } catch (erro) {
     console.warn(`InfluxDB: não foi possível carregar as últimas leituras (${erro.message}).`);
   }
+}
+
+try {
+  await mkdir(config.imagens.pasta, { recursive: true });
+  for (const u of await ultimasImagens({ pasta: config.imagens.pasta, nomeValido: NOME_VALIDO, noValido: NO_VALIDO })) {
+    estado.registrarImagem(u.projeto, u.no, u);
+  }
+} catch (erro) {
+  console.warn(`Imagens: não foi possível usar a pasta ${config.imagens.pasta} (${erro.message}).`);
 }
 
 await app.listen({ port: config.portaHttp, host: '0.0.0.0' });
