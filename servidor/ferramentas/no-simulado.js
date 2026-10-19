@@ -173,7 +173,7 @@ const cliente = mqtt.connect(`mqtt://${host}:${porta}`, {
   clientId: `simulador-${projeto}-${no}`,
   username: projeto,
   password: senha,
-  keepalive: 15, // o mesmo da PubSubClient, a biblioteca dos ESP32
+  keepalive: 5, // o mesmo da CriaTelemetria, a biblioteca dos ESP32
   reconnectPeriod: 2000,
   queueQoSZero: false, // quem guarda as leituras durante a queda é a nossa fila
   will: { topic: topicoDeStatus, payload: 'offline', qos: 1, retain: true },

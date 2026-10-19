@@ -80,7 +80,8 @@ telemetria-cria/
 ├── LICENSE                    MIT: todo o código
 ├── LICENSE-DOCS               CC BY 4.0: textos, dados, vídeos e modelos 3D
 ├── firmware/                  código dos nós ESP32 (C++/Arduino)
-│   ├── biblioteca-cria/       a biblioteca-padrão reutilizável
+│   ├── biblioteca-cria/       a biblioteca-padrão reutilizável (CriaTelemetria)
+│   ├── no-ar/                 o nó do monitor de qualidade do ar
 │   └── credenciais.exemplo.h  modelo sem senha, para copiar
 ├── gateway/                   ponte USB -> HTTP das placas Arduino legadas (Python)
 ├── servidor/                  Node.js + Fastify + Socket.IO (veja servidor/README.md)
