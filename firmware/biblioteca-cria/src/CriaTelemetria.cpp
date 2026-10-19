@@ -21,10 +21,10 @@ static const size_t MAXIMO_DO_ARQUIVO = 1024 * 1024;
 // Leituras da fila reenviadas por volta do loop, para não travar o programa.
 static const uint8_t LEITURAS_DA_FILA_POR_VOLTA = 20;
 
-// keepalive de 5 s: se o servidor sumir sem avisar (desligado, cabo solto), o
-// nó percebe em 5 a 10 s e passa a guardar as leituras na fila. O broker, por
-// sua vez, publica o "offline" (LWT) em até cerca de 8 s (seção 3 do catálogo).
-static const uint16_t KEEPALIVE_S = 5;
+// keepalive de 5 s (o padrão de _keepAlive): se o servidor sumir sem avisar
+// (desligado, cabo solto), o nó percebe em 5 a 10 s e passa a guardar as
+// leituras na fila. O broker, por sua vez, publica o "offline" (LWT) em até
+// cerca de 8 s (seção 3 do catálogo).
 static const uint32_t INTERVALO_ENTRE_TENTATIVAS_MQTT = 5000;
 static const uint32_t TEMPO_PARA_DESISTIR_DO_TCP_MS = 1500;
 // Sem Wi-Fi por este tempo, o nó pede uma nova conexão (o ESP32 não tenta
@@ -39,6 +39,50 @@ static const uint32_t INTERVALO_ENTRE_AVISOS = 30000;
 // sempre é outro nó usando o mesmo nome e derrubando este no broker.
 static const uint32_t QUEDA_RAPIDA_MS = 15000;
 static const uint8_t QUEDAS_RAPIDAS_ATE_AVISAR = 3;
+
+// RTC DS3231 (seção 2 do catálogo, "A hora do nó"). Guarda a hora em UTC.
+static const uint8_t ENDERECO_DS3231 = 0x68;
+static const uint8_t REGISTRO_DE_ESTADO_DS3231 = 0x0F;
+static const uint8_t OSCILADOR_PAROU = 0x80;  // a bateria acabou: a hora guardada não vale
+// O DS3231 é corrigido no começo de um segundo, para errar menos de 20 ms.
+static const uint32_t JANELA_PARA_CORRIGIR_O_DS3231_US = 20000;
+
+// Avisado pelo SNTP, em outra tarefa, quando a hora chega do servidor.
+// horaDoServidorChegou volta a falso depois de corrigir o DS3231;
+// servidorJaDeuAHora fica verdadeiro para sempre, desde a primeira resposta.
+static volatile bool horaDoServidorChegou = false;
+static volatile bool servidorJaDeuAHora = false;
+static void aoReceberHoraDoServidor(struct timeval*) {
+  horaDoServidorChegou = true;
+  servidorJaDeuAHora = true;
+}
+
+// Data em que o programa foi compilado (a macro __DATE__, "Oct 19 2026"), em
+// segundos desde 1970. Um DS3231 com hora anterior a ela está errado.
+static int64_t dataDaCompilacao() {
+  static const char* MESES = "JanFebMarAprMayJunJulAugSepOctNovDec";
+  const char* data = __DATE__;
+  char mes[4] = {data[0], data[1], data[2], '\0'};
+  const char* achado = strstr(MESES, mes);
+  int numeroDoMes = achado ? (int)(achado - MESES) / 3 + 1 : 1;
+  return cria::segundosDesde1970(atoi(data + 7), numeroDoMes, atoi(data + 4), 0, 0, 0);
+}
+
+static uint8_t deBcd(uint8_t v) {
+  return (v >> 4) * 10 + (v & 0x0F);
+}
+static uint8_t paraBcd(int v) {
+  return (uint8_t)(((v / 10) << 4) | (v % 10));
+}
+
+static bool lerDoDS3231(TwoWire& barramento, uint8_t primeiro, uint8_t* destino, uint8_t quantos) {
+  barramento.beginTransmission(ENDERECO_DS3231);
+  barramento.write(primeiro);
+  if (barramento.endTransmission(false) != 0) return false;
+  if (barramento.requestFrom(ENDERECO_DS3231, quantos) != quantos) return false;
+  for (uint8_t i = 0; i < quantos; i++) destino[i] = barramento.read();
+  return true;
+}
 
 static int64_t agoraEmMs() {
   struct timeval tv;
@@ -65,7 +109,7 @@ CriaNo::CriaNo(const char* projeto, const char* no) : _projeto(projeto), _no(no)
 
 void CriaNo::iniciar(const char* ssid, const char* senhaWifi, const char* hostMqtt, uint16_t portaMqtt,
                      const char* usuarioMqtt, const char* senhaMqtt) {
-  Serial.printf("\n[cria] nó cria/%s/%s, biblioteca CriaTelemetria 0.1.0\n", _projeto.c_str(), _no.c_str());
+  Serial.printf("\n[cria] nó cria/%s/%s, biblioteca CriaTelemetria 0.2.0\n", _projeto.c_str(), _no.c_str());
   if (!_nomesValidos) {
     Serial.println("[cria] ERRO: projeto ou nó fora das regras do catálogo (veja mqtt/catalogo-topicos.md).");
     Serial.println("[cria]       Exemplo certo: CriaNo no(\"horta\", \"no1\");  Nada será publicado.");
@@ -110,8 +154,11 @@ void CriaNo::iniciar(const char* ssid, const char* senhaWifi, const char* hostMq
   _semWifiDesde = millis();
   Serial.printf("[cria] aguardando o Wi-Fi \"%s\"...\n", ssid);
 
-  // Hora: o servidor da escola fornece a hora (NTP) mesmo sem internet.
+  // Hora: o servidor da escola fornece a hora (NTP) mesmo sem internet. Com o
+  // DS3231, o nó começa com a hora dele e é corrigido quando o servidor responde.
+  if (_relogio != nullptr) acertarPeloDS3231();
   if (_servidorDeHora.length() == 0) _servidorDeHora = hostMqtt;
+  sntp_set_time_sync_notification_cb(aoReceberHoraDoServidor);
   sntp_set_sync_interval(INTERVALO_DO_NTP_MS);
   configTime(0, 0, _servidorDeHora.c_str());
 
@@ -123,9 +170,75 @@ void CriaNo::iniciar(const char* ssid, const char* senhaWifi, const char* hostMq
   _wifi.setConnectionTimeout(TEMPO_PARA_DESISTIR_DO_TCP_MS);
   _mqtt.setServer(hostMqtt, portaMqtt);
   _mqtt.setBufferSize(512);
-  _mqtt.setKeepAlive(KEEPALIVE_S);
+  _mqtt.setKeepAlive(_keepAlive);
   _mqtt.setSocketTimeout(5);
   _iniciado = true;
+}
+
+// Lê a hora do DS3231 e acerta o relógio do ESP32 com ela. Num reinício por
+// software o ESP32 já tem a hora certa, e o DS3231 não é lido.
+void CriaNo::acertarPeloDS3231() {
+  if (temHora()) return;
+  uint8_t estado;
+  if (!lerDoDS3231(*_relogio, REGISTRO_DE_ESTADO_DS3231, &estado, 1)) {
+    Serial.println("[cria] AVISO: DS3231 não responde no I2C (confira SDA no GPIO 21, SCL no 22 e a alimentação).");
+    Serial.println("[cria]        O nó vai esperar a hora do servidor para começar a medir.");
+    return;
+  }
+  if (estado & OSCILADOR_PAROU) {
+    Serial.println("[cria] DS3231 sem hora válida (bateria nova ou acabada): esperando a hora do servidor.");
+    return;
+  }
+  // O DS3231 só conta segundos inteiros: espera a virada do segundo para
+  // começar o relógio do ESP32 junto com ele.
+  uint8_t r[7];
+  if (!lerDoDS3231(*_relogio, 0x00, r, 1)) return;
+  uint8_t segundoInicial = r[0];
+  uint32_t inicio = millis();
+  do {
+    if (!lerDoDS3231(*_relogio, 0x00, r, 7)) return;
+  } while (r[0] == segundoInicial && millis() - inicio < 1100);
+
+  int hora = (r[2] & 0x40) ? deBcd(r[2] & 0x1F) % 12 + ((r[2] & 0x20) ? 12 : 0) : deBcd(r[2] & 0x3F);
+  int ano = 2000 + deBcd(r[6]) + ((r[5] & 0x80) ? 100 : 0);
+  int64_t segundos = cria::segundosDesde1970(ano, deBcd(r[5] & 0x1F), deBcd(r[4] & 0x3F), hora,
+                                             deBcd(r[1] & 0x7F), deBcd(r[0] & 0x7F));
+  // Um dia de folga: __DATE__ é a data local do computador que compilou.
+  if (segundos <= MENOR_HORA_ACEITA || segundos < dataDaCompilacao() - 86400) {
+    Serial.println("[cria] DS3231 com data anterior à gravação do programa: esperando a hora do servidor.");
+    return;
+  }
+  struct timeval tv = {(time_t)segundos, 0};
+  settimeofday(&tv, nullptr);
+  Serial.println("[cria] hora tirada do DS3231; será conferida com o servidor quando a rede voltar.");
+}
+
+// Grava no DS3231 a hora que acabou de chegar do servidor, no começo de um
+// segundo: escrever os segundos reinicia a contagem interna do DS3231.
+void CriaNo::corrigirDS3231() {
+  struct timeval tv;
+  gettimeofday(&tv, nullptr);
+  if (tv.tv_usec >= JANELA_PARA_CORRIGIR_O_DS3231_US) return;  // tenta de novo na próxima volta
+  horaDoServidorChegou = false;
+  struct tm utc;
+  gmtime_r(&tv.tv_sec, &utc);
+  int ano = utc.tm_year + 1900;
+  uint8_t r[7] = {paraBcd(utc.tm_sec), paraBcd(utc.tm_min), paraBcd(utc.tm_hour), (uint8_t)(utc.tm_wday + 1),
+                  paraBcd(utc.tm_mday), (uint8_t)(paraBcd(utc.tm_mon + 1) | (ano >= 2100 ? 0x80 : 0)),
+                  paraBcd(ano % 100)};
+  _relogio->beginTransmission(ENDERECO_DS3231);
+  _relogio->write((uint8_t)0x00);
+  _relogio->write(r, sizeof(r));
+  bool gravou = _relogio->endTransmission() == 0;
+  // Apaga a marca de "oscilador parou": a hora guardada volta a valer.
+  uint8_t estado;
+  if (gravou && lerDoDS3231(*_relogio, REGISTRO_DE_ESTADO_DS3231, &estado, 1)) {
+    _relogio->beginTransmission(ENDERECO_DS3231);
+    _relogio->write(REGISTRO_DE_ESTADO_DS3231);
+    _relogio->write((uint8_t)(estado & ~OSCILADOR_PAROU));
+    gravou = _relogio->endTransmission() == 0;
+  }
+  if (!gravou) avisar("AVISO: não foi possível acertar o DS3231 pela hora do servidor.");
 }
 
 // Escreve um aviso no Monitor Serial no máximo a cada INTERVALO_ENTRE_AVISOS.
@@ -142,8 +255,10 @@ void CriaNo::cuidarDoWifi(uint32_t agora) {
     if (!_wifiConectado) {
       _wifiConectado = true;
       Serial.printf("[cria] Wi-Fi conectado, IP %s\n", WiFi.localIP().toString().c_str());
-      // Sem hora ainda: pede ao servidor agora, sem esperar a próxima tentativa.
-      if (!temHora()) sntp_restart();
+      // Pede a hora ao servidor agora, sem esperar a próxima tentativa do SNTP,
+      // enquanto ele não tiver respondido nenhuma vez: a hora pode ter vindo do
+      // DS3231, que precisa ser conferido.
+      if (!temHora() || !servidorJaDeuAHora) sntp_restart();
     }
     return;
   }
@@ -174,6 +289,7 @@ void CriaNo::manter() {
                   utc.tm_mon + 1, utc.tm_mday, utc.tm_hour, utc.tm_min, utc.tm_sec);
     _avisouHoraCerta = true;
   }
+  if (_relogio != nullptr && horaDoServidorChegou) corrigirDS3231();
 
   cuidarDoWifi(agora);
   if (!_wifiConectado) return;

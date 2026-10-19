@@ -74,4 +74,16 @@ size_t marcarComoFila(char* destino, size_t tamanho, const char* mensagem) {
   return total;
 }
 
+// Contagem de dias do calendário gregoriano a partir de 01/03 do ano 0, que põe
+// o 29 de fevereiro no fim do ano (algoritmo "days from civil", de H. Hinnant).
+int64_t segundosDesde1970(int ano, int mes, int dia, int hora, int minuto, int segundo) {
+  ano -= mes <= 2;
+  const int64_t era = (ano >= 0 ? ano : ano - 399) / 400;
+  const int64_t anoDaEra = ano - era * 400;
+  const int64_t diaDoAno = (153 * (mes + (mes > 2 ? -3 : 9)) + 2) / 5 + dia - 1;
+  const int64_t diaDaEra = anoDaEra * 365 + anoDaEra / 4 - anoDaEra / 100 + diaDoAno;
+  const int64_t dias = era * 146097 + diaDaEra - 719468;
+  return dias * 86400 + (int64_t)hora * 3600 + minuto * 60 + segundo;
+}
+
 }  // namespace cria

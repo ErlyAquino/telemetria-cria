@@ -1,0 +1,12 @@
+# Roda o backup do banco todo dia às 02:30. Com Persistent, um backup perdido
+# porque o servidor estava desligado roda na partida seguinte.
+[Unit]
+Description=Backup diário do banco da telemetria
+
+[Timer]
+OnCalendar=*-*-* 02:30:00
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

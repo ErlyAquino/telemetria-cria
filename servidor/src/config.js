@@ -37,6 +37,13 @@ export function lerConfig() {
     fusoHorario: process.env.FUSO_HORARIO || 'America/Recife',
     // Nó alimentado pela rota HTTP que passar este tempo calado fica off-line.
     segundosAteOfflineHttp: 30,
+    // Imagens da câmera da horta: fora do repositório e do banco. Com o disco
+    // abaixo do espaço mínimo, o servidor recusa imagens novas, para não faltar
+    // espaço ao InfluxDB.
+    imagens: {
+      pasta: process.env.IMAGENS_DIR || join(dirname(fileURLToPath(import.meta.url)), '..', 'imagens'),
+      espacoMinimoMb: Number(process.env.IMAGENS_ESPACO_MINIMO_MB || 1024),
+    },
     mqtt: {
       host: process.env.MQTT_HOST || 'localhost',
       porta: Number(process.env.MQTT_PORTA || 1883),

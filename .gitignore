@@ -38,3 +38,6 @@ Thumbs.db
 
 # Estado local do gateway (último boot de cada nó)
 gateway/.estado/
+
+# Fotos da câmera da horta (horta/no3): ficam no servidor, fora do repositório
+servidor/imagens/
