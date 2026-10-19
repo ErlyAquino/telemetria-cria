@@ -91,7 +91,7 @@ cria/{projeto}/{no}/status
 A mensagem é o texto simples `online` ou `offline`, sem `seq` e sempre com *retain* (o broker guarda a última mensagem e a entrega a quem assinar depois), para que um painel aberto mais tarde veja o último estado.
 
 - Ao se conectar ao broker, o nó registra a mensagem de última vontade (LWT) `offline` e, em seguida, publica `online`.
-- Se o nó cair sem avisar, o próprio broker publica o `offline`. O *keepalive* é o prazo combinado entre o nó e o broker: se o nó passar 15 s sem mandar nada (o padrão da PubSubClient), envia um sinal de vida. Se o broker passar 1,5 vez esse prazo, cerca de 23 s, sem notícia do nó, dá o nó por desconectado. Como o nó publica a cada 10 s, o `offline` aparece entre 13 e 23 s depois da falha.
+- Se o nó cair sem avisar, o próprio broker publica o `offline`. O *keepalive* é o prazo combinado entre o nó e o broker. A biblioteca dos ESP32 (CriaTelemetria) usa 5 s: sempre que passa esse tempo sem enviar nada, o nó manda um sinal de vida. Se o broker passar 1,5 vez esse prazo, cerca de 8 s, sem notícia do nó, dá o nó por desconectado. Assim, o `offline` aparece em até cerca de 8 s depois da falha.
 - É desse tópico que o painel tira o estado on-line ou off-line de cada nó ESP32.
 
 ## 4. Projetos registrados
