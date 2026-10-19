@@ -79,11 +79,12 @@ telemetria-cria/
 ├── README.md
 ├── LICENSE                    MIT: todo o código
 ├── LICENSE-DOCS               CC BY 4.0: textos, dados, vídeos e modelos 3D
-├── firmware/                  código dos nós ESP32 (C++/Arduino)
+├── firmware/                  código das placas: nós ESP32 e placas USB (C++/Arduino)
 │   ├── biblioteca-cria/       a biblioteca-padrão reutilizável (CriaTelemetria)
 │   ├── no-ar/                 o nó do monitor de qualidade do ar
+│   ├── arduino-usb/           placa sem rede, ligada ao gateway pela USB (Uno ou ESP32)
 │   └── credenciais.exemplo.h  modelo sem senha, para copiar
-├── gateway/                   ponte USB -> HTTP das placas Arduino legadas (Python)
+├── gateway/                   ponte USB -> HTTP das placas Arduino legadas (Python; veja gateway/README.md)
 ├── servidor/                  Node.js + Fastify + Socket.IO (veja servidor/README.md)
 │   ├── base/                  instalador do Mosquitto, do chrony e do InfluxDB
 │   ├── ferramentas/           nó simulado e, depois, os scripts de validação
