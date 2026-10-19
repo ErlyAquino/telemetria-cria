@@ -13,8 +13,23 @@ function obrigatoria(nome) {
   return valor;
 }
 
-export function lerConfig() {
+function carregarEnv() {
   if (existsSync(ARQUIVO_ENV)) process.loadEnvFile(ARQUIVO_ENV);
+}
+
+// Só o banco: usado pelas ferramentas de validação, que não falam com o broker.
+export function lerConfigDoInflux() {
+  carregarEnv();
+  return {
+    url: process.env.INFLUX_URL || 'http://localhost:8086',
+    org: process.env.INFLUX_ORG || 'cria',
+    bucket: process.env.INFLUX_BUCKET || 'telemetria',
+    token: obrigatoria('INFLUX_TOKEN'),
+  };
+}
+
+export function lerConfig() {
+  carregarEnv();
 
   return {
     portaHttp: Number(process.env.PORTA_HTTP || 3000),
@@ -31,11 +46,6 @@ export function lerConfig() {
       // persistente e guarda as leituras enquanto o servidor está fora.
       clientId: process.env.MQTT_CLIENT_ID || 'servidor-telemetria',
     },
-    influx: {
-      url: process.env.INFLUX_URL || 'http://localhost:8086',
-      org: process.env.INFLUX_ORG || 'cria',
-      bucket: process.env.INFLUX_BUCKET || 'telemetria',
-      token: obrigatoria('INFLUX_TOKEN'),
-    },
+    influx: lerConfigDoInflux(),
   };
 }

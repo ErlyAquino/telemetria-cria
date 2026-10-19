@@ -96,7 +96,7 @@ telemetria-cria/
 │   └── acl                    quem pode publicar onde
 ├── modelos-3d/                arquivos STL dos abrigos e suportes
 ├── calibracao/                pontos brutos e relatório de calibração
-├── validacao/                 relatório dos seis critérios de aceitação
+├── validacao/                 roteiro do teste de aceitação, evidências e relatório dos seis critérios
 ├── decisoes/                  uma decisão técnica por arquivo: data, o quê, por quê, o que se perde
 ├── tutoriais/                 passo a passo para quem vai usar ou replicar
 └── caderno/                   o caderno digital do dia a dia

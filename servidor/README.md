@@ -40,9 +40,14 @@ npm test
 | `src/publicador-http.js` | Publica no broker as leituras recebidas pela rota HTTP |
 | `src/csv.js` | Formata as leituras em CSV. Coberto por testes |
 | `src/config.js` | Lê o `.env` |
+| `src/validacao.js` | Cálculos dos seis critérios de aceitação e montagem do relatório. Coberto por testes |
 | `painel/` | O painel: HTML, CSS e JavaScript, sem etapa de compilação |
-| `ferramentas/no-simulado.js` | O nó simulado |
+| `ferramentas/no-simulado.js` | O nó simulado (`npm run simulador`) |
+| `ferramentas/verificar-disponibilidade.js` | Consulta o `/saude` periodicamente para o critério de disponibilidade (`npm run disponibilidade`) |
+| `ferramentas/gerar-relatorio-validacao.js` | Gera `validacao/relatorio-validacao.md` (`npm run relatorio`) |
 | `test/` | Testes automáticos (`npm test`) |
+
+O roteiro do teste de aceitação, com o uso das duas ferramentas de validação, está em [`validacao/README.md`](../validacao/README.md).
 
 ## Rotas
 
@@ -95,7 +100,7 @@ O painel aberto com `http://IP_DO_SERVIDOR:3000/?medir=1` envia um `desenhado` d
 Para a medida valer:
 
 - o painel com `?medir=1` precisa ficar aberto e à vista durante todo o teste, porque uma aba oculta adia o desenho;
-- só conta o aviso da última leitura de cada série, uma vez por painel, e com atraso entre 0 e 60 s. Avisos fora disso são recusados e contados em `avisosRecusados` no `/saude`. Leituras que esperaram na fila do nó (`fila: 1`) ficam de fora.
+- só conta o aviso da última leitura de cada série, uma vez por painel. Avisos de outras leituras, repetidos ou com atraso negativo (relógio do nó adiantado) são recusados e contados em `avisosRecusados` no `/saude`. Atrasos acima de 60 s são gravados como 60 s. Leituras que esperaram na fila do nó (`fila: 1`) ficam de fora.
 
 ## Variáveis do `.env`
 

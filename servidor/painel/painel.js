@@ -49,9 +49,12 @@ socket.on('connect', () => {
   }
   jaConectou = true;
 });
-socket.on('disconnect', () => {
+socket.on('disconnect', (motivo) => {
   conexao.dataset.estado = 'desconectado';
   conexao.textContent = 'Sem conexão com o servidor: tentando de novo';
+  // Quando é o servidor que fecha a conexão, o Socket.IO não tenta voltar
+  // sozinho: o painel pede a reconexão, para não ficar parado após um reinício.
+  if (motivo === 'io server disconnect') socket.connect();
 });
 
 socket.on('nos', ({ agora, nos: lista }) => {
