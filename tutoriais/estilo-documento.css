@@ -1,0 +1,208 @@
+/* Estilo dos tutoriais gerados em HTML e PDF (tutoriais/gerar-documentos.py). */
+
+:root {
+  --texto: #1d2733;
+  --texto-suave: #5b6b7c;
+  --borda: #d8dee5;
+  --fundo-codigo: #f4f6f8;
+  --destaque: #1f6fb2;
+  --aviso: #fff7e0;
+  --aviso-borda: #e0a800;
+}
+
+html {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--texto);
+}
+
+body {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+header#title-block-header {
+  border-bottom: 2px solid var(--destaque);
+  margin-bottom: 28px;
+  padding-bottom: 12px;
+}
+
+h1.title {
+  font-size: 2rem;
+  margin: 0 0 4px;
+}
+
+p.subtitle {
+  color: var(--texto-suave);
+  font-size: 1.1rem;
+  margin: 0 0 6px;
+}
+
+p.author,
+p.date {
+  color: var(--texto-suave);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+nav#TOC {
+  background: var(--fundo-codigo);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 28px;
+}
+
+nav#TOC ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 4px 0;
+}
+
+nav#TOC ul ul {
+  padding-left: 18px;
+}
+
+nav#TOC a {
+  text-decoration: none;
+  color: var(--texto);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin-top: 2em;
+}
+
+h2 {
+  border-bottom: 1px solid var(--borda);
+  padding-bottom: 4px;
+}
+
+a {
+  color: var(--destaque);
+}
+
+code {
+  font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace;
+  font-size: 0.92em;
+  background: var(--fundo-codigo);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--fundo-codigo);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  line-height: 1.45;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.88em;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+
+th,
+td {
+  border: 1px solid var(--borda);
+  padding: 6px 10px;
+  vertical-align: top;
+  text-align: left;
+}
+
+th {
+  background: var(--fundo-codigo);
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 1.2em 0;
+  text-align: center;
+}
+
+figcaption {
+  color: var(--texto-suave);
+  font-size: 0.9em;
+  margin-top: 6px;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 10px 16px;
+  background: var(--aviso);
+  border-left: 4px solid var(--aviso-borda);
+  border-radius: 0 8px 8px 0;
+}
+
+blockquote p {
+  margin: 0.3em 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--borda);
+  margin: 2em 0;
+}
+
+@media print {
+  html {
+    font-size: 11.5pt;
+  }
+
+  body {
+    max-width: none;
+    padding: 0;
+  }
+
+  a {
+    color: var(--texto);
+    text-decoration: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+
+  /* Cada parte do guia começa numa página nova; as seções seguem o texto. */
+  h1 {
+    page-break-before: always;
+  }
+
+  pre,
+  table,
+  figure,
+  blockquote {
+    page-break-inside: avoid;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm;
+}
