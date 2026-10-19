@@ -1,0 +1,23 @@
+{
+  "ph": {
+    "referencia": 6.86,
+    "medido": 6.93,
+    "solucao": "tampão de verificação pH 6,86, não usado na calibração (marca, lote)",
+    "quando": "08/12/2026 10:15",
+    "observacoes": "eletrodo limpo e estabilizado por 2 min; valor lido no painel"
+  },
+  "condutividade": {
+    "referencia": 1413,
+    "medido": 1452,
+    "solucao": "solução-padrão de verificação (marca, lote)",
+    "quando": "08/12/2026 10:30",
+    "observacoes": "sonda limpa; temperatura da solução 25,1 °C"
+  },
+  "reuso": {
+    "minutos": 24,
+    "pessoa": "Professora convidada de outra turma",
+    "sensor": "DS18B20",
+    "quando": "15/12/2026",
+    "observacoes": "travou 5 min na instalação do driver CH340"
+  }
+}

@@ -21,13 +21,15 @@ import { lerConfig } from './config.js';
 import { criarFormatador } from './csv.js';
 import { criarEstado } from './estado.js';
 import { criarPublicadorHttp } from './publicador-http.js';
+import { percentil } from './validacao.js';
 
 const PASTA_SERVIDOR = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PASTA_CHART_JS = dirname(createRequire(import.meta.url).resolve('chart.js'));
 const LEITURAS_POR_ENVIO_HTTP = 1000;
 const LATENCIAS_GUARDADAS = 500;
-// Acima disso, o aviso "desenhado" não é de uma leitura recente: é descartado.
-const LATENCIA_MAXIMA_ACEITA_MS = 60000;
+// Latências acima disso são gravadas com este valor, para os atrasos longos
+// (por exemplo, leituras guardadas pelo broker num reinício) contarem acima de 2 s.
+const LATENCIA_MAXIMA_GRAVADA_MS = 60000;
 
 let config;
 try {
@@ -48,6 +50,7 @@ const contadores = { recebidas: 0, invalidas: 0, recebidasPorHttp: 0 };
 let mqttConectado = false;
 let influxRespondendo = false;
 let assinante = null;
+let encerrando = false; // o servidor está parando: o banco pode já estar fechado
 
 // Latência do critério 2: últimas medidas e quantos avisos foram recusados.
 const latencias = [];
@@ -109,6 +112,7 @@ io.on('connection', (socket) => {
   // Só vale para a última leitura enviada daquela série, uma vez por painel:
   // assim ninguém inventa medidas nem multiplica as gravações.
   socket.on('desenhado', (dados) => {
+    if (encerrando) return;
     try {
       const { projeto, no, grandeza, t } = dados ?? {};
       if (typeof projeto !== 'string' || typeof no !== 'string' || typeof grandeza !== 'string') return;
@@ -119,11 +123,13 @@ io.on('connection', (socket) => {
         return;
       }
       socket.data.medidos.set(serie, t);
-      const ms = Date.now() - t;
-      if (ms < 0 || ms > LATENCIA_MAXIMA_ACEITA_MS) {
+      const atraso = Date.now() - t;
+      if (atraso < 0) {
+        // Relógio do nó adiantado em relação ao do servidor: a medida não vale.
         avisosDeDesenhoRecusados += 1;
         return;
       }
+      const ms = Math.min(atraso, LATENCIA_MAXIMA_GRAVADA_MS);
       latencias.push(ms);
       if (latencias.length > LATENCIAS_GUARDADAS) latencias.shift();
       banco.gravarLatencia({ projeto, no, grandeza, ms });
@@ -136,9 +142,14 @@ io.on('connection', (socket) => {
 function resumoDasLatencias() {
   const resumo = { amostras: latencias.length, avisosRecusados: avisosDeDesenhoRecusados };
   if (latencias.length === 0) return resumo;
+  // O mesmo cálculo de percentil do relatório de validação.
   const ordenadas = [...latencias].sort((a, b) => a - b);
-  const percentil = (p) => ordenadas[Math.min(ordenadas.length - 1, Math.floor(p * ordenadas.length))];
-  return { ...resumo, mediana: percentil(0.5), p95: percentil(0.95), maxima: ordenadas[ordenadas.length - 1] };
+  return {
+    ...resumo,
+    mediana: percentil(ordenadas, 0.5),
+    p95: percentil(ordenadas, 0.95),
+    maxima: ordenadas[ordenadas.length - 1],
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -370,8 +381,13 @@ assinante = conectarAssinante(config.mqtt, {
 async function encerrar() {
   console.log('Encerrando: gravando o que falta no banco...');
   setTimeout(() => process.exit(1), 10000).unref();
-  // Primeiro os painéis, para nenhum "desenhado" chegar com o banco já fechado.
-  io.disconnectSockets(true);
+  // Daqui em diante nenhum "desenhado" é gravado, porque o banco vai fechar.
+  encerrando = true;
+  // Fecha a conexão de cada painel como uma queda de rede, e o servidor HTTP
+  // junto: assim o painel tenta voltar sozinho (com disconnectSockets, ele
+  // entenderia que foi mandado embora e não tentaria), e nenhuma reconexão
+  // chega a segurar o fechamento até o novo processo subir.
+  io.close();
   try {
     await assinante?.fechar();
     await publicadorHttp.fechar();

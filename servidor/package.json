@@ -11,7 +11,9 @@
   "scripts": {
     "start": "node src/servidor.js",
     "test": "node --test",
-    "simulador": "node ferramentas/no-simulado.js"
+    "simulador": "node ferramentas/no-simulado.js",
+    "disponibilidade": "node ferramentas/verificar-disponibilidade.js",
+    "relatorio": "node ferramentas/gerar-relatorio-validacao.js"
   },
   "dependencies": {
     "@fastify/static": "^10.1.6",
