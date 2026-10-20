@@ -59,6 +59,20 @@ h1 {
   margin-bottom: 16px;
 }
 
+.topo-direita {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+.perfil {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
 .conexao {
   margin: 0;
   font-size: 0.9rem;
