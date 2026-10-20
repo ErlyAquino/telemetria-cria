@@ -1,0 +1,191 @@
+/* Perfil retrô: letreiro em tela CRT. Números em verde neon, nomes e unidades em
+   vermelho, fundo preto com linhas de varredura. Tudo aqui vale só com
+   data-perfil="retro" no <html>; o perfil padrão fica em painel.css.
+   Sem fonte externa: a rede da telemetria não tem internet. */
+
+:root[data-perfil='retro'] {
+  --fundo: #000;
+  --cartao: #000;
+  --texto: #ff3b30;
+  --texto-suave: #b8302a;
+  --borda: #4a0b08;
+  --verde: #39ff14;
+  --verde-escuro: #1b7a0a;
+  --vermelho: #ff2d21;
+  --brilho-verde: 0 0 2px #39ff14, 0 0 8px rgba(57, 255, 20, 0.75), 0 0 18px rgba(57, 255, 20, 0.45);
+  --brilho-vermelho: 0 0 2px #ff2d21, 0 0 8px rgba(255, 45, 33, 0.7), 0 0 16px rgba(255, 45, 33, 0.4);
+  /* Cores que o painel.js passa aos gráficos. */
+  --linha: #39ff14;
+  --grade: rgba(57, 255, 20, 0.12);
+  --eixo: #c0392b;
+  --fonte-eixo: 'DejaVu Sans Mono', Consolas, 'Courier New', monospace;
+  --online: #39ff14;
+  --offline: #ff2d21;
+  --neutro: #8a6d1f;
+  font-family: 'DejaVu Sans Mono', Consolas, 'Courier New', monospace;
+  color-scheme: dark;
+}
+
+/* Tela CRT: brilho que se apaga nos cantos e linhas de varredura por cima de tudo. */
+:root[data-perfil='retro'] body {
+  background: radial-gradient(ellipse at center, #0b0f0b 0%, #000 75%) fixed;
+  min-height: 100vh;
+}
+:root[data-perfil='retro'] body::before,
+:root[data-perfil='retro'] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+:root[data-perfil='retro'] body::before {
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+}
+:root[data-perfil='retro'] body::after {
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.35) 2px 3px);
+  animation: retro-cintilar 6s infinite steps(1);
+}
+@keyframes retro-cintilar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  47% {
+    opacity: 0.85;
+  }
+  48% {
+    opacity: 1;
+  }
+}
+
+/* Nomes em vermelho neon. */
+:root[data-perfil='retro'] h1,
+:root[data-perfil='retro'] .no-nome,
+:root[data-perfil='retro'] .grandeza-nome {
+  color: var(--vermelho);
+  text-shadow: var(--brilho-vermelho);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+:root[data-perfil='retro'] h1 {
+  font-size: 1.5rem;
+}
+:root[data-perfil='retro'] .subtitulo,
+:root[data-perfil='retro'] .ultima,
+:root[data-perfil='retro'] .perda,
+:root[data-perfil='retro'] .exportar label,
+:root[data-perfil='retro'] .perfil,
+:root[data-perfil='retro'] .vazio,
+:root[data-perfil='retro'] .imagem figcaption {
+  color: var(--texto-suave);
+  text-shadow: 0 0 6px rgba(255, 45, 33, 0.35);
+}
+
+/* Faixa dos logos: continua clara, porque os logos têm partes escuras. */
+:root[data-perfil='retro'] .logos {
+  background: #e9e9e9;
+  border-color: var(--vermelho);
+  box-shadow: 0 0 14px rgba(255, 45, 33, 0.35);
+}
+
+:root[data-perfil='retro'] .conexao {
+  border-color: currentColor;
+  text-shadow: 0 0 6px currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+:root[data-perfil='retro'] select,
+:root[data-perfil='retro'] .botao {
+  background: #000;
+  color: var(--verde);
+  border: 1px solid var(--verde-escuro);
+  border-radius: 2px;
+  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+  box-shadow: 0 0 6px rgba(57, 255, 20, 0.25);
+}
+:root[data-perfil='retro'] .baixar {
+  color: var(--verde);
+  text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+}
+
+/* Cada nó é um painel de letreiro. */
+:root[data-perfil='retro'] .no {
+  background: #030303;
+  border: 1px solid #5a0f0a;
+  border-radius: 4px;
+  box-shadow:
+    0 0 14px rgba(255, 45, 33, 0.18),
+    inset 0 0 30px rgba(255, 45, 33, 0.06);
+}
+
+:root[data-perfil='retro'] .status {
+  border-radius: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 0 6px currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+:root[data-perfil='retro'] .status[data-status='offline'] {
+  animation: retro-piscar 1s infinite steps(1);
+}
+@keyframes retro-piscar {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* A caixa de cada medida: fundo de matriz de pontos, como os LEDs de um letreiro. */
+:root[data-perfil='retro'] .grandeza {
+  background-color: #000;
+  background-image: radial-gradient(rgba(57, 255, 20, 0.09) 1px, transparent 1.6px);
+  background-size: 5px 5px;
+  border: 1px solid var(--verde-escuro);
+  border-radius: 3px;
+  padding: 10px 12px;
+  box-shadow:
+    0 0 10px rgba(57, 255, 20, 0.3),
+    inset 0 0 22px rgba(57, 255, 20, 0.12);
+}
+:root[data-perfil='retro'] .valor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 6px 0 8px;
+}
+:root[data-perfil='retro'] .numero {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--verde);
+  text-shadow: var(--brilho-verde);
+}
+:root[data-perfil='retro'] .numero.texto {
+  font-size: 1.5rem;
+}
+/* A unidade em destaque, em vermelho e com brilho forte. */
+:root[data-perfil='retro'] .unidade {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--vermelho);
+  text-shadow:
+    0 0 3px #ff2d21,
+    0 0 10px rgba(255, 45, 33, 0.9),
+    0 0 22px rgba(255, 45, 33, 0.6);
+}
+:root[data-perfil='retro'] .grafico canvas {
+  filter: drop-shadow(0 0 3px rgba(57, 255, 20, 0.7));
+}
+
+:root[data-perfil='retro'] .imagem img {
+  border-color: var(--verde-escuro);
+  border-radius: 3px;
+  filter: sepia(0.2) contrast(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-perfil='retro'] body::after,
+  :root[data-perfil='retro'] .status[data-status='offline'] {
+    animation: none;
+  }
+}

@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Telemetria do Espaço CRIA</title>
     <link rel="stylesheet" href="painel.css" />
+    <link rel="stylesheet" href="retro.css" />
+    <script>
+      // Aplica o perfil de aparência antes de desenhar, para a página não piscar
+      // no perfil padrão: o de ?perfil= no endereço (bom para deixar uma TV fixa
+      // num perfil) ou o último escolhido neste navegador.
+      (() => {
+        let perfil = new URLSearchParams(location.search).get('perfil');
+        try {
+          perfil ??= localStorage.getItem('perfil');
+        } catch {}
+        if (perfil === 'retro') document.documentElement.dataset.perfil = perfil;
+      })();
+    </script>
   </head>
   <body>
     <div class="logos" aria-label="Instituições do projeto">
@@ -19,7 +32,16 @@
         <h1>Rede de Telemetria do Espaço CRIA</h1>
         <p class="subtitulo">ETE Epitácio Pessoa · leituras ao vivo da última hora</p>
       </div>
-      <p id="conexao" class="conexao" data-estado="conectando">Conectando ao servidor...</p>
+      <div class="topo-direita">
+        <label class="perfil">
+          Aparência
+          <select id="perfil">
+            <option value="padrao" selected>padrão</option>
+            <option value="retro">retrô (tela CRT)</option>
+          </select>
+        </label>
+        <p id="conexao" class="conexao" data-estado="conectando">Conectando ao servidor...</p>
+      </div>
     </header>
 
     <section class="exportar" aria-label="Exportar dados em CSV">

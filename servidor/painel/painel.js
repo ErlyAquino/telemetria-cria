@@ -142,10 +142,9 @@ function garantirGrandeza(no, projeto, nomeDoNo, grandeza) {
   elemento.querySelector('.grandeza-nome').textContent = NOMES[grandeza] ?? grandeza;
   no.elemento.querySelector('.grandezas').append(elemento);
 
-  const cor = getComputedStyle(document.documentElement).getPropertyValue('--linha').trim();
   const grafico = new Chart(elemento.querySelector('canvas'), {
     type: 'line',
-    data: { datasets: [{ data: [], borderColor: cor, borderWidth: 1.5, pointRadius: 0, tension: 0 }] },
+    data: { datasets: [{ data: [], borderWidth: 1.5, pointRadius: 0, tension: 0 }] },
     options: {
       animation: false,
       parsing: false,
@@ -166,6 +165,8 @@ function garantirGrandeza(no, projeto, nomeDoNo, grandeza) {
       },
     },
   });
+
+  coloreGrafico(grafico);
 
   item = { elemento, grafico };
   no.grandezas.set(grandeza, item);
@@ -265,6 +266,8 @@ function mostrarValor(item, grandeza, valor, unidade) {
   } else {
     numero.textContent = formatar(valor, 2);
   }
+  // Estados escritos por extenso, como "acima da boia", e não números.
+  numero.classList.toggle('texto', unidade === 'estado' && (grandeza === 'nivel' || grandeza === 'bomba'));
   item.elemento.querySelector('.unidade').textContent = UNIDADES[unidade] ?? unidade;
 }
 
@@ -296,6 +299,43 @@ function atualizarLinksDeExportacao() {
 document.getElementById('periodo').addEventListener('change', atualizarLinksDeExportacao);
 document.getElementById('formato').addEventListener('change', atualizarLinksDeExportacao);
 atualizarLinksDeExportacao();
+
+// ---------------------------------------------------------------------------
+// Perfis de aparência
+//
+// O perfil é o atributo data-perfil do <html>: sem ele, vale o padrão de
+// painel.css; com "retro", valem as regras de retro.css. A escolha fica guardada
+// neste navegador. As cores dos gráficos vêm das variáveis CSS do perfil.
+
+const seletorDePerfil = document.getElementById('perfil');
+seletorDePerfil.value = document.documentElement.dataset.perfil ?? 'padrao';
+seletorDePerfil.addEventListener('change', () => {
+  const perfil = seletorDePerfil.value;
+  if (perfil === 'padrao') delete document.documentElement.dataset.perfil;
+  else document.documentElement.dataset.perfil = perfil;
+  try {
+    localStorage.setItem('perfil', perfil);
+  } catch {
+    // Navegador sem armazenamento: o perfil vale só até recarregar a página.
+  }
+  for (const no of nos.values()) {
+    for (const item of no.grandezas.values()) {
+      coloreGrafico(item.grafico);
+      agendarDesenho(item);
+    }
+  }
+});
+
+function coloreGrafico(grafico) {
+  const estilo = getComputedStyle(document.documentElement);
+  const variavel = (nome) => estilo.getPropertyValue(nome).trim();
+  grafico.data.datasets[0].borderColor = variavel('--linha');
+  for (const eixo of Object.values(grafico.options.scales)) {
+    eixo.grid.color = variavel('--grade') || Chart.defaults.borderColor;
+    eixo.ticks.color = variavel('--eixo') || Chart.defaults.color;
+    eixo.ticks.font = { family: variavel('--fonte-eixo') || Chart.defaults.font.family };
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Formatação em português

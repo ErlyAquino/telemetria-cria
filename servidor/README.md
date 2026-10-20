@@ -42,7 +42,7 @@ npm test
 | `src/imagens.js` | Guarda e lista as fotos da câmera da horta. Coberto por testes |
 | `src/config.js` | Lê o `.env` |
 | `src/validacao.js` | Cálculos dos seis critérios de aceitação e montagem do relatório. Coberto por testes |
-| `painel/` | O painel: HTML, CSS e JavaScript, sem etapa de compilação |
+| `painel/` | O painel: HTML, CSS e JavaScript, sem etapa de compilação. `painel.css` é o perfil de aparência padrão; `retro.css`, o perfil retrô (letreiro em tela CRT) |
 | `ferramentas/no-simulado.js` | O nó simulado (`npm run simulador`) |
 | `ferramentas/verificar-disponibilidade.js` | Consulta o `/saude` periodicamente para o critério de disponibilidade (`npm run disponibilidade`) |
 | `ferramentas/gerar-relatorio-validacao.js` | Gera `validacao/relatorio-validacao.md` (`npm run relatorio`) |
@@ -54,7 +54,7 @@ O roteiro do teste de aceitação, com o uso das duas ferramentas de validação
 
 | Rota | O que devolve |
 | --- | --- |
-| `GET /` | O painel. Com `?medir=1`, o painel também mede a latência (veja abaixo) |
+| `GET /` | O painel. Com `?medir=1`, o painel também mede a latência (veja abaixo). Com `?perfil=retro` ou `?perfil=padrao`, abre nesse perfil de aparência, por exemplo numa TV fixa; sem ele, vale o último perfil escolhido no seletor "Aparência" daquele navegador |
 | `GET /saude` | Estado do servidor em JSON. Dá HTTP 200 quando o broker está conectado, o InfluxDB responde e a última gravação deu certo; senão, 503. Traz as contagens de leituras, de linhas gravadas e descartadas, e a latência medida pelo painel. É o que o teste de disponibilidade consulta |
 | `GET /api/nos` | Lista dos nós com status, último valor de cada grandeza e perda estimada |
 | `GET /api/historico?projeto=&no=&grandeza=&minutos=60` | Pontos de uma grandeza (até 1440 minutos), para os gráficos |
