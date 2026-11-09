@@ -11,6 +11,10 @@ const MINUTOS_NO_GRAFICO = 60;
 // O painel do teste de aceitação é aberto com ?medir=1 e fica à vista na tela.
 // Os outros (celulares, sala de aula) não medem, para não encher o banco.
 const MEDIR_LATENCIA = new URLSearchParams(location.search).get('medir') === '1';
+// O teste em andamento fica sempre no topo da página: os nós on-line do projeto
+// "teste" (ou do projeto, ou projeto/nó, de ?topo= no endereço) vêm antes dos outros.
+// Quando o nó fica off-line, volta para a ordem normal.
+const TOPO = new URLSearchParams(location.search).get('topo') || 'teste';
 
 // Nomes e unidades só para exibição; o catálogo usa a forma sem acento.
 const NOMES = {
@@ -77,9 +81,7 @@ function atualizarNo(resumo) {
   const no = garantirNo(resumo.projeto, resumo.no);
   no.dados = { ...no.dados, ...resumo };
 
-  const status = no.elemento.querySelector('.status');
-  status.dataset.status = resumo.status;
-  status.textContent = { online: 'on-line', offline: 'off-line' }[resumo.status] ?? 'sem notícia';
+  mostrarStatus(no);
 
   const perda = no.elemento.querySelector('.perda');
   if (resumo.perda && resumo.perda.esperadas > 0) {
@@ -120,15 +122,46 @@ function garantirNo(projeto, nomeDoNo) {
   elemento.querySelector('.baixar').dataset.filtro = `projeto=${projeto}&no=${nomeDoNo}`;
   document.getElementById('vazio').hidden = true;
 
-  // Mantém os nós em ordem na página, com no2 antes de no10.
-  const ordem = (a, b) => a.localeCompare(b, 'pt-BR', { numeric: true });
-  const depois = [...nos.keys()].sort(ordem).find((k) => ordem(k, chave) > 0);
-  document.getElementById('nos').insertBefore(elemento, depois ? nos.get(depois).elemento : null);
-
   no = { elemento, dados: { projeto, no: nomeDoNo }, grandezas: new Map() };
   nos.set(chave, no);
+  ordenarNos();
   atualizarLinksDeExportacao();
   return no;
+}
+
+function mostrarStatus(no) {
+  const status = no.elemento.querySelector('.status');
+  status.dataset.status = no.dados.status;
+  status.textContent = { online: 'on-line', offline: 'off-line' }[no.dados.status] ?? 'sem notícia';
+  ordenarNos();
+}
+
+// O teste ativo é um nó on-line do projeto (ou projeto/nó) de TOPO.
+function testeAtivo(no) {
+  const { projeto, no: nome, status } = no.dados;
+  return status === 'online' && (TOPO === projeto || TOPO === `${projeto}/${nome}`);
+}
+
+// Teste ativo primeiro; depois, todos em ordem, com no2 antes de no10.
+// Só mexe na página quando a ordem muda, para não redesenhar os gráficos à toa.
+function ordenarNos() {
+  const ordem = (a, b) => a.localeCompare(b, 'pt-BR', { numeric: true });
+  const chaves = [...nos.keys()].sort(
+    (a, b) => Number(testeAtivo(nos.get(b))) - Number(testeAtivo(nos.get(a))) || ordem(a, b),
+  );
+  const lista = document.getElementById('nos');
+  const atual = [...lista.querySelectorAll(':scope > .no')];
+  chaves.forEach((chave, i) => {
+    const { elemento } = nos.get(chave);
+    const ativo = testeAtivo(nos.get(chave));
+    elemento.classList.toggle('teste-ativo', ativo);
+    elemento.querySelector('.destaque').hidden = !ativo;
+    if (atual[i] !== elemento) {
+      lista.insertBefore(elemento, atual[i] ?? null);
+      atual.splice(atual.indexOf(elemento), 1);
+      atual.splice(i, 0, elemento);
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -204,7 +237,10 @@ function receberLeitura(l) {
   if (!l.fila) {
     mostrarValor(item, l.grandeza, l.valor, l.unidade);
     no.dados.ultimaRecepcao = agoraNoServidor();
-    no.dados.status = 'online';
+    if (no.dados.status !== 'online') {
+      no.dados.status = 'online';
+      mostrarStatus(no);
+    }
   }
   agendarDesenho(item);
 
