@@ -112,13 +112,33 @@ function mostrarImagem(no, { caminho, t }) {
   figura.hidden = false;
 }
 
+// Nome do sensor de cada nó, opcional: painel/sensores.json, no formato
+// { "teste/no6": "MQ-2" }. Com ele, o cartão mostra "MQ-2/no6" no lugar de
+// "teste/no6"; o tópico completo continua na dica do título.
+let sensores = {};
+function nomearNo(nome, nomeDoNo) {
+  const sensor = sensores[nome.dataset.chave];
+  nome.textContent = sensor ? `${sensor}/${nomeDoNo}` : nome.dataset.chave;
+  nome.title = `cria/${nome.dataset.chave}`;
+}
+fetch('sensores.json', { cache: 'no-store' })
+  .then((r) => (r.ok ? r.json() : {}))
+  .then((mapa) => {
+    sensores = mapa ?? {};
+    for (const nome of document.querySelectorAll('.no-nome[data-chave]')) nomearNo(nome, nome.dataset.chave.split('/')[1]);
+  })
+  .catch(() => {});
+
 function garantirNo(projeto, nomeDoNo) {
   const chave = `${projeto}/${nomeDoNo}`;
   let no = nos.get(chave);
   if (no) return no;
 
   const elemento = document.getElementById('modelo-no').content.firstElementChild.cloneNode(true);
-  elemento.querySelector('.no-nome').textContent = chave;
+  const nome = elemento.querySelector('.no-nome');
+  nome.textContent = chave;
+  nome.dataset.chave = chave;
+  nomearNo(nome, nomeDoNo);
   elemento.querySelector('.baixar').dataset.filtro = `projeto=${projeto}&no=${nomeDoNo}`;
   document.getElementById('vazio').hidden = true;
 
