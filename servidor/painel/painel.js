@@ -96,6 +96,11 @@ function atualizarNo(resumo) {
     mostrarValor(item, grandeza, g.valor, g.unidade);
   }
   if (resumo.ultimaImagem) mostrarImagem(no, resumo.ultimaImagem);
+  // A câmera serve uma página própria, com a imagem ao vivo e o estado do nó.
+  // O endereço é o de onde veio a última foto; só abre na rede da telemetria.
+  const abrir = no.elemento.querySelector('.abrir-camera');
+  if (resumo.camera) abrir.href = `http://${resumo.camera}/`;
+  abrir.hidden = !resumo.camera || resumo.status === 'offline';
   atualizarTempos();
 }
 

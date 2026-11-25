@@ -220,6 +220,14 @@ select,
   border: 1px solid var(--borda);
   border-radius: 8px;
 }
+.abrir-camera {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+.abrir-camera[hidden] {
+  display: none;
+}
 .imagem figcaption {
   margin-top: 4px;
   font-size: 0.85rem;
