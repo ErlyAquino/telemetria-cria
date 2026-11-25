@@ -19,6 +19,7 @@ export function criarEstado({ segundosAteOfflineHttp }) {
         contagem: null, // { boot, recebidas, menorSeq, maiorSeq }
         alterado: false, // a contagem mudou desde o último envio ao painel
         ultimaImagem: null, // { caminho, t }, nos nós com câmera
+        camera: null, // endereço IPv4 de onde veio a última foto, para o link "abrir a câmera"
       };
       nos.set(chave, n);
     }
@@ -77,9 +78,14 @@ export function criarEstado({ segundosAteOfflineHttp }) {
 
   // Imagem nova da câmera (ou a última encontrada no disco, ao ligar). Não mexe
   // no status: o nó da câmera tem o próprio LWT pelo MQTT.
-  function registrarImagem(projeto, no, { caminho, t }) {
+  // "endereco" é o IP de quem enviou a foto: a própria câmera, que serve uma
+  // página com a imagem ao vivo. Só existe nas fotos recebidas com o servidor
+  // ligado, e só é guardado se for um IPv4 de outra máquina.
+  function registrarImagem(projeto, no, { caminho, t, endereco }) {
     const n = obter(projeto, no);
     if (!n.ultimaImagem || t >= n.ultimaImagem.t) n.ultimaImagem = { caminho, t };
+    const ip = String(endereco ?? '').replace(/^::ffff:/, '');
+    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(ip) && !ip.startsWith('127.')) n.camera = ip;
   }
 
   // Valores lidos do banco ao ligar o servidor; não mexem no status e não
@@ -125,6 +131,7 @@ export function criarEstado({ segundosAteOfflineHttp }) {
       grandezas: n.grandezas,
       perda: c ? { boot: c.boot, recebidas: c.recebidas, esperadas } : null,
       ultimaImagem: n.ultimaImagem,
+      camera: n.camera,
     };
   }
 

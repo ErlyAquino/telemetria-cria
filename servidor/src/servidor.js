@@ -387,7 +387,7 @@ app.post(
       jpeg: pedido.body,
       fusoHorario: config.fusoHorario,
     });
-    estado.registrarImagem(projeto, no, imagem);
+    estado.registrarImagem(projeto, no, { ...imagem, endereco: pedido.ip });
     io.emit('no', estado.resumoDoNo(projeto, no));
     resposta.code(201);
     return { caminho: imagem.caminho, bytes: pedido.body.length };
