@@ -1,0 +1,12 @@
+# Envia as fotos novas da horta para o GitHub. Disparado pelo telemetria-fotos.timer.
+# Instalar (sem sudo), ajustando o caminho abaixo se o repositório estiver noutra pasta:
+#   cp servidor/ferramentas/systemd/telemetria-fotos.* ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now telemetria-fotos.timer
+# Ver o que aconteceu:  journalctl --user -u telemetria-fotos.service
+[Unit]
+Description=Envia as fotos da horta (telemetria-cria) para o GitHub
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/env bash /dados/Projetos/telemetria-cria/servidor/ferramentas/enviar-fotos.sh
