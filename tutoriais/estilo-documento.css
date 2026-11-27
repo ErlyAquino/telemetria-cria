@@ -206,3 +206,44 @@ hr {
   size: A4;
   margin: 18mm 16mm 20mm;
 }
+
+/* Faixa das logos das instituições, no início e no fim do guia. */
+p.logos {
+  text-align: center;
+  margin: 0 0 24px;
+  page-break-inside: avoid;
+}
+
+p.logos img {
+  /* A regra geral das imagens (height: auto) ignoraria a altura dada no HTML. */
+  height: 52px;
+  width: auto;
+  vertical-align: middle;
+  margin: 6px 8px;
+}
+
+@media print {
+  /* O título segue a faixa das logos na mesma página. */
+  h1.title {
+    page-break-before: auto;
+  }
+}
+
+/* Link do PDF, só na cópia para um site (gerar-documentos.py --web). */
+p.baixar-pdf {
+  margin: 10px 0 0;
+}
+
+@media print {
+  p.baixar-pdf {
+    display: none;
+  }
+}
+
+/* No celular, a tabela larga rola de lado em vez de alargar a página. */
+@media screen and (max-width: 700px) {
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}

@@ -47,7 +47,7 @@ sudo bash servidor/base/instalar.sh
 
 O passo a passo, o autoteste e o uso do nó simulado estão em [`servidor/base/README.md`](servidor/base/README.md). Depois, o servidor da telemetria e o painel sobem com `npm install` e `npm start` na pasta `servidor/`, como explica o [`servidor/README.md`](servidor/README.md).
 
-Para quem está começando, o [guia completo](tutoriais/02-guia-completo.md) (também em [HTML](tutoriais/02-guia-completo.html) e [PDF](tutoriais/02-guia-completo.pdf)) vai da instalação, no Windows e no Linux, até um nó com DS18B20 publicando pelo Wi-Fi, passando pelos primeiros testes com o notebook pela USB.
+Para quem está começando, o [Tutorial telemetria-cria: guia completo](tutoriais/02-guia-completo.md) (também em [HTML](tutoriais/02-guia-completo.html) e [PDF](tutoriais/02-guia-completo.pdf)) explica cada tecnologia da plataforma e vai da instalação, no Windows e no Linux, até um nó com DS18B20 publicando pelo Wi-Fi, passando por iniciar o servidor e o painel e pelos primeiros testes com o notebook pela USB.
 
 ## Tópicos e mensagens
 

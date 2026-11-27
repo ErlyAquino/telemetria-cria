@@ -126,6 +126,18 @@ select,
   margin-bottom: 16px;
 }
 
+/* O teste em andamento fica no topo (painel.js, ordenarNos) e com borda de destaque. */
+.no.teste-ativo {
+  border: 2px solid var(--linha);
+}
+.destaque {
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--linha);
+  color: var(--cartao);
+}
+
 .no-topo {
   display: flex;
   flex-wrap: wrap;
